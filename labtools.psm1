@@ -104,7 +104,7 @@ function Set-LABVlanID
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvlanid")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateRange(1,4096)]$vlanID
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateRange(0,4096)]$vlanID
     )
     if (!(Test-Path $Defaultsfile))
     {
