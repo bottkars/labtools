@@ -99,6 +99,45 @@ function Set-LABvmnet
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   This function matches naming conventios from vmware vmnet definitions to Hype-V Switchnames
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+.INPUTS
+   Inputs to this cmdlet (if any)
+.OUTPUTS
+   Output from this cmdlet (if any)
+.NOTES
+   General notes
+.ROLE
+   The role this cmdlet belongs to
+.FUNCTIONALITY
+   The functionality that best describes this cmdlet
+#>
+function Set-LABvmnet2vmswitch
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvmnet")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile=".\Switchdefaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('vmnet0','vmnet1','vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet8')]$VMnet, #','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19'
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$VMswitch
+    )
+    if (!(Test-Path $SwitchDefaultsfile))
+    {
+        Write-Warning "Creating New defaultsfile"
+        New-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
+    }
+    $SwitchDefaults = Get-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
+    $SwitchDefaults.$($vmnet) = $VMswitch
+    Write-Verbose "Setting $VMnet 2 $switch"
+    Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -Defaults $SwitchDefaults
+}
+
 function Set-LABGateway
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABGateway")]
@@ -341,6 +380,38 @@ end {
     }
 }
 
+function Get-LABSwitchDefaults
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABSwitchDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile=".\SwitchDefaults.xml"
+    )
+begin {
+    }
+process 
+{
+    if (!(Test-Path $SwitchDefaultsfile))
+    {
+        Write-Warning "SwitchDefaults does not exist. please create with New-LABSwitchDefaults or set any parameter with set-LABxxx"
+    }
+    else
+        {
+
+        Write-Verbose "Loading SwitchDefaults from $SwitchDefaultsfile"
+        [xml]$Default = Get-Content -Path $SwitchDefaultsfile
+        $object = New-Object psobject
+        foreach ($switchmapping in 0..8)
+            {
+
+            }
+	    $object | Add-Member -MemberType NoteProperty -Name "vmnet$switchmapping" -Value $Default.config.vmnet$($switchmapping)
+        Write-Output $object
+        }
+    }
+end {
+    }
+}
+
 
 <#
 function set-LABdefaults
@@ -400,6 +471,35 @@ process {
 end {}
 }
 
+
+function Save-LABSwitchdefaults
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Save-LABDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]$SwitchDefaults
+
+    )
+begin {
+    }
+process {
+        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
+        $xmlcontent =@()
+        $xmlcontent += ("<config>")
+        $xmlcontent += ("<vmnet0>$($SwitchDefaults.VMnet0)</vmnet0>")
+        $xmlcontent += ("<vmnet1>$($SwitchDefaults.VMnet1)</vmnet1>")
+        $xmlcontent += ("<vmnet2>$($SwitchDefaults.VMnet2)</vmnet2>")
+        $xmlcontent += ("<vmnet3>$($SwitchDefaults.VMnet3)</vmnet3>")
+        $xmlcontent += ("<vmnet4>$($SwitchDefaults.VMnet4)</vmnet4>")
+        $xmlcontent += ("<vmnet5>$($SwitchDefaults.VMnet5)</vmnet5>")
+        $xmlcontent += ("<vmnet6>$($SwitchDefaults.VMnet6)</vmnet6>")
+        $xmlcontent += ("<vmnet7>$($SwitchDefaults.VMnet7)</vmnet7>")
+        $xmlcontent += ("<vmnet8>$($SwitchDefaults.VMnet8)</vmnet8>")
+        $xmlcontent += ("</config>")
+        $xmlcontent | Set-Content $SwitchDefaultsfile
+        }
+end {}
+}
 
 
 
@@ -577,6 +677,28 @@ function New-LABdefaults
      }
 
 
+
+function New-LABSwitchdefaults   
+{
+    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml"
+    )
+        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
+        $xmlcontent =@()
+        $xmlcontent += ("<config>")
+        $xmlcontent += ("<vmnet0></vmnet0>")
+        $xmlcontent += ("<vmnet1></vmnet1>")
+        $xmlcontent += ("<vmnet2></vmnet2>")
+        $xmlcontent += ("<vmnet3></vmnet3>")
+        $xmlcontent += ("<vmnet4></vmnet4>")
+        $xmlcontent += ("<vmnet5></vmnet5>")
+        $xmlcontent += ("<vmnet6></vmnet6>")
+        $xmlcontent += ("<vmnet7></vmnet7>")
+        $xmlcontent += ("<vmnet8></vmnet8>")
+        $xmlcontent += ("</config>")
+        $xmlcontent | Set-Content $SwitchDefaultsfile
+     }
 
 
 
