@@ -99,6 +99,24 @@ function Set-LABvmnet
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABVlanID
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvlanid")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateRange(1,4096)]$vlanID
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Warning "Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.vlanID = $vlanID
+    Write-Verbose "Setting LABVMnet $VMnet"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 <#
 .Synopsis
    Short description
@@ -132,10 +150,10 @@ function Set-LABvmnet2vmswitch
         Write-Warning "Creating New defaultsfile"
         New-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
     }
-    $SwitchDefaults = Get-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
+    $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     $SwitchDefaults.$($vmnet) = $VMswitch
     Write-Verbose "Setting $VMnet 2 $switch"
-    Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -Defaults $SwitchDefaults
+    Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -SwitchDefaults $SwitchDefaults
 }
 
 function Set-LABGateway
@@ -354,6 +372,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name BuildDomain -Value $Default.config.Builddomain
         $object | Add-Member -MemberType NoteProperty -Name MySubnet -Value $Default.config.MySubnet
         $object | Add-Member -MemberType NoteProperty -Name vmnet -Value $Default.config.vmnet
+        $object | Add-Member -MemberType NoteProperty -Name vlanID -Value $Default.config.vlanID
         $object | Add-Member -MemberType NoteProperty -Name DefaultGateway -Value $Default.config.DefaultGateway
         $object | Add-Member -MemberType NoteProperty -Name DNS1 -Value $Default.config.DNS1
         $object | Add-Member -MemberType NoteProperty -Name Gateway -Value $Default.config.Gateway
@@ -400,11 +419,17 @@ process
         Write-Verbose "Loading SwitchDefaults from $SwitchDefaultsfile"
         [xml]$Default = Get-Content -Path $SwitchDefaultsfile
         $object = New-Object psobject
-        foreach ($switchmapping in 0..8)
-            {
 
-            }
-	    $object | Add-Member -MemberType NoteProperty -Name "vmnet$switchmapping" -Value $Default.config.vmnet$($switchmapping)
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet0 -Value $Default.config.vmnet0
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet1 -Value $Default.config.vmnet1
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet2 -Value $Default.config.vmnet2
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet3 -Value $Default.config.vmnet3
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet4 -Value $Default.config.vmnet4
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet5 -Value $Default.config.vmnet5
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet6 -Value $Default.config.vmnet6
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet7 -Value $Default.config.vmnet7
+	    $object | Add-Member -MemberType NoteProperty -Name vmnet8 -Value $Default.config.vmnet8
+
         Write-Output $object
         }
     }
@@ -427,7 +452,6 @@ process {
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 #>
-
 function Save-LABdefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Save-LABDefaults")]
@@ -450,6 +474,7 @@ process {
         $xmlcontent += ("<ex_cu>$($Defaults.ex_cu)</ex_cu>")
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
+        $xmlcontent += ("<vlanID>$($Defaults.vlanID)</vlanID>")
         $xmlcontent += ("<BuildDomain>$($Defaults.BuildDomain)</BuildDomain>")
         $xmlcontent += ("<MySubnet>$($Defaults.MySubnet)</MySubnet>")
         $xmlcontent += ("<AddressFamily>$($Defaults.AddressFamily)</AddressFamily>")
@@ -470,7 +495,6 @@ process {
         }
 end {}
 }
-
 
 function Save-LABSwitchdefaults
 {
@@ -501,7 +525,63 @@ process {
 end {}
 }
 
+function New-LABdefaults   
+{
+    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile=".\defaults.xml"
+    )
+        Write-Verbose "Saving defaults to $Defaultsfile"
+        $xmlcontent =@()
+        $xmlcontent += ("<config>")
+        $xmlcontent += ("<nmm_ver></nmm_ver>")
+        $xmlcontent += ("<nmm></nmm>")
+        $xmlcontent += ("<nw_ver></nw_ver>")
+        $xmlcontent += ("<master></master>")
+        $xmlcontent += ("<sqlver></sqlver>")
+        $xmlcontent += ("<ex_cu></ex_cu>")
+        $xmlcontent += ("<vmnet></vmnet>")
+        $xmlcontent += ("<vlanID></vlanID>")
+        $xmlcontent += ("<BuildDomain></BuildDomain>")
+        $xmlcontent += ("<MySubnet></MySubnet>")
+        $xmlcontent += ("<AddressFamily></AddressFamily>")
+        $xmlcontent += ("<IPV6Prefix></IPV6Prefix>")
+        $xmlcontent += ("<IPv6PrefixLength></IPv6PrefixLength>")
+        $xmlcontent += ("<Gateway></Gateway>")
+        $xmlcontent += ("<DefaultGateway></DefaultGateway>")
+        $xmlcontent += ("<DNS1></DNS1>")
+        $xmlcontent += ("<Sourcedir></Sourcedir>")
+        $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
+        $xmlcontent += ("<Masterpath></Masterpath>")
+        $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
+        $xmlcontent += ("<Puppet></Puppet>")
+        $xmlcontent += ("<PuppetMaster></PuppetMaster>")
+        $xmlcontent += ("<HostKey></HostKey>")
+        $xmlcontent += ("</config>")
+        $xmlcontent | Set-Content $defaultsfile
+     }
 
+function New-LABSwitchdefaults   
+{
+    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml"
+    )
+        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
+        $xmlcontent =@()
+        $xmlcontent += ("<config>")
+        $xmlcontent += ("<vmnet0></vmnet0>")
+        $xmlcontent += ("<vmnet1></vmnet1>")
+        $xmlcontent += ("<vmnet2></vmnet2>")
+        $xmlcontent += ("<vmnet3></vmnet3>")
+        $xmlcontent += ("<vmnet4></vmnet4>")
+        $xmlcontent += ("<vmnet5></vmnet5>")
+        $xmlcontent += ("<vmnet6></vmnet6>")
+        $xmlcontent += ("<vmnet7></vmnet7>")
+        $xmlcontent += ("<vmnet8></vmnet8>")
+        $xmlcontent += ("</config>")
+        $xmlcontent | Set-Content $SwitchDefaultsfile
+     }
 
 function Expand-LAB7Zip
 {
@@ -639,67 +719,6 @@ function Get-LABscenario
     param()
     Get-VMX | Get-vmxscenario | Sort-Object Scenarioname | ft -AutoSize
     }
-
-
-function New-LABdefaults   
-{
-    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
-	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile=".\defaults.xml"
-    )
-        Write-Verbose "Saving defaults to $Defaultsfile"
-        $xmlcontent =@()
-        $xmlcontent += ("<config>")
-        $xmlcontent += ("<nmm_ver></nmm_ver>")
-        $xmlcontent += ("<nmm></nmm>")
-        $xmlcontent += ("<nw_ver></nw_ver>")
-        $xmlcontent += ("<master></master>")
-        $xmlcontent += ("<sqlver></sqlver>")
-        $xmlcontent += ("<ex_cu></ex_cu>")
-        $xmlcontent += ("<vmnet></vmnet>")
-        $xmlcontent += ("<BuildDomain></BuildDomain>")
-        $xmlcontent += ("<MySubnet></MySubnet>")
-        $xmlcontent += ("<AddressFamily></AddressFamily>")
-        $xmlcontent += ("<IPV6Prefix></IPV6Prefix>")
-        $xmlcontent += ("<IPv6PrefixLength></IPv6PrefixLength>")
-        $xmlcontent += ("<Gateway></Gateway>")
-        $xmlcontent += ("<DefaultGateway></DefaultGateway>")
-        $xmlcontent += ("<DNS1></DNS1>")
-        $xmlcontent += ("<Sourcedir></Sourcedir>")
-        $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
-        $xmlcontent += ("<Masterpath></Masterpath>")
-        $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
-        $xmlcontent += ("<Puppet></Puppet>")
-        $xmlcontent += ("<PuppetMaster></PuppetMaster>")
-        $xmlcontent += ("<HostKey></HostKey>")
-        $xmlcontent += ("</config>")
-        $xmlcontent | Set-Content $defaultsfile
-     }
-
-
-
-function New-LABSwitchdefaults   
-{
-    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
-	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml"
-    )
-        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
-        $xmlcontent =@()
-        $xmlcontent += ("<config>")
-        $xmlcontent += ("<vmnet0></vmnet0>")
-        $xmlcontent += ("<vmnet1></vmnet1>")
-        $xmlcontent += ("<vmnet2></vmnet2>")
-        $xmlcontent += ("<vmnet3></vmnet3>")
-        $xmlcontent += ("<vmnet4></vmnet4>")
-        $xmlcontent += ("<vmnet5></vmnet5>")
-        $xmlcontent += ("<vmnet6></vmnet6>")
-        $xmlcontent += ("<vmnet7></vmnet7>")
-        $xmlcontent += ("<vmnet8></vmnet8>")
-        $xmlcontent += ("</config>")
-        $xmlcontent | Set-Content $SwitchDefaultsfile
-     }
-
 
 
 
