@@ -137,13 +137,13 @@ function Set-LABVlanID
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
-function Set-LABvmnet2vmswitch
+function Set-LABvmnet2hvswitch
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvmnet")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile=".\Switchdefaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('vmnet0','vmnet1','vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet8')]$VMnet, #','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19'
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$VMswitch
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$hvswitch
     )
     if (!(Test-Path $SwitchDefaultsfile))
     {
@@ -151,8 +151,8 @@ function Set-LABvmnet2vmswitch
         New-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
-    $SwitchDefaults.$($vmnet) = $VMswitch
-    Write-Verbose "Setting $VMnet 2 $switch"
+    $SwitchDefaults.$($vmnet) = $hvswitch
+    Write-Verbose "Setting $VMnet 2 $hvswitch"
     Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -SwitchDefaults $SwitchDefaults
 }
 
