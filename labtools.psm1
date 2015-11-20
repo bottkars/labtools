@@ -148,7 +148,7 @@ function Set-LABvmnet2hvswitch
     if (!(Test-Path $SwitchDefaultsfile))
     {
         Write-Warning "Creating New defaultsfile"
-        New-LABSwitchdefaults -Defaultsfile $SwitchDefaultsfile
+        New-LABSwitchdefaults -Defaultsfile .\Switchdefaultsfile.xml
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     $SwitchDefaults.$($vmnet) = $hvswitch
