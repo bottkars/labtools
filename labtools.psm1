@@ -141,9 +141,10 @@ function Set-LABvmnet2hvswitch
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvmnet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile=".\Switchdefaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('vmnet0','vmnet1','vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet8')]$VMnet, #','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19'
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$hvswitch
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$hvswitch,
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile=".\Switchdefaults.xml"
+
     )
     if (!(Test-Path $SwitchDefaultsfile))
     {
