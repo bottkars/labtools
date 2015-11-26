@@ -684,7 +684,15 @@ $ftprequest.UseBinary = $true
 $ftprequest.KeepAlive = $false 
  
 # send the ftp request to the server 
-$ftpresponse = $ftprequest.GetResponse() 
+try
+    {
+    $ftpresponse = $ftprequest.GetResponse() 
+    }
+catch
+    {
+    Write-Warning "Error downlaoding $Source"
+    break
+    }
 Write-Verbose $ftpresponse.WelcomeMessage
 Write-Verbose "Filesize: $($ftpresponse.ContentLength)"
  
