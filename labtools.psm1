@@ -659,7 +659,15 @@ if (!$TarGet)
     $TarGet = Split-Path -Leaf $Source 
     }
 # Create a FTPWebRequest object to handle the connection to the ftp server 
-$ftprequest = [System.Net.FtpWebRequest]::create($Source) 
+try
+    {
+    $ftprequest = [System.Net.FtpWebRequest]::create($Source)
+    }
+catch
+    {
+    Write-Warning "Error Downloading File"
+    break
+    } 
  
 # set the request's network credentials for an authenticated connection 
 if ($Defaultcredentials.Ispresent)
