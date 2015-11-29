@@ -60,8 +60,6 @@ function Set-LABDefaultGateway
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
-
-
 function Set-LABDNS1
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#SET-LABDNS1")]
@@ -438,7 +436,6 @@ end {
     }
 }
 
-
 <#
 function set-LABdefaults
 {
@@ -737,8 +734,6 @@ function Get-LABscenario
     Get-VMX | Get-vmxscenario | Sort-Object Scenarioname | ft -AutoSize
     }
 
-
-
 function Start-LABScenario
     {
     [CmdletBinding(DefaultParametersetName = "1",
@@ -800,7 +795,6 @@ function Start-LABPC
     write "Wake-On-Lan magic packet sent to $MACAddrString, length $($packet.Length)"
  }
 
-
 function Get-LABHttpFile
  {
     [CmdletBinding(DefaultParametersetName = "1",
@@ -858,10 +852,8 @@ try
 }
 end
 {}
-}                 
-
-
-
+}  
+               
  function Get-LABJava64
     {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABJava64")]
@@ -919,4 +911,177 @@ end
 	        $object | Add-Member -MemberType NoteProperty -Name LatestJava8File -Value (Join-Path $DownloadDir $Latest_java8)
             Write-Output $object
         }
+    }
+
+    function Receive-LABNetworker
+{
+param
+    (
+    [ValidateSet('nw90.DA','nw9001',
+    'nw8222','nw8221','nw822',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
+    'nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
+    'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
+    'nw8105','nw8104','nw8103','nw8102','nw81',
+    'nw81044','nw8043','nw8042','nw8041',
+    'nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
+    'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
+    'nw8016','nw8015','nw81014','nw8013','nw8012',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
+    'nwunknown')]
+    $nw_ver,
+    [ValidateSet(
+    'aixpower',
+    'hpux11_64',
+    'hpux11_ia64',
+    'linux_ia64',
+    'linux_ppc64',
+    'linux_x86',
+    'linux_x86_64',
+    'linux_s390',
+    'macosx',
+    'solaris_64',
+    'solaris_am64',
+    'solaris_x86',
+    'win_x64',
+    'win_x86'
+    )][string]$arch="win_x64",
+
+    [String]$Destination,
+    [switch]$unzip,
+    [switch]$force
+    )
+        
+if (!(Test-Path $Destination))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+Write-Warning "We look for Networker $NW_ver in $Destination"
+if ($nw_ver -notin ('nw822','nw821','nw82'))
+    {
+    $nwdotver = $nw_ver -replace "nw",""
+    $nwdotver = $nwdotver.insert(1,'.')
+    $nwdotver = $nwdotver.insert(3,'.')
+    $nwdotver = $nwdotver.insert(5,'.') 
+    [System.Version]$nwversion = $nwdotver
+    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+        {
+        Write-Verbose "Networker Version:"
+        $nwversion
+        }
+    Write-Verbose "NW Dot Ver $nwdotver"
+    $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
+    switch ($nwzip)
+        {
+        "80"
+            {
+            if ($nwversion.Build -in (1,2))
+                {
+                $nwzip = "$($nwzip)sp$($nwversion.Build)"
+                }
+            if ($nwversion.Build -gt (2))
+                {
+                $nwzip = "$($nwzip)$($nwversion.Build)"
+                }
+            }
+        "81"
+            {
+            if ($nwversion.Build -eq (3))
+                {
+                $nwzip = "$($nwzip)sp$($nwversion.Build)"
+                }
+            if ($nwversion.Build -in (1,2))
+                {
+                $nwzip = "$($nwzip)$($nwversion.Build)"
+                }
+            }
+         "82"
+            {
+            if ($nwversion.Build -ne (0))
+                {
+                $nwzip = "$($nwzip)$($nwversion.Build)"
+                }
+            }
+
+
+        }
+    Switch ($arch)
+        {
+            {($_ -match "mac")}
+                {
+                if ($($nwversion.Minor) -lt 1)
+                    { 
+                    $extension = "tar.gz"
+                    }
+                else
+                    {
+                    $extension = "dmg"
+                    $unzip = $false
+                    }
+                }
+
+            {($_ -match "win")}
+                {
+                $extension = "zip"
+                }
+            default
+                {
+                $extension = "tar.gz"
+                $unzip = $false
+                }
+        }
+         
+    $nwzip = "nw$($nwzip)_$arch.$Extension"
+    Write-Verbose "nwzip for ftp: $nwzip"
+    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+    if ($url)
+        {
+            # $FileName = Split-Path -Leaf -Path $Url
+        $FileName = "$($nw_ver)_$arch.$extension"
+        $Zipfilename = Join-Path $Destination $FileName
+        $Destinationdir = Join-Path $Destination $nw_ver
+        if (!(test-path  $Zipfilename ) -or $force.IsPresent)
+            {
+            Write-Verbose "$FileName not found, trying to download from $url"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Verbose "Press any Key to start Download"
+                pause
+                }
+
+            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -verbose -Defaultcredentials))
+                { 
+                write-warning "Error Downloading file $Url, 
+                $url might not exist.
+                Please check connectivity or download manually"
+                break
+                }
+            }
+        else
+            {
+            Write-Warning "Networker $NW_ver already on $Destination, try -force to overwrite"
+            }
+        if ($unzip)
+            {
+            Write-Verbose $Zipfilename     
+            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir" -verbose
+            }
+        }
+    }
+    else
+        {
+        Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
+        break
+        }
+
     }
