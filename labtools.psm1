@@ -951,7 +951,7 @@ if (!(Test-Path $Destination))
         break
         }
     }
-Write-Warning "We look for Networker $NW_ver in $Destination"
+Write-Warning "Receive Request for $NW_ver in $Destination"
 if ($nw_ver -notin ('nw822','nw821','nw82'))
     {
     $nwdotver = $nw_ver -replace "nw",""
@@ -961,7 +961,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
     [System.Version]$nwversion = $nwdotver
     if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
         {
-        Write-Verbose "Networker Version:"
+        Write-Verbose "Requested Networker Version is:"
         $nwversion
         }
     Write-Verbose "NW Dot Ver $nwdotver"
@@ -1070,3 +1070,60 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         }
 
     }
+
+function update-LABfromGit
+{
+
+
+	param (
+            [string]$Repo,
+            [string]$RepoLocation,
+            [string]$branch,
+            [string]$latest_local_Git,
+            [string]$Destination,
+            [switch]$delete
+            )
+        $Isnew = $false
+        Write-Verbose "Using update-fromgit function for $repo"
+        $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
+        $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
+        try
+            {
+            $request = Invoke-WebRequest -UseBasicParsing -Uri $Uri -Method Head -ErrorAction Stop
+            }
+        Catch
+            {
+            Write-Warning "Error connecting to git"
+            if ($_.Exception.Response.StatusCode -match "Forbidden")
+                {
+                Write-Warning "Status inidicates that Connection Limit is exceeded"
+                }
+            exit
+            }
+        [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
+                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
+                if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
+                    {
+                    $Updatepath = "$Builddir\Update"
+					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
+					        {
+						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
+                            }
+                    Write-Output "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    if ($delete.IsPresent)
+                        {
+                        Write-Verbose "Cleaning $Destination"
+                        Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
+                        }
+                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
+                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
+                    $Isnew = $true
+                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
+                    }
+                else 
+                    {
+                    Status "No update required for $repo on $branch, already newest version "                    
+                    }
+return $Isnew
+}
+
