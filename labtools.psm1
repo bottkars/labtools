@@ -191,7 +191,6 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
-
 function Set-LABpuppet
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABpuppet")]
@@ -227,8 +226,6 @@ if (!(Test-Path $Defaultsfile))
     Write-Verbose "Setting $puppetMaster"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
-
 
 function Set-LABnmm
 {
@@ -267,7 +264,6 @@ function Set-LABsubnet
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
-
 function Set-LABHostKey
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABHostKey")]
@@ -304,7 +300,6 @@ function Set-LABBuilddomain
     Write-Verbose "Setting builddomain $builddomain"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
 
 function Set-LABSources
 {
@@ -436,20 +431,6 @@ end {
     }
 }
 
-<#
-function set-LABdefaults
-{
-	[CmdletBinding(HelpUri = "http://LABbuildr.bottnet.de/modules/")]
-	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml"
-    )
-begin {
-    }
-process {
-        Write-Verbose "Loading defaults from $Defaultsfile"
-        [xml]$Default = Get-Content -Path $Defaultsfile
-        $object = New-Object psobject
-#>
 function Save-LABdefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Save-LABDefaults")]
@@ -913,8 +894,12 @@ end
         }
     }
 
-    function Receive-LABNetworker
+function Receive-LABNetworker
 {
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
 param
     (
     [ValidateSet('nw90.DA','nw9001',
