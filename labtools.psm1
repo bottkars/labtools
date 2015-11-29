@@ -1109,7 +1109,7 @@ function update-LABfromGit
 					        {
 						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
                             }
-                    Write-Output "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
                     if ($delete.IsPresent)
                         {
                         Write-Verbose "Cleaning $Destination"
