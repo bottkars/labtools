@@ -1268,7 +1268,7 @@ if ($Component -match 'SCOM')
     {
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $FileName in $Prereq_Dir"
-    if (!(test-path  "$Prereq_Dir\$FileName"))
+    if (!(test-path  "$Prereq_Dir\$FileName")) 
         {
         Write-Verbose "Trying Download"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
@@ -1297,11 +1297,11 @@ if ($Component -match 'SCOM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
             }
         }    
-}#ed scom
+}#end scom
 
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $SC_Version"
-    if (!(test-path  "$SC_DIR\$FileName"))
+    if (!(test-path  "$SC_DIR\$FileName") -and (!(Test-Path "$SC_DIR\$Component\Setup.exe")) -or $force.IsPresent) 
         {
         Write-Verbose "Trying Download of $Filename"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$SC_DIR\$FileName"))
