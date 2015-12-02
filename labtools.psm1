@@ -949,6 +949,38 @@ function update-LABfromGit
 return $Isnew
 }
 
+function Receive-LABBitsFile
+{ 
+param ([string]$DownLoadUrl,
+        [string]$destination )
+$ReturnCode = $True
+if (!(Test-Path $Destination))
+    {
+        Try 
+        {
+        if (!(Test-Path (Split-Path $destination)))
+            {
+            New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
+            }
+        Write-verbose "Starting Download of $DownLoadUrl"
+        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err 
+                If ($err) {Throw ""} 
+
+        } 
+        Catch 
+        { 
+            $ReturnCode = $False 
+            Write-Warning " - An error occurred downloading `'$FileName`'" 
+            Write-Error $_ 
+        }
+    }
+    else
+    {
+    write-Warning "No download needed, file exists" 
+    }
+    return $ReturnCode 
+}
+
 function Receive-LABNetworker
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -1174,7 +1206,7 @@ if ($Component -match 'SCVMM')
     if (!(test-path  "$Destination\$Prereqdir\$FileName"))
         {
         Write-Verbose "Trying Download"
-        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit
@@ -1209,7 +1241,7 @@ switch ($SC_Version)
         {
         # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
         Write-Verbose "Trying Download of $WAIKDIR"
-        if (!(get-prereq -DownLoadUrl $adkurl -destination  "$Download_root\$WAIKDIR\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$Download_root\$WAIKDIR\$FileName"))
             { 
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
@@ -1232,7 +1264,7 @@ if ($Component -match 'SCOM')
     if (!(test-path  "$Destination\$Prereqdir\$FileName"))
         {
         Write-Verbose "Trying Download"
-        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit
@@ -1263,7 +1295,7 @@ if ($Component -match 'SCOM')
     if (!(test-path  "$Destination\$SC_Version\$FileName"))
         {
         Write-Verbose "Trying Download of $Component_Dir"
-        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$SC_Version\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$SC_Version\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit
