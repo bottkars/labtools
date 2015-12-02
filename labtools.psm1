@@ -1301,7 +1301,7 @@ if ($Component -match 'SCOM')
 
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $SC_Version"
-    if (!(test-path  "$SC_DIR\$FileName") -and (!(Test-Path "$SC_DIR\$Component\Setup.exe")) -or $force.IsPresent) 
+    if (!(test-path  "$SC_DIR\$FileName") -or $force.IsPresent) 
         {
         Write-Verbose "Trying Download of $Filename"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$SC_DIR\$FileName"))
@@ -1309,9 +1309,11 @@ if ($Component -match 'SCOM')
             write-warning "Error Downloading file $Url, Please check connectivity"
             return $False
             }
+        
         }
-        if ($unzip.IsPresent)
+        if (($unzip.IsPresent -and !(Test-Path "$SC_DIR\$Component\Setup.exe")) -or $force.IsPresent)
             {
+
             write-Warning "We are going to Extract $FileName, this may take a while"
             Start-Process "$SC_DIR\$FileName" -ArgumentList "/SP- /dir=$SC_DIR\$Component /SILENT" -Wait
             $return = $true
