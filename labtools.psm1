@@ -1168,33 +1168,34 @@ function Receive-LABSysCtrInstallers
 	[OutputType([psobject])]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('2012_R2','TP3','TP4')]$SC_Version,
+    [ValidateSet('SC2012_R2','SCTP3','SCTP4')]$SC_Version,
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM')]$Component,
     [String]$Destination,
     [String]$SC_DIR= "SysCtr",
+    [String]$Prereq = "prereq",
     [switch]$unzip,
     [switch]$force
 )
-try
-    {
-    $Destination = Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction stop
-    }
-catch
-    {
+    $SC_Ver
+    $SC_DIR = Join-Path $Destination "$SC_DIR\$SC_Version"
+    Write-Verbose "SCDIR : $SC_DIR"
+if (!(Test-Path $SC_DIR)
+)    {
     Try
         {
-        $NewDirectory = New-Item -ItemType Directory "$Destination\$SC_Version" -ErrorAction Stop -Force
+        Write-Verbose "Trying to create $SC_DIR"
+        $NewDirectory = New-Item -ItemType Directory -Path "$SC_DIR" -ErrorAction Stop -Force
         }
     catch
         {
-        Write-Warning "Could not create Destination Directory "$Destination\$SC_Version""
+        Write-Warning "Could not create Destination Directory $SCDIR"
         break
         }
     }
+$Prereq_Dir = Join-Path $Destination $Prereq
 Pause
-Write-Warning "Entering $SC_Version Prereq Section for $Component"
+Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
-$Prereqdir = "prereq"
 #############
 if ($Component -match 'SCVMM')
     {
@@ -1207,11 +1208,11 @@ if ($Component -match 'SCVMM')
     Foreach ($URL in $DownloadUrls)
     {
     $FileName = Split-Path -Leaf -Path $Url
-    Write-Verbose "Testing $FileName in $Prereqdir"
-    if (!(test-path  "$Destination\$Prereqdir\$FileName"))
+    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    if (!(test-path  "$Prereq_Dir\$FileName"))
         {
         Write-Verbose "Trying Download"
-        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit
@@ -1221,19 +1222,19 @@ if ($Component -match 'SCVMM')
 
 switch ($SC_Version)
     {
-        "2012_R2"
+        "SC2012_R2"
             {
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAI_VER = "WAIK_8.1"
             }
-        "TP4"
+        "SCTP4"
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
             $URL = "http://care.dlservice.microsoft.com/dl/download/7/0/A/70A7A007-ABCA-42E5-9C82-79CB98B7855E/SCTP4_SCVMM_EN.exe"
             $WAIK_VER = "WAIK_10"
             }
-        "TP3"
+        "SCTP3"
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
             $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
@@ -1261,19 +1262,20 @@ if ($Component -match 'SCOM')
     Write-Verbose "We are now going to Test $Component Prereqs"
             $DownloadUrls= (
             'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
-            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi"
+            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
             )
     Foreach ($URL in $DownloadUrls)
     {
     $FileName = Split-Path -Leaf -Path $Url
-    Write-Verbose "Testing $FileName in $Prereqdir"
-    if (!(test-path  "$Destination\$Prereqdir\$FileName"))
+    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    if (!(test-path  "$Prereq_Dir\$FileName"))
         {
         Write-Verbose "Trying Download"
-        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
-            exit
+            $return = $False
+            break
             }
         }
     }
@@ -1281,15 +1283,16 @@ if ($Component -match 'SCOM')
         {
         "SC2012_R2"
             {
+            $SCOM_VER = "$($SC_Version)_$($Component)"
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
             }
         
-        "TP3"
+        "SCTP3"
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/B/0/7/B07BF90E-2CC8-4538-A7D2-83BB074C49F5/SCTP3_SCOM_EN.exe"
             }
 
-        "TP4"
+        "SCTP4"
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
             }
@@ -1298,19 +1301,23 @@ if ($Component -match 'SCOM')
 
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $SC_Version"
-    if (!(test-path  "$Destination\$SC_Version\$FileName"))
+    if (!(test-path  "$SC_DIR\$FileName"))
         {
         Write-Verbose "Trying Download of $Component_Dir"
-        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Destination\$SC_Version\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$SC_DIR\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
-            exit
+            $return = $False
             }
-        if ($unzip.IsPresent)
-            {
-            write-Warning "We are going to Extract $FileName, this may take a while"
-            Start-Process "$Destination\$FileName" -ArgumentList "/SP- /dir=$Destination\$Component_Dir /SILENT" -Wait
+        else{
+            $return = $true
+            if ($unzip.IsPresent)
+                {
+                write-Warning "We are going to Extract $FileName, this may take a while"
+                Start-Process "$Destination\$FileName" -ArgumentList "/SP- /dir=$Destination\$Component_Dir /SILENT" -Wait
+                }
             }
         }
-
+        pause
+return $return
 }
