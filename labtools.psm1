@@ -1175,8 +1175,11 @@ param(
     [switch]$unzip,
     [switch]$force
 )
-
-if (!(Test-Path "$Destination\$SC_DIR\$SC_Version"))
+try
+    {
+    Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction Continue
+    }
+catch
     {
     Try
         {
@@ -1237,7 +1240,7 @@ switch ($SC_Version)
             }
     }# end switch
     Write-Verbose "Testing $WAIK_VER in $Destination"
-    $WAI_VER = Join-Path $Destination $WAI_VER
+    $WAIDIR = Join-Path $Destination $WAI_VER
     $FileName = Split-Path -Leaf -Path $adkurl
     if (!(test-path  "$WAIKDIR\Installers"))
         {
