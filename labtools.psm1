@@ -1160,7 +1160,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
 
     }
 
-function Receive-LABSCInstallers
+function Receive-LABSysCtrInstallers
 {
 [CmdletBinding(DefaultParametersetName = "1",
     SupportsShouldProcess=$true,
@@ -1171,11 +1171,12 @@ param(
     [ValidateSet('2012_R2','TP3','TP4')]$SC_Version,
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM')]$Component,
     [String]$Destination,
-    [String]$download_root,
+    [String]$SC_DIR= "SysCtr",
     [switch]$unzip,
     [switch]$force
 )
-if (!(Test-Path "$Destination\$SC_Version"))
+
+if (!(Test-Path "$Destination\$SC_DIR\$SC_Version"))
     {
     Try
         {
@@ -1220,34 +1221,35 @@ switch ($SC_Version)
             {
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
-            $WAIKDIR = "WAIK_8.1"
+            $WAI_VER = "WAIK_8.1"
             }
         "TP4"
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
             $URL = "http://care.dlservice.microsoft.com/dl/download/7/0/A/70A7A007-ABCA-42E5-9C82-79CB98B7855E/SCTP4_SCVMM_EN.exe"
-            $WAIKDIR = "WAIK_10"
+            $WAIK_VER = "WAIK_10"
             }
         "TP3"
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
             $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
-            $WAIKDIR = "WAIK_10"
+            $WAI_VER = "WAIK_10"
             }
     }# end switch
-    Write-Verbose "Testing WAIK in $Download_root"
+    Write-Verbose "Testing $WAIK_VER in $Destination"
+    $WAI_VER = Join-Path $Destination $WAI_VER
     $FileName = Split-Path -Leaf -Path $adkurl
-    if (!(test-path  "$Download_root\$WAIKDIR\Installers"))
+    if (!(test-path  "$WAIKDIR\Installers"))
         {
         # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
-        Write-Verbose "Trying Download of $WAIKDIR"
-        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$Download_root\$WAIKDIR\$FileName"))
+        Write-Verbose "Trying Download of $WAIK_VER"
+        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$WAIKDIR\$FileName"))
             { 
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
             }
         Write-Warning "Getting WAIK, Could take a While"
-        Start-Process -FilePath "$Download_root\$WAIKDIR\$FileName" -ArgumentList "/quiet /layout $Download_root\$WAIKDIR\" -Wait
+        Start-Process -FilePath "$WAIKDIR\$FileName" -ArgumentList "/quiet /layout $WAIKDIR\" -Wait
         }
     } # end SCVMM
 if ($Component -match 'SCOM')
