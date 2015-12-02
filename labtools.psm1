@@ -1311,12 +1311,19 @@ if ($Component -match 'SCOM')
             }
         
         }
-        if (($unzip.IsPresent -and !(Test-Path "$SC_DIR\$Component\Setup.exe")) -or $force.IsPresent)
+        if ($unzip.IsPresent) 
             {
-
-            write-Warning "We are going to Extract $FileName, this may take a while"
-            Start-Process "$SC_DIR\$FileName" -ArgumentList "/SP- /dir=$SC_DIR\$Component /SILENT" -Wait
-            $return = $true
+            if ((Test-Path "$SC_DIR\$Component\Setup.exe") -and !$force.IsPresent)
+                { 
+                Write-Warning "setup.exe already exists, overwrite with -force"
+                return $true
+                }
+            else
+                {
+                write-host "We are going to Extract $FileName, this may take a while"
+                Start-Process "$SC_DIR\$FileName" -ArgumentList "/SP- /dir=$SC_DIR\$Component /SILENT" -Wait
+                $return = $true
+                }
             }
 return $return
 }
