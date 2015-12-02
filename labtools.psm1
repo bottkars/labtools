@@ -1177,7 +1177,7 @@ param(
 )
 try
     {
-    Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction Continue
+    Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction stop
     }
 catch
     {
