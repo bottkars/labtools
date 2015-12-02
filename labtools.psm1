@@ -114,7 +114,6 @@ function Set-LABVlanID
     Write-Verbose "Setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
 <#
 .Synopsis
    Short description
@@ -894,6 +893,62 @@ end
         }
     }
 
+function update-LABfromGit
+{
+
+
+	param (
+            [string]$Repo,
+            [string]$RepoLocation,
+            [string]$branch,
+            [string]$latest_local_Git,
+            [string]$Destination,
+            [switch]$delete
+            )
+        $Isnew = $false
+        Write-Verbose "Using update-fromgit function for $repo"
+        $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
+        $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
+        try
+            {
+            $request = Invoke-WebRequest -UseBasicParsing -Uri $Uri -Method Head -ErrorAction Stop
+            }
+        Catch
+            {
+            Write-Warning "Error connecting to git"
+            if ($_.Exception.Response.StatusCode -match "Forbidden")
+                {
+                Write-Warning "Status inidicates that Connection Limit is exceeded"
+                }
+            exit
+            }
+        [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
+                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
+                if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
+                    {
+                    $Updatepath = "$Builddir\Update"
+					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
+					        {
+						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
+                            }
+                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    if ($delete.IsPresent)
+                        {
+                        Write-Verbose "Cleaning $Destination"
+                        Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
+                        }
+                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
+                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
+                    $Isnew = $true
+                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
+                    }
+                else 
+                    {
+                    Status "No update required for $repo on $branch, already newest version "                    
+                    }
+return $Isnew
+}
+
 function Receive-LABNetworker
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -1073,59 +1128,151 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
 
     }
 
-function update-LABfromGit
+function Receive-LABSCInstallers
 {
-
-
-	param (
-            [string]$Repo,
-            [string]$RepoLocation,
-            [string]$branch,
-            [string]$latest_local_Git,
-            [string]$Destination,
-            [switch]$delete
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('2012_R2','TP3','TP4')]$SC_Version,
+    [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM')]$Component,
+    [String]$Destination,
+    [String]$download_root,
+    [switch]$unzip,
+    [switch]$force
+)
+if (!(Test-Path "$Destination\$SC_Version"))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory "$Destination\$SC_Version" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory "$Destination\$SC_Version""
+        break
+        }
+    }
+Write-Warning "Entering $SC_Version Prereq Section for $Component"
+#$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
+$Prereqdir = "prereq"
+#############
+if ($Component -match 'SCVMM')
+    {
+    $DownloadUrls= (
+            "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SqlCmdLnUtils.msi",
+            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/sqlncli.msi"
             )
-        $Isnew = $false
-        Write-Verbose "Using update-fromgit function for $repo"
-        $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
-        $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
-        try
-            {
-            $request = Invoke-WebRequest -UseBasicParsing -Uri $Uri -Method Head -ErrorAction Stop
-            }
-        Catch
-            {
-            Write-Warning "Error connecting to git"
-            if ($_.Exception.Response.StatusCode -match "Forbidden")
-                {
-                Write-Warning "Status inidicates that Connection Limit is exceeded"
-                }
+    
+    Foreach ($URL in $DownloadUrls)
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $FileName in $Prereqdir"
+    if (!(test-path  "$Destination\$Prereqdir\$FileName"))
+        {
+        Write-Verbose "Trying Download"
+        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
             exit
             }
-        [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
-                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
-                if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
-                    {
-                    $Updatepath = "$Builddir\Update"
-					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
-					        {
-						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
-                            }
-                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
-                    if ($delete.IsPresent)
-                        {
-                        Write-Verbose "Cleaning $Destination"
-                        Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
-                        }
-                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
-                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
-                    $Isnew = $true
-                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
-                    }
-                else 
-                    {
-                    Status "No update required for $repo on $branch, already newest version "                    
-                    }
-return $Isnew
-}
+        }
+    }
 
+switch ($SC_Version)
+    {
+        "2012_R2"
+            {
+            $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
+            $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
+            $WAIKDIR = "WAIK_8.1"
+            }
+        "TP4"
+            {
+            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
+            $URL = "http://care.dlservice.microsoft.com/dl/download/7/0/A/70A7A007-ABCA-42E5-9C82-79CB98B7855E/SCTP4_SCVMM_EN.exe"
+            $WAIKDIR = "WAIK_10"
+            }
+        "TP3"
+            {
+            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
+            $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
+            $WAIKDIR = "WAIK_10"
+            }
+    }# end switch
+    Write-Verbose "Testing WAIK in $Download_root"
+    $FileName = Split-Path -Leaf -Path $adkurl
+    if (!(test-path  "$Download_root\$WAIKDIR\Installers"))
+        {
+        # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
+        Write-Verbose "Trying Download of $WAIKDIR"
+        if (!(get-prereq -DownLoadUrl $adkurl -destination  "$Download_root\$WAIKDIR\$FileName"))
+            { 
+            write-warning "Error Downloading file $adkurl, Please check connectivity"
+            exit
+            }
+        Write-Warning "Getting WAIK, Could take a While"
+        Start-Process -FilePath "$Download_root\$WAIKDIR\$FileName" -ArgumentList "/quiet /layout $Download_root\$WAIKDIR\" -Wait
+        }
+    } # end SCVMM
+if ($Component -match 'SCOM')
+    {
+    Write-Verbose "We are now going to Test $Component Prereqs"
+            $DownloadUrls= (
+            'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi"
+            )
+    Foreach ($URL in $DownloadUrls)
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $FileName in $Prereqdir"
+    if (!(test-path  "$Destination\$Prereqdir\$FileName"))
+        {
+        Write-Verbose "Trying Download"
+        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$Prereqdir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        }
+    }
+    switch ($SC_Version)
+        {
+        "SC2012_R2"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
+            }
+        
+        "TP3"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/B/0/7/B07BF90E-2CC8-4538-A7D2-83BB074C49F5/SCTP3_SCOM_EN.exe"
+            }
+
+        "TP4"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
+            }
+        }    
+}#ed scom
+
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $SC_Version"
+    if (!(test-path  "$Destination\$SC_Version\$FileName"))
+        {
+        Write-Verbose "Trying Download of $Component_Dir"
+        if (!(get-prereq -DownLoadUrl $URL -destination  "$Destination\$SC_Version\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        if ($unzip.IsPresent)
+            {
+            write-Warning "We are going to Extract $FileName, this may take a while"
+            Start-Process "$Destination\$FileName" -ArgumentList "/SP- /dir=$Destination\$Component_Dir /SILENT" -Wait
+            }
+        }
+
+}
