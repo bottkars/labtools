@@ -1131,7 +1131,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
                 pause
                 }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -verbose -Defaultcredentials))
+            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -Defaultcredentials))
                 { 
                 write-warning "Error Downloading file $Url, 
                 $url might not exist.
@@ -1146,7 +1146,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         if ($unzip)
             {
             Write-Verbose $Zipfilename     
-            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir" -verbose
+            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
             }
         
         }
@@ -1193,10 +1193,10 @@ if (!(Test-Path $SC_DIR)
         }
     }
 $Prereq_Dir = Join-Path $Destination $Prereq
-Pause
 Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 #############
+$Component_Dir = $SCDIR
 if ($Component -match 'SCVMM')
     {
     $DownloadUrls= (
@@ -1303,21 +1303,18 @@ if ($Component -match 'SCOM')
     Write-Verbose "Testing $SC_Version"
     if (!(test-path  "$SC_DIR\$FileName"))
         {
-        Write-Verbose "Trying Download of $Component_Dir"
+        Write-Verbose "Trying Download of $Filename"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$SC_DIR\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
-            $return = $False
-            }
-        else{
-            $return = $true
-            if ($unzip.IsPresent)
-                {
-                write-Warning "We are going to Extract $FileName, this may take a while"
-                Start-Process "$Destination\$FileName" -ArgumentList "/SP- /dir=$Destination\$Component_Dir /SILENT" -Wait
-                }
+            return $False
             }
         }
-        pause
+        if ($unzip.IsPresent)
+            {
+            write-Warning "We are going to Extract $FileName, this may take a while"
+            Start-Process "$SC_DIR\$FileName" -ArgumentList "/SP- /dir=$SC_DIR\$Component /SILENT" -Wait
+            $return = $true
+            }
 return $return
 }
