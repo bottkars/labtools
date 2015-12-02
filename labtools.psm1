@@ -1177,7 +1177,7 @@ param(
 )
 try
     {
-    Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction stop
+    $Destination = Join-Path $Destination "$SC_DIR\$SC_Version" -ErrorAction stop
     }
 catch
     {
@@ -1191,6 +1191,7 @@ catch
         break
         }
     }
+Pause
 Write-Warning "Entering $SC_Version Prereq Section for $Component"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 $Prereqdir = "prereq"
