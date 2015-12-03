@@ -1246,6 +1246,7 @@ switch ($SC_Version)
     if (!(test-path  "$WAIK_DIR"))
         {
         New-Item -ItemType Directory $WAIK_DIR -Force | Out-Null
+        }
     $FileName = Split-Path -Leaf -Path $adkurl
     if (!(test-path  "$WAIK_DIR\Installers"))
         {
@@ -1312,7 +1313,7 @@ if ($Component -match 'SCOM')
             write-warning "Error Downloading file $Url, Please check connectivity"
             return $False
             }
-        
+        Unblock-File -Path "$Product_Dir\$FileName"
         }
         if ($unzip.IsPresent) 
             {
