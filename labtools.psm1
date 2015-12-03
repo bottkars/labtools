@@ -1226,7 +1226,7 @@ switch ($SC_Version)
             {
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
-            $WAI_VER = "WAIK_8.1"
+            $WAIK_VER = "WAIK_8.1"
             }
         "SCTP4"
             {
@@ -1242,7 +1242,10 @@ switch ($SC_Version)
             }
     }# end switch
     Write-Verbose "Testing $WAIK_VER in $Destination"
-    $WAIK_DIR = Join-Path $Destination $WAI_VER
+    $WAIK_DIR = Join-Path $Destination $WAIK_VER
+    if (!(test-path  "$WAIK_DIR"))
+        {
+        New-Item -ItemType Directory $WAIK_DIR -Force | Out-Null
     $FileName = Split-Path -Leaf -Path $adkurl
     if (!(test-path  "$WAIK_DIR\Installers"))
         {
