@@ -1238,23 +1238,23 @@ switch ($SC_Version)
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
             $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
-            $WAI_VER = "WAIK_10"
+            $WAIK_VER = "WAIK_10"
             }
     }# end switch
     Write-Verbose "Testing $WAIK_VER in $Destination"
-    $WAIDIR = Join-Path $Destination $WAI_VER
+    $WAIK_DIR = Join-Path $Destination $WAI_VER
     $FileName = Split-Path -Leaf -Path $adkurl
-    if (!(test-path  "$WAIKDIR\Installers"))
+    if (!(test-path  "$WAIK_DIR\Installers"))
         {
         # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
         Write-Verbose "Trying Download of $WAIK_VER"
-        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$WAIKDIR\$FileName"))
+        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$WAIK_DIR\$FileName"))
             { 
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
             }
         Write-Warning "Getting WAIK, Could take a While"
-        Start-Process -FilePath "$WAIKDIR\$FileName" -ArgumentList "/quiet /layout $WAIKDIR\" -Wait
+        Start-Process -FilePath "$WAIK_DIR\$FileName" -ArgumentList "/quiet /layout $WAIK_DIR\" -Wait
         }
     } # end SCVMM
 if ($Component -match 'SCOM')
