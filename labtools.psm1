@@ -1451,6 +1451,13 @@ if ($Exchange2013)
             Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
             }
         }
+    Write-Verbose "Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
+    if (!(test-path  "$Product_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+        {
+        Write-Verbose "Extracting MAPICDO"
+        Start-Process -FilePath "$Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$Prereq_Dir /q" -Wait
+        }
+
 
     Switch ($e15_cu)
         {
