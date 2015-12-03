@@ -374,7 +374,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name IPv6PrefixLength -Value $Default.Config.IPV6PrefixLength
         $object | Add-Member -MemberType NoteProperty -Name Sourcedir -Value $Default.Config.Sourcedir
         $object | Add-Member -MemberType NoteProperty -Name SQLVer -Value $Default.config.sqlver
-        $object | Add-Member -MemberType NoteProperty -Name ex_cu -Value $Default.config.ex_cu
+        $object | Add-Member -MemberType NoteProperty -Name e15_cu -Value $Default.config.e15_cu
         $object | Add-Member -MemberType NoteProperty -Name e16_cu -Value $Default.config.e16_cu
         $object | Add-Member -MemberType NoteProperty -Name NMM_Ver -Value $Default.config.nmm_ver
         $object | Add-Member -MemberType NoteProperty -Name NW_Ver -Value $Default.config.nw_ver
@@ -449,7 +449,7 @@ process {
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
         $xmlcontent += ("<master>$($Defaults.Master)</master>")
         $xmlcontent += ("<sqlver>$($Defaults.SQLVER)</sqlver>")
-        $xmlcontent += ("<ex_cu>$($Defaults.ex_cu)</ex_cu>")
+        $xmlcontent += ("<e15_cu>$($Defaults.e15_cu)</e15_cu>")
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
         $xmlcontent += ("<vlanID>$($Defaults.vlanID)</vlanID>")
@@ -517,7 +517,8 @@ function New-LABdefaults
         $xmlcontent += ("<nw_ver></nw_ver>")
         $xmlcontent += ("<master></master>")
         $xmlcontent += ("<sqlver></sqlver>")
-        $xmlcontent += ("<ex_cu></ex_cu>")
+        $xmlcontent += ("<e15_cu></e15_cu>")
+        $xmlcontent += ("<e16_cu></e16_cu>")
         $xmlcontent += ("<vmnet></vmnet>")
         $xmlcontent += ("<vlanID></vlanID>")
         $xmlcontent += ("<BuildDomain></BuildDomain>")
@@ -1367,7 +1368,7 @@ $Prereq_Dir = Join-Path $Destination $Prereq
   #############
 if ($Exchange2016)
     {    
-    $ex_cu = $e16_cu
+    $e15_cu = $e16_cu
     $ex_version = "E2016"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
@@ -1414,7 +1415,7 @@ if ($Exchange2016)
     }
 if ($Exchange2013)
     {
-    $ex_cu = $e15_cu
+    $e15_cu = $e15_cu
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
@@ -1512,7 +1513,7 @@ if ($Exchange2013)
         }
         if ($unzip.IsPresent) 
             {
-            if ((Test-Path "$Product_Dir\$ex_version$EX_CU\Setup.exe") -and !$force.IsPresent)
+            if ((Test-Path "$Product_Dir\$ex_version$e15_cu\Setup.exe") -and !$force.IsPresent)
                 { 
                 Write-Warning "setup.exe already exists, overwrite with -force"
                 return $true
@@ -1520,7 +1521,7 @@ if ($Exchange2013)
             else
                 {
                 write-host "We are going to Extract $FileName, this may take a while"
-                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
+                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$e15_cu /passive" -Wait
                 $return = $true
                 }
             }
