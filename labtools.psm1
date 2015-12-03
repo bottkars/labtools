@@ -114,7 +114,6 @@ function Set-LABVlanID
     Write-Verbose "Setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
 <#
 .Synopsis
    Short description
@@ -894,6 +893,94 @@ end
         }
     }
 
+function update-LABfromGit
+{
+
+
+	param (
+            [string]$Repo,
+            [string]$RepoLocation,
+            [string]$branch,
+            [string]$latest_local_Git,
+            [string]$Destination,
+            [switch]$delete
+            )
+        $Isnew = $false
+        Write-Verbose "Using update-fromgit function for $repo"
+        $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
+        $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
+        try
+            {
+            $request = Invoke-WebRequest -UseBasicParsing -Uri $Uri -Method Head -ErrorAction Stop
+            }
+        Catch
+            {
+            Write-Warning "Error connecting to git"
+            if ($_.Exception.Response.StatusCode -match "Forbidden")
+                {
+                Write-Warning "Status inidicates that Connection Limit is exceeded"
+                }
+            exit
+            }
+        [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
+                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
+                if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
+                    {
+                    $Updatepath = "$Builddir\Update"
+					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
+					        {
+						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
+                            }
+                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    if ($delete.IsPresent)
+                        {
+                        Write-Verbose "Cleaning $Destination"
+                        Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
+                        }
+                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
+                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
+                    $Isnew = $true
+                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
+                    }
+                else 
+                    {
+                    Status "No update required for $repo on $branch, already newest version "                    
+                    }
+return $Isnew
+}
+
+function Receive-LABBitsFile
+{ 
+param ([string]$DownLoadUrl,
+        [string]$destination )
+$ReturnCode = $True
+if (!(Test-Path $Destination))
+    {
+        Try 
+        {
+        if (!(Test-Path (Split-Path $destination)))
+            {
+            New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
+            }
+        Write-verbose "Starting Download of $DownLoadUrl"
+        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err 
+                If ($err) {Throw ""} 
+
+        } 
+        Catch 
+        { 
+            $ReturnCode = $False 
+            Write-Warning " - An error occurred downloading `'$FileName`'" 
+            Write-Error $_ 
+        }
+    }
+    else
+    {
+    write-Warning "No download needed, file exists" 
+    }
+    return $ReturnCode 
+}
+
 function Receive-LABNetworker
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -1044,7 +1131,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
                 pause
                 }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -verbose -Defaultcredentials))
+            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -Defaultcredentials))
                 { 
                 write-warning "Error Downloading file $Url, 
                 $url might not exist.
@@ -1059,8 +1146,9 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         if ($unzip)
             {
             Write-Verbose $Zipfilename     
-            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir" -verbose
+            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
             }
+        
         }
     }
     else
@@ -1068,62 +1156,373 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
         break
         }
+    return $nwversion
 
     }
 
-function update-LABfromGit
+function Receive-LABSysCtrInstallers
 {
-
-
-	param (
-            [string]$Repo,
-            [string]$RepoLocation,
-            [string]$branch,
-            [string]$latest_local_Git,
-            [string]$Destination,
-            [switch]$delete
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('SC2012_R2','SCTP3','SCTP4')]$SC_Version,
+    [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM')]$Component,
+    [String]$Destination,
+    [String]$Product_Dir= "SysCtr",
+    [String]$Prereq = "prereq",
+    [switch]$unzip,
+    [switch]$force
+)
+    $Product_Dir = Join-Path $Destination "$Product_Dir\$SC_Version"
+    Write-Verbose "SCDIR : $Product_Dir"
+if (!(Test-Path $Product_Dir)
+)    {
+    Try
+        {
+        Write-Verbose "Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+    }
+$Prereq_Dir = Join-Path $Destination $Prereq
+Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
+#$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
+#############
+$Component_Dir = $Product_Dir
+if ($Component -match 'SCVMM')
+    {
+    $DownloadUrls= (
+            "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SqlCmdLnUtils.msi",
+            "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/sqlncli.msi"
             )
-        $Isnew = $false
-        Write-Verbose "Using update-fromgit function for $repo"
-        $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
-        $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
-        try
-            {
-            $request = Invoke-WebRequest -UseBasicParsing -Uri $Uri -Method Head -ErrorAction Stop
-            }
-        Catch
-            {
-            Write-Warning "Error connecting to git"
-            if ($_.Exception.Response.StatusCode -match "Forbidden")
-                {
-                Write-Warning "Status inidicates that Connection Limit is exceeded"
-                }
+    
+    Foreach ($URL in $DownloadUrls)
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    if (!(test-path  "$Prereq_Dir\$FileName"))
+        {
+        Write-Verbose "Trying Download"
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
             exit
             }
-        [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
-                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
-                if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
-                    {
-                    $Updatepath = "$Builddir\Update"
-					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
-					        {
-						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
-                            }
-                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
-                    if ($delete.IsPresent)
-                        {
-                        Write-Verbose "Cleaning $Destination"
-                        Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
-                        }
-                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
-                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
-                    $Isnew = $true
-                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
-                    }
-                else 
-                    {
-                    Status "No update required for $repo on $branch, already newest version "                    
-                    }
-return $Isnew
+        }
+    }
+
+switch ($SC_Version)
+    {
+        "SC2012_R2"
+            {
+            $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
+            $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
+            $WAI_VER = "WAIK_8.1"
+            }
+        "SCTP4"
+            {
+            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
+            $URL = "http://care.dlservice.microsoft.com/dl/download/7/0/A/70A7A007-ABCA-42E5-9C82-79CB98B7855E/SCTP4_SCVMM_EN.exe"
+            $WAIK_VER = "WAIK_10"
+            }
+        "SCTP3"
+            {
+            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
+            $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
+            $WAI_VER = "WAIK_10"
+            }
+    }# end switch
+    Write-Verbose "Testing $WAIK_VER in $Destination"
+    $WAIDIR = Join-Path $Destination $WAI_VER
+    $FileName = Split-Path -Leaf -Path $adkurl
+    if (!(test-path  "$WAIKDIR\Installers"))
+        {
+        # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
+        Write-Verbose "Trying Download of $WAIK_VER"
+        if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination  "$WAIKDIR\$FileName"))
+            { 
+            write-warning "Error Downloading file $adkurl, Please check connectivity"
+            exit
+            }
+        Write-Warning "Getting WAIK, Could take a While"
+        Start-Process -FilePath "$WAIKDIR\$FileName" -ArgumentList "/quiet /layout $WAIKDIR\" -Wait
+        }
+    } # end SCVMM
+if ($Component -match 'SCOM')
+    {
+    Write-Verbose "We are now going to Test $Component Prereqs"
+            $DownloadUrls= (
+            'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+            )
+    Foreach ($URL in $DownloadUrls)
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    if (!(test-path  "$Prereq_Dir\$FileName")) 
+        {
+        Write-Verbose "Trying Download"
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            $return = $False
+            break
+            }
+        }
+    }
+    switch ($SC_Version)
+        {
+        "SC2012_R2"
+            {
+            $SCOM_VER = "$($SC_Version)_$($Component)"
+            $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
+            }
+        
+        "SCTP3"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/B/0/7/B07BF90E-2CC8-4538-A7D2-83BB074C49F5/SCTP3_SCOM_EN.exe"
+            }
+
+        "SCTP4"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
+            }
+        }    
+}#end scom
+
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $SC_Version"
+    if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
+        {
+        Write-Verbose "Trying Download of $Filename"
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Product_Dir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            return $False
+            }
+        
+        }
+        if ($unzip.IsPresent) 
+            {
+            if ((Test-Path "$Product_Dir\$Component\Setup.exe") -and !$force.IsPresent)
+                { 
+                Write-Warning "setup.exe already exists, overwrite with -force"
+                return $true
+                }
+            else
+                {
+                write-host "We are going to Extract $FileName, this may take a while"
+                Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+                $return = $true
+                }
+            }
+return $return
 }
 
+function Receive-LABExchange
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+    [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
+    [Parameter(ParameterSetName = "E16", Mandatory = $false)]
+    [ValidateSet('final')]$e16_cu = 'final',
+    [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
+    [Parameter(ParameterSetName = "E15", Mandatory = $false)]
+    [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10')]$e15_cu,
+    [String]$Destination,
+    [String]$Product_Dir= "Exchange",
+    [String]$Prereq = "prereq",
+    [switch]$unzip,
+    [switch]$force
+)
+    $Product_Dir = Join-Path $Destination $Product_Dir
+    Write-Verbose "EXDIR : $Product_Dir"
+if (!(Test-Path $Product_Dir)
+)    {
+    Try
+        {
+        Write-Verbose "Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+    }
+$Prereq_Dir = Join-Path $Destination $Prereq
+
+  #############
+if ($Exchange2016)
+    {    
+    $ex_cu = $e16_cu
+    $ex_version = "E2016"
+    $Product_Dir = Join-Path $Product_Dir $ex_version
+    Write-Verbose "We are now going to Test $EX_Version Prereqs"
+    $DownloadUrls = (
+		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+                "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
+                )
+    if (Test-Path -Path "$Prereq_Dir")
+        {
+        Write-Verbose "$Prereq_Dir Found"
+        }
+        else
+        {
+        Write-Verbose "Creating Sourcedir for Prereqs"
+        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+        }
+
+
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$Prereq_Dir\$FileName"))
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+            else
+                {
+                Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
+                }
+        }
+
+    switch ($e16_cu)
+        {
+        'final'
+            {
+            $URL = "http://download.microsoft.com/download/3/9/B/39B8DDA8-509C-4B9E-BCE9-4CD8CDC9A7DA/Exchange2016-x64.exe"
+            }
+
+        }
+    }
+if ($Exchange2013)
+    {
+    $ex_cu = $e15_cu
+    $ex_version = "E2013"
+    $Product_Dir = Join-Path $Product_Dir $ex_version
+    Write-Verbose "We are now going to Test $EX_Version Prereqs"
+    $DownloadUrls = (
+		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+                "http://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe",
+                "http://download.microsoft.com/download/0/A/2/0A28BBFA-CBFA-4C03-A739-30CCA5E21659/FilterPack64bit.exe",
+                "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
+                "http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE"
+                )
+    if (Test-Path -Path "$Prereq_Dir")
+        {
+        Write-Verbose "$Prereq_Dir Found"
+        }
+        else
+        {
+        Write-Verbose "Creating Sourcedir for $EX_Version Prereqs"
+        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+        }
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$Prereq_Dir\$FileName"))
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
+            }
+        }
+
+    Switch ($e15_cu)
+        {
+        "CU1"
+            {
+            $URL = "http://download.microsoft.com/download/5/4/7/547784D7-2954-4BEE-AFD6-B4D11232DF82/Exchange-x64.exe"
+            }
+        "CU2"
+            {
+            $URL = "http://download.microsoft.com/download/A/F/C/AFC84463-E1CB-4C55-B012-AEC5927EEAA8/Exchange2013-KB2859928-x64-v2.exe"
+            }
+        "CU3"
+            {
+            $URL = "http://download.microsoft.com/download/3/2/2/3226085F-1B33-4899-8DEA-26E5E60D77BD/Exchange2013-x64-cu3.exe"
+            }
+        "SP1"
+            {
+            $URL = "http://download.microsoft.com/download/8/4/9/8494E4ED-8FA8-40CA-9E89-B9317995AD7E/Exchange2013-x64-SP1.exe"
+            }
+        "CU5"
+            {
+            $URL = "http://download.microsoft.com/download/F/E/5/FE5F57FF-A897-4A5B-8F47-00341B7BA8EE/Exchange2013-x64-cu5.exe"
+            }
+        "CU6"
+            {
+            $URL = "http://download.microsoft.com/download/C/D/0/CD08800B-0DF9-4A9F-9870-5A4CC6D8A261/Exchange2013-x64-cu6.exe"
+            }
+        "CU7"
+            {
+            $URL = "http://download.microsoft.com/download/F/1/8/F1855E0B-1B90-4E5B-B64E-B5B564D67637/Exchange2013-x64-cu7.exe"
+            }
+        "CU8"
+            {
+            $url = "http://download.microsoft.com/download/0/5/2/05265E88-F7E2-4386-8811-9071BAA1FD64/Exchange2013-x64-cu8.exe"
+            }
+        "CU9"
+            {
+            $url = "http://download.microsoft.com/download/C/6/8/C6899C99-F933-4181-9692-17A5BB7F1A4B/Exchange2013-x64-cu9.exe"
+            }
+        "CU10"
+            {
+            $url = "https://download.microsoft.com/download/1/D/1/1D15B640-E2BB-4184-BFC5-83BC26ADD689/Exchange2013-x64-cu10.exe"
+            }
+        }
+    }        
+        $FileName = Split-Path -Leaf -Path $Url
+        $Downloadfile = Join-Path $Product_Dir $FileName
+        if (!(test-path  $Downloadfile))
+            {
+            Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Verbose "Press any Key to continue"
+                pause
+                }
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+            }
+        }
+        if ($unzip.IsPresent) 
+            {
+            if ((Test-Path "$Product_Dir\$ex_version$EX_CU\Setup.exe") -and !$force.IsPresent)
+                { 
+                Write-Warning "setup.exe already exists, overwrite with -force"
+                return $true
+                }
+            else
+                {
+                write-host "We are going to Extract $FileName, this may take a while"
+                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
+                $return = $true
+                }
+            }
+    return $return
+} #end else
