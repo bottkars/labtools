@@ -1170,14 +1170,24 @@ function Receive-LABSysCtrInstallers
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('SC2012_R2','SCTP3','SCTP4')]$SC_Version,
-    [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM')]$Component,
-    [String]$Destination,
+    [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
+    [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "SysCtr",
     [String]$Prereq = "prereq",
     [switch]$unzip,
     [switch]$force
 )
-    $Product_Dir = Join-Path $Destination "$Product_Dir\$SC_Version"
+    Try
+        {
+        $Product_Dir = Join-Path $Destination "$Product_Dir\$SC_Version"
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }    
+    
+    
     Write-Verbose "SCDIR : $Product_Dir"
 if (!(Test-Path $Product_Dir)
 )    {
@@ -1192,7 +1202,14 @@ if (!(Test-Path $Product_Dir)
         break
         }
     }
-$Prereq_Dir = Join-Path $Destination $Prereq
+try 
+     {
+     $Prereq_Dir = Join-Path $Destination $Prereq -ErrorAction stop
+     }
+catch
+     {
+     Write-Warning "error finding Destination Directory !"
+     }
 Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 #############
@@ -1302,7 +1319,47 @@ if ($Component -match 'SCOM')
             }
         }    
 }#end scom
+if ($Component -match 'SCDPM')
+    {
+    <#Write-Verbose "We are now going to Test $Component Prereqs"
+         #   $DownloadUrls= (
+          #  'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+            )
+    Foreach ($URL in $DownloadUrls)
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    if (!(test-path  "$Prereq_Dir\$FileName")) 
+        {
+        Write-Verbose "Trying Download"
+        if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            $return = $False
+            break
+            }
+        }
+    }#>
+    switch ($SC_Version)
+        {
+        "SC2012_R2"
+            {
+            $SCOM_VER = "$($SC_Version)_$($Component)"
+            $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCDPM_EVAL.zip"
+            }
+        
+        "SCTP3"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/B/B/3/BB3A1E87-28F2-4362-9B1E-24CC3992EF3B/SCTP3_SCSM_EN.exe"
+            }
 
+        "SCTP4"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/A/D/E/ADECA4CB-2E75-48AF-8FE8-A892531C7AD7/SCTP4_SCDPM_EN.exe"
+            }
+        }    
+}#end scom
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $SC_Version"
     if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
