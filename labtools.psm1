@@ -1124,7 +1124,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         $Zipfilename = Join-Path $Destination $FileName
         Write-Verbose $Zipfilename
         $Destinationdir = Join-Path $Destination $nw_ver
-        if (!(test-path  $Zipfilename ) -or $force.IsPresent)
+        if (!(test-path $Zipfilename ) -or $force.IsPresent)
             {
             Write-Verbose "$FileName not found, trying to download from $url"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
