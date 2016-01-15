@@ -1122,6 +1122,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             # $FileName = Split-Path -Leaf -Path $Url
         $FileName = "$($nw_ver)_$arch.$extension"
         $Zipfilename = Join-Path $Destination $FileName
+        Write-Verbose $Zipfilename
         $Destinationdir = Join-Path $Destination $nw_ver
         if (!(test-path  $Zipfilename ) -or $force.IsPresent)
             {
