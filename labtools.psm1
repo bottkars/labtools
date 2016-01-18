@@ -1688,7 +1688,7 @@ if (!(Test-Path $Destination_path))
                     exit
                     }
                 }
-            }#end if
+            }
         Else
             {
             Write-Warning "Found $Destination_File, using this one unless -force is specified ! "
