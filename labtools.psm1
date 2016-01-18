@@ -1583,7 +1583,7 @@ if ($Exchange2013)
         if ($unzip.IsPresent) 
             {
             $EX_CU_PATH = Join-Path $Product_Dir "$ex_version$ex_cu"
-            if ((Test-Path "$EX_CU_PATH\Setup.exe") -and !($force.IsPresent))
+            if (Test-Path "$EX_CU_PATH\Setup.exe")# -and !($force.IsPresent))
                 { 
                 Write-Warning "setup.exe already exists, overwrite with -force"
                 return $true
