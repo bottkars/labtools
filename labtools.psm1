@@ -1514,7 +1514,7 @@ if ($Exchange2013)
             }
         }
     Write-Verbose "Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
-    if (!(test-path  "$Product_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+    if (!(test-path  "$Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
         {
         Write-Verbose "Extracting MAPICDO"
         Start-Process -FilePath "$Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$Prereq_Dir /q" -Wait
@@ -1582,7 +1582,8 @@ if ($Exchange2013)
         }
         if ($unzip.IsPresent) 
             {
-            if ((Test-Path "$Product_Dir\$ex_version$ex_cu\Setup.exe") -and !$force.IsPresent)
+            $EX_CU_PATH = Join-Path $Product_Dir "$ex_version$ex_cu"
+            if ((Test-Path "$EX_CU_PATH\Setup.exe") -and !($force.IsPresent))
                 { 
                 Write-Warning "setup.exe already exists, overwrite with -force"
                 return $true
