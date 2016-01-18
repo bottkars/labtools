@@ -1430,7 +1430,7 @@ $Prereq_Dir = Join-Path $Destination $Prereq
   #############
 if ($Exchange2016)
     {    
-    $e15_cu = $e16_cu
+    $ex_cu = $e16_cu
     $ex_version = "E2016"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
@@ -1477,7 +1477,7 @@ if ($Exchange2016)
     }
 if ($Exchange2013)
     {
-    $e15_cu = $e15_cu
+    $ex_cu = $e15_cu
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
@@ -1521,7 +1521,7 @@ if ($Exchange2013)
         }
 
 
-    Switch ($e15_cu)
+    Switch ($ex_cu)
         {
         "CU1"
             {
@@ -1582,7 +1582,7 @@ if ($Exchange2013)
         }
         if ($unzip.IsPresent) 
             {
-            if ((Test-Path "$Product_Dir\$ex_version$e15_cu\Setup.exe") -and !$force.IsPresent)
+            if ((Test-Path "$Product_Dir\$ex_version$ex_cu\Setup.exe") -and !$force.IsPresent)
                 { 
                 Write-Warning "setup.exe already exists, overwrite with -force"
                 return $true
@@ -1590,7 +1590,7 @@ if ($Exchange2013)
             else
                 {
                 write-host "We are going to Extract $FileName, this may take a while"
-                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$e15_cu /passive" -Wait
+                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
             }
