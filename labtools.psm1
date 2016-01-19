@@ -1698,6 +1698,6 @@ if (!(Test-Path $Destination_path))
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
-            Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path\$arch"
+            Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
             }
 } #end ScaleIO
