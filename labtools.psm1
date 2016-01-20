@@ -894,7 +894,7 @@ end
         }
     }
 
-function update-LABfromGit
+function Update-LABfromGit
 {
 
 
