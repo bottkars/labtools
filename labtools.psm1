@@ -1631,7 +1631,8 @@ param(
 #    'solaris_am64',
 #    'solaris_x86',
     'windows',
-    'vmware'
+    'vmware',
+    'all'
     )]
     [string]$arch="win_x64",
     [switch]$unzip,
@@ -1639,6 +1640,10 @@ param(
 
 )
 #requires -version 3.0
+if ($arch -eq 'all')
+    {
+    $arch = @('vmware','windows','linux')
+    }
 $Product = 'ScaleIO'
 $Destination_path = Join-Path $Destination $Product
 if (!(Test-Path $Destination_path))
@@ -1656,12 +1661,14 @@ if (!(Test-Path $Destination_path))
     write-host -ForegroundColor Magenta  "we will check for the latest ScaleIO version from EMC.com"
     $Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
     $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
-    $DownloadLinks = $request.Links | where href -match $Arch
+    foreach ($Myarch in $arch)
+    {
+    $DownloadLinks = $request.Links | where href -match $Myarch
     foreach ($Link in $DownloadLinks)
         {
         $Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
-        Write-Host -ForegroundColor Magenta "We found $FileName for $Arch on EMC Website"
+        Write-Host -ForegroundColor Magenta "We found $FileName for $MyArch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
         if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             {
@@ -1701,6 +1708,7 @@ if (!(Test-Path $Destination_path))
             {
             Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
             }
+        }
 } #end ScaleIO
 
 function Receive-LABSQL
