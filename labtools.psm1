@@ -1411,9 +1411,9 @@ param
     [switch]$force
 )
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Verbose "EXDIR : $Product_Dir"
-if (!(Test-Path $Product_Dir)
-)    {
+    Write-Verbose "Destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
     Try
         {
         Write-Verbose "Trying to create $Product_Dir"
@@ -1424,8 +1424,9 @@ if (!(Test-Path $Product_Dir)
         Write-Warning "Could not create Destination Directory $Product_Dir"
         break
         }
-    }
-$Prereq_Dir = Join-Path $Destination $Prereq
+}
+    $Prereq_Dir = Join-Path $Destination $Prereq
+    Write-Verbose "Prereq = $Prereq_Dir"
 
   #############
 if ($Exchange2016)
@@ -1701,3 +1702,282 @@ if (!(Test-Path $Destination_path))
             Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
             }
 } #end ScaleIO
+
+function receive-labsql
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+    param(
+    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014')]$SQLVER,
+    [String]$Destination,
+    [String]$Product_Dir= "SQL",
+    [String]$Prereq = "prereq",
+    [switch]$extract,
+    [switch]$force
+    )
+    $SQL2012_inst = "http://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/x64/SQLFULL_x64_ENU_Install.exe"
+    $SQL2012_lang = "http://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/x64/SQLFULL_x64_ENU_Lang.box"
+    $SQL2012_core = "http://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/x64/SQLFULL_x64_ENU_Core.box"
+    $SQL2012_box = "http://download.microsoft.com/download/3/B/D/3BD9DD65-D3E3-43C3-BB50-0ED850A82AD5/SQLServer2012SP1-FullSlipstream-x64-ENU.box"
+    $SQL2012SP1SLIP_INST = "http://download.microsoft.com/download/3/B/D/3BD9DD65-D3E3-43C3-BB50-0ED850A82AD5/SQLServer2012SP1-FullSlipstream-x64-ENU.exe"
+    $SQL2012SP1SLIP_box= "http://download.microsoft.com/download/3/B/D/3BD9DD65-D3E3-43C3-BB50-0ED850A82AD5/SQLServer2012SP1-FullSlipstream-x64-ENU.box"
+    $SQL2012_SP1 = "http://download.microsoft.com/download/3/B/D/3BD9DD65-D3E3-43C3-BB50-0ED850A82AD5/SQLServer2012SP1-KB2674319-x64-ENU.exe"
+    $SQL2012_SP2 = "http://download.microsoft.com/download/D/F/7/DF7BEBF9-AA4D-4CFE-B5AE-5C9129D37EFD/SQLServer2012SP2-KB2958429-x64-ENU.exe"
+    $SQL2014_ZIP = "http://care.dlservice.microsoft.com/dl/download/evalx/sqlserver2014/x64/SQLServer2014_x64_enus.zip"
+    $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
+    $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
+    $Product_Dir = Join-Path $Destination $Product_Dir
+    Write-Verbose "Destination: $Product_Dir"
+    if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Verbose "Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+    }
+    $Prereq_Dir = Join-Path $Destination $Prereq
+    Write-Verbose "Prereq = $Prereq_Dir"
+    Write-Verbose "We are now going to Test $SQLVER"
+    Switch ($SQLVER)
+        {
+            "SQL2012"
+            {
+            $SQL_BASEVER = $SQLVER
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            if (!(Test-Path "$SQL_BASEDir\SQLFULL_x64_ENU\SETUP.EXE"))
+                {
+                foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                If ($Extract.ispresent)
+                    {
+                    Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                    $FileName = Split-Path -Leaf $SQL2012_inst
+                    Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
+                    }    
+                }
+
+            }
+            "SQL2012SP1"
+            {
+            #Getting SP1
+            $url = $SQL2012_SP1
+            $FileName = Split-Path -Leaf -Path $Url
+            $SQL_BASEVER = "SQL2012"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
+            $SQL_SPSETUP = Join-Path "$SQL_BASEDir" "$FileName"
+            Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
+                if (!(test-path  "$SQL_SPSETUP"))
+                    {
+                    Write-Verbose "Trying Download"
+                    if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $SQL_SPSETUP))
+                        { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File $SQL_SPSETUP
+                        }
+            #first check for 2012
+            if (!(Test-Path "$SQL_BASEDir\SQLFULL_x64_ENU\SETUP.EXE"))
+                {
+                foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                    If ($Extract.ispresent)
+                        {
+                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        $FileName = Split-Path -Leaf $SQL2012_inst
+                        Start-Process $Sourcedir\$FileName -ArgumentList "/X /q" -Wait
+                        }    
+                }
+
+            # end 2012
+
+            }
+            "SQL2012SP2"
+            {
+            #### Getting Sp2
+            $url = $SQL2012_SP2
+            $FileName = Split-Path -Leaf -Path $Url
+            $SQL_BASEVER = "SQL2012"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
+            $SQL_SPSETUP = Join-Path "$SQL_BASEDir" "$FileName"
+            Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
+                if (!(test-path  "$SQL_SPSETUP"))
+                    {
+                    Write-Verbose "Trying Download"
+                    if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $SQL_SPSETUP))
+                        { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File $SQL_SPSETUP                        
+                        }
+            #first check for 2012
+            if (!(Test-Path "$SQL_BASEDir\SQLFULL_x64_ENU\SETUP.EXE"))
+                {
+                foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                If ($Extract.ispresent)
+                        {
+                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        $FileName = Split-Path -Leaf $SQL2012_inst
+                        Start-Process $Sourcedir\$FileName -ArgumentList "/X /q" -Wait
+                        }    
+                }
+
+            # end 2012
+
+
+            }
+            "SQL2012SP1Slip"
+            {
+             #### Getting SP1 Slip
+            $SQL_BASEVER = "SQL2012"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
+            $SQL_SPSETUP = Join-Path "$SQL_BASEDir" "$FileName"
+            if (!(Test-Path "$SQL_VER_DIR\setup.exe"))
+                {
+                foreach ($url in ($SQL2012SP1SLIP_box,$SQL2012SP1SLIP_INST))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $SQL_BASEDIR"
+                    if (!(test-path  "$SQL_BASEDIR\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDIR\$FileName"))
+                            {  
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                       Unblock-File "$SQL_BASEDir\$FileName"
+                       }
+                    }
+                    If ($Extract.ispresent)
+                        {
+                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Start-Process $SQL_BASEDIR\$FileName -ArgumentList "/X:$SQL_VER_DIR /q" -Wait
+                        }
+                    }
+                }
+
+            "SQL2014"
+            {
+            $SQL_BASEVER = $SQLVER
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+
+            if (!(Test-Path $SQL_BASEDIR\$SQLVER\setup.exe))
+            {
+            foreach ($url in ($SQL2014_ZIP))
+                {
+                $FileName = Split-Path -Leaf -Path $Url
+                Write-Verbose "Testing $FileName in $SQL_BASEDIR"
+                ### Test if the 2014 ENU´s are there
+                if (!(test-path  "$SQL_BASEDir\SQLServer2014-x64-ENU.exe"))
+                    {
+                    ## Test if we already have the ZIP
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            { 
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                    }
+                 Expand-LABZip -zipfilename $SQL_BASEDir\$FileName -destination $SQL_BASEDir -Folder ENUS
+                 # Remove-Item $SQL_BASEDir\$FileName 
+                 # Move-Item $Sourcedir\enus\* $Sourcedir\
+                 # Remove-Item $Sourcedir\enus
+                 }
+                # New-Item -ItemType Directory $Sourcedir\$SQLVER
+                if ($extract.IsPresent)
+                    {
+                    Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                    Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
+                    } 
+                }
+            
+            }
+            }
+            "SQL2014SP1slip"
+            {
+            $SQL_BASEVER = "SQL2014"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe"))
+                {
+                foreach ($url in ($SQL2014SP1SLIP_box,$SQL2014SP1SLIP_INST))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $Sourcedir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            {  
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit 
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                    if ($extract.ispresent)
+                        {
+                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
+                        }
+                }
+            }
+          } #end switch
+    return $True
+    }
