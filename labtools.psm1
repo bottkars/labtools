@@ -1786,7 +1786,7 @@ function Receive-LABSQL
             $SQL_BASEVER = "SQL2012"
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
-            $SQL_SPSETUP = Join-Path "$SQL_BASEDir" "$FileName"
+            $SQL_SPSETUP = Join-Path $SQL_VER_DIR $FileName
             Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
                 if (!(test-path  "$SQL_SPSETUP"))
                     {
@@ -1835,7 +1835,7 @@ function Receive-LABSQL
             $SQL_BASEVER = "SQL2012"
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
-            $SQL_SPSETUP = Join-Path "$SQL_BASEDir" "$FileName"
+            $SQL_SPSETUP = Join-Path $SQL_VER_DIR $FileName
             Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
                 if (!(test-path  "$SQL_SPSETUP"))
                     {
