@@ -1979,5 +1979,6 @@ function Receive-LABSQL
                 }
             }
           } #end switch
+    Write-Host "$SQLVER can be foun in $SQL_BASEDir"
     return $True
     }
