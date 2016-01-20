@@ -1642,7 +1642,7 @@ param(
 #requires -version 3.0
 if ($arch -eq 'all')
     {
-    $arch = @('vmware','windows','linux')
+    $myarch = @('vmware','windows','linux')
     }
 $Product = 'ScaleIO'
 $Destination_path = Join-Path $Destination $Product
@@ -1661,14 +1661,14 @@ if (!(Test-Path $Destination_path))
     write-host -ForegroundColor Magenta  "we will check for the latest ScaleIO version from EMC.com"
     $Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
     $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
-    foreach ($Myarch in $arch)
+    foreach ($arch in $MyArch)
     {
-    $DownloadLinks = $request.Links | where href -match $Myarch
+    $DownloadLinks = $request.Links | where href -match $arch
     foreach ($Link in $DownloadLinks)
         {
         $Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
-        Write-Host -ForegroundColor Magenta "We found $FileName for $MyArch on EMC Website"
+        Write-Host -ForegroundColor Magenta "We found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
         if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             {
