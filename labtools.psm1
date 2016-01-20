@@ -1703,7 +1703,7 @@ if (!(Test-Path $Destination_path))
             }
 } #end ScaleIO
 
-function receive-labsql
+function Receive-LABSQL
 {
 [CmdletBinding(DefaultParametersetName = "1",
     SupportsShouldProcess=$true,
