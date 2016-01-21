@@ -1877,7 +1877,7 @@ function Receive-LABSQL
                         {
                         Write-Warning "Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
-                        Start-Process $Sourcedir\$FileName -ArgumentList "/X /q" -Wait
+                        Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
                 }
 
@@ -1967,7 +1967,7 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2014SP1SLIP_box,$SQL2014SP1SLIP_INST))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $Sourcedir"
+                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
                         Write-Verbose "Trying Download"
