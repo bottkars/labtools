@@ -1828,7 +1828,7 @@ function Receive-LABSQL
                         {
                         Write-Warning "Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
-                        Start-Process $Sourcedir\$FileName -ArgumentList "/X /q" -Wait
+                        Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
                 }
 
