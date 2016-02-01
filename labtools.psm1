@@ -1630,8 +1630,8 @@ param(
 #    'solaris_64',
 #    'solaris_am64',
 #    'solaris_x86',
-    'windows',
-    'vmware',
+    'Windows',
+    'VMware',
     'all'
     )]
     [string]$arch="win_x64",
@@ -1642,14 +1642,14 @@ param(
 #requires -version 3.0
 if ($arch -eq 'all')
     {
-    $myarch = @('vmware','windows','linux')
+    $myarch = @('VMware','Windows','Linux')
     }
 else
     {
     $myarch = @($arch)
     }
 $Product = 'ScaleIO'
-$Destination_path = Join-Path $Destination $Product
+$Destination_path = Join-Path $Destination "$Product"
 if (!(Test-Path $Destination_path))
     {
     Try
@@ -1667,6 +1667,7 @@ if (!(Test-Path $Destination_path))
     $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
     foreach ($arch in $MyArch)
     {
+    $Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
     $DownloadLinks = $request.Links | where href -match $arch
     foreach ($Link in $DownloadLinks)
         {
@@ -1710,7 +1711,7 @@ if (!(Test-Path $Destination_path))
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
-            Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
+            Expand-LABZip -zipfilename "$Destination_File" -destination "$Extract_Path"
             }
         }
 } #end ScaleIO
