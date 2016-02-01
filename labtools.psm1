@@ -1644,6 +1644,10 @@ if ($arch -eq 'all')
     {
     $myarch = @('vmware','windows','linux')
     }
+else
+    {
+    $myarch = @($arch)
+    }
 $Product = 'ScaleIO'
 $Destination_path = Join-Path $Destination $Product
 if (!(Test-Path $Destination_path))
