@@ -340,6 +340,43 @@ function Set-LABSources
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+
+
+
+function Get-LABSIOConfig
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABDefaults")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\scaleioenv.xml"
+    )
+begin {
+    }
+process 
+{
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Warning "Defaults does not exist. please create with New-LABdefaults or set any parameter with set-LABxxx"
+    }
+    else
+        {
+
+        Write-Verbose "Loading defaults from $Defaultsfile"
+        [xml]$Default = Get-Content -Path $Defaultsfile
+        $object = New-Object psobject
+	    $object | Add-Member -MemberType NoteProperty -Name mdm_ipa -Value $Default.scaleio.sio_mdm_ipa
+        $object | Add-Member -MemberType NoteProperty -Name mdm_ipb -Value $Default.scaleio.sio_mdm_ipb
+        $object | Add-Member -MemberType NoteProperty -Name gateway_ip -value  $Default.scaleio.sio_gateway_ip
+        $object | Add-Member -MemberType NoteProperty -Name system_name -Value $Default.scaleio.sio_system_name
+        $object | Add-Member -MemberType NoteProperty -Name pool_name -Value $Default.scaleio.sio_pool_name
+        $object | Add-Member -MemberType NoteProperty -Name pd_name -Value $Default.scaleio.sio_pd_name
+        Write-Output $object
+        }
+    }
+end {
+    }
+}
+
+
 function Get-LABDefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABDefaults")]
@@ -502,6 +539,36 @@ process {
         }
 end {}
 }
+
+
+
+function Set-LABSIOConfig   
+{
+    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#set-labsioconfig")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile=".\scaleioenv.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][ipaddress]$mdm_ipa,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][ipaddress]$mdm_ipb,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][ipaddress]$gateway_ip,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$system_name,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pool_name,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pd_name
+    )
+        Write-Verbose "Saving defaults to $Defaultsfile"
+        #$xmlcontent =@()
+        $xmlcontent = "<scaleio>
+<sio_mdm_ipa>$mdm_ipa</sio_mdm_ipa>
+<sio_mdm_ipb>$mdm_ipb</sio_mdm_ipb>
+<sio_gateway_ip>$gateway_ip</sio_gateway_ip>
+<sio_system_name>$system_name</sio_system_name>
+<sio_pool_name>$pool_name</sio_pool_name>
+<sio_pd_name>$pd_name</sio_pd_name>
+</scaleio>
+"
+     $xmlcontent | Set-Content $defaultsfile
+     }
+
+
 
 function New-LABdefaults   
 {
