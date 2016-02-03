@@ -1757,7 +1757,7 @@ if (!(Test-Path $Destination_path))
                 "0"
                     {
                     Write-Verbose "$FileName not found, trying Download"
-                    Get-LABHttpFile -SourceURL $URL -TarGetFile "$Destination_File"
+                    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
                     $Downloadok = $true
                     }
                 "1"
