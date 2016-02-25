@@ -1783,6 +1783,69 @@ if (!(Test-Path $Destination_path))
         }
 } #end ScaleIO
 
+
+function Receive-LABOpenWRT
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    <#
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet('')]
+    $sio_ver,
+    #>
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    '15_5'
+    )]
+    [string]$ver="15_5",
+    [switch]$unzip
+    #[switch]$force
+
+)
+#requires -version 3.0
+$Product = 'OpenWRT'
+$Destination_path = $Destination 
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest OpenWRT version from bintray"
+$url = "https://bintray.com/artifact/download/bottkars/generic/OpenWRT_$($ver).7z"
+$Filename = Split-Path -Leaf $url
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    Write-Verbose "$FileName not found, trying Download"
+    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+    $Downloadok = $true
+    }
+Else
+    {
+    Write-Warning "Found $Destination_File"
+    }
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Expand-LAB7Zip "$Destination_File"
+    get-vmx "Openwrt_$ver"
+    }
+} #end OpenWRT
+
+
+
+
 function Receive-LABSQL
 {
 [CmdletBinding(DefaultParametersetName = "1",
