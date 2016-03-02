@@ -79,6 +79,33 @@ function Set-LABDNS1
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABDNS
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#SET-LABDNS1")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $False,Position = 1)][system.net.ipaddress]$DNS1,
+    [Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][system.net.ipaddress]$DNS2
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Warning "Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    if ($DNS1)
+        {
+        $Defaults.DNS1 = $DNS1
+        }
+    if ($DNS2)
+        {
+        $Defaults.DNS2 = $DNS2
+        }
+    Write-Verbose "Setting DNS"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 function Set-LABvmnet
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABvmnet")]
@@ -295,8 +322,8 @@ function Set-LABBuilddomain
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.builddomain = $builddomain
-    Write-Verbose "Setting builddomain $builddomain"
+    $Defaults.builddomain = $builddomain.ToLower()
+    Write-Verbose "Setting builddomain $($builddomain.ToLower())"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -405,6 +432,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name vlanID -Value $Default.config.vlanID
         $object | Add-Member -MemberType NoteProperty -Name DefaultGateway -Value $Default.config.DefaultGateway
         $object | Add-Member -MemberType NoteProperty -Name DNS1 -Value $Default.config.DNS1
+        $object | Add-Member -MemberType NoteProperty -Name DNS2 -Value $Default.config.DNS2
         $object | Add-Member -MemberType NoteProperty -Name Gateway -Value $Default.config.Gateway
         $object | Add-Member -MemberType NoteProperty -Name AddressFamily -Value $Default.config.AddressFamily
         $object | Add-Member -MemberType NoteProperty -Name IPV6Prefix -Value $Default.Config.IPV6Prefix
@@ -498,6 +526,7 @@ process {
         $xmlcontent += ("<Gateway>$($Defaults.Gateway)</Gateway>")
         $xmlcontent += ("<DefaultGateway>$($Defaults.DefaultGateway)</DefaultGateway>")
         $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
+        $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
         $xmlcontent += ("<Sourcedir>$($Defaults.Sourcedir)</Sourcedir>")
         $xmlcontent += ("<ScaleIOVer>$($Defaults.ScaleIOVer)</ScaleIOVer>")
         $xmlcontent += ("<Masterpath>$($Defaults.Masterpath)</Masterpath>")
@@ -596,6 +625,7 @@ function New-LABdefaults
         $xmlcontent += ("<Gateway></Gateway>")
         $xmlcontent += ("<DefaultGateway></DefaultGateway>")
         $xmlcontent += ("<DNS1></DNS1>")
+        $xmlcontent += ("<DNS2></DNS2>")
         $xmlcontent += ("<Sourcedir></Sourcedir>")
         $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
         $xmlcontent += ("<Masterpath></Masterpath>")
