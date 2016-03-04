@@ -1470,7 +1470,7 @@ param
     [ValidateSet('final')]$e16_cu = 'final',
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10')]$e15_cu,
+    [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11')]$e15_cu,
     [String]$Destination,
     [String]$Product_Dir= "Exchange",
     [String]$Prereq = "prereq",
@@ -1630,6 +1630,11 @@ if ($Exchange2013)
         "CU10"
             {
             $url = "https://download.microsoft.com/download/1/D/1/1D15B640-E2BB-4184-BFC5-83BC26ADD689/Exchange2013-x64-cu10.exe"
+            }
+            }
+        "CU11"
+            {
+            $url = "https://download.microsoft.com/download/A/A/B/AAB18934-BC8F-429D-8912-6A98CBC96B07/Exchange2013-x64-cu11.exe"
             }
         }
     }        
