@@ -1259,6 +1259,123 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
 
     }
 
+function Receive-LABnmm
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+    [ValidateSet('nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004',
+    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821')]
+    $nmm_ver,
+    [String]$Destination,
+    [switch]$unzip,
+    [switch]$force
+    )
+$nmm_scvmm_ver = $nmm_ver -replace "nmm","scvmm"
+if (!(Test-Path $Destination))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+Write-Warning "Receive Request for $NMM_ver in $Destination"
+
+#####
+        $URLS = ""
+        # if ($nmm_ver -notin ('nmm822','nmm821','nmm82','nmm90.DA','nmm9001') -and 
+        if ($nmm_ver -gt 'nmm_82')
+            {
+            $nmmdotver = $nmm_ver -replace "nmm",""
+            $nmmdotver = $nmmdotver.insert(1,'.')
+            $nmmdotver = $nmmdotver.insert(3,'.')
+            $nmmdotver = $nmmdotver.insert(5,'.')
+            [System.Version]$nmmversion = $nmmdotver
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Verbose "Requested Networker Version is:"
+                $nmmversion
+                }
+            Write-Verbose "NMM Dot Ver $nmmdotver"
+            $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
+            switch ($nmm_family)
+                {
+                "900"
+                    {
+                    $nmm_zip = "nmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
+                    $SCVMM_zip = "scvmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
+
+                    }
+                default
+                    {
+                    $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+                    $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+                    }
+                }
+            Write-Verbose "SVCMM Zip Version : $SCVMM_zip"
+            Write-Verbose "NMM Zip Version : $nmm_zip"
+            $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+            }
+
+        if ($urls)
+            {
+            foreach ($url in $urls)
+                {
+                Write-Verbose $url
+                $FileName = Split-Path -Leaf -Path $Url
+                if ($FileName -match "nmm")
+                    {
+                    $Zipfilename = "$nmm_ver.zip"
+                    }
+                if ($FileName -match "scvmm")
+                    {
+                    $Zipfilename = "$NMM_scvmm_ver.zip"
+                    }
+                $Zipfile = Join-Path $Destination $Zipfilename
+                Write-Verbose $Zipfile
+                if (!(test-path  $Zipfile ) -or $force.IsPresent)
+                    {
+                    Write-Verbose "$FileName not found, trying to download from $url"
+                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                        {
+                        Write-Verbose "Press any Key to start Download"
+                        pause
+                        }
+
+                if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -verbose -Defaultcredentials))
+                    { 
+                    write-warning "Error Downloading file $Url, 
+                    $url might not exist.
+                    Please check connectivity or download manually"
+                    break
+                    }
+            }
+                else
+                    {
+                    Write-Warning "Networker NMM $nmm_ver already on $Destination, try -force to overwrite"
+                    }
+                $Destinationdir =  "$($Zipfile.replace(".zip"," "))"
+                Write-Verbose $Destinationdir
+                if ($unzip)
+                    {
+                    Write-Verbose $Zipfilename     
+                    Expand-LABZip -zipfilename "$Zipfile" -destination "$Destinationdir" -verbose
+                    }
+                }
+            }
+
+}
+
 function Receive-LABSysCtrInstallers
 {
 [CmdletBinding(DefaultParametersetName = "1",
