@@ -1352,7 +1352,7 @@ Write-Warning "Receive Request for $NMM_ver in $Destination"
                         pause
                         }
 
-                if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -verbose -Defaultcredentials))
+                if (!( Get-LABFTPFile -Source $URL -Target $Zipfile -verbose -Defaultcredentials))
                     { 
                     write-warning "Error Downloading file $Url, 
                     $url might not exist.
