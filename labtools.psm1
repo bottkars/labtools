@@ -50,7 +50,7 @@ function Set-LABDefaultGateway
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -69,7 +69,7 @@ function Set-LABDNS1
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -89,7 +89,7 @@ function Set-LABDNS
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -115,7 +115,7 @@ function Set-LABvmnet
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -133,7 +133,7 @@ function Set-LABVlanID
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -172,7 +172,7 @@ function Set-LABvmnet2hvswitch
     )
     if (!(Test-Path $SwitchDefaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
@@ -190,7 +190,7 @@ function Set-LABGateway
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Warning "Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray "Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -208,7 +208,7 @@ function Set-LABNoDomainCheck
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Warning "Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray "Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -226,7 +226,7 @@ function Set-LABpuppet
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Warning "Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray "Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -244,7 +244,7 @@ function Set-LABPuppetMaster
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Warning "Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray "Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -262,7 +262,7 @@ function Set-LABnmm
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -281,7 +281,7 @@ function Set-LABsubnet
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -299,7 +299,7 @@ function Set-LABHostKey
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -318,7 +318,7 @@ function Set-LABBuilddomain
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -358,7 +358,7 @@ function Set-LABSources
 
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Warning "Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -938,7 +938,7 @@ end
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$DownloadDir=$vmxdir
     )
-    Write-warning "Asking for latest Java"
+    Write-Host -ForegroundColor Gray "Asking for latest Java"
     Try
         {
         $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp
@@ -982,7 +982,7 @@ end
             }
         else
             {
-            Write-Warning "$Latest_java8 already exists in $DownloadDir"
+            Write-Host -ForegroundColor Gray "$Latest_java8 already exists in $DownloadDir"
             }
             $object = New-Object psobject
 	        $object | Add-Member -MemberType NoteProperty -Name LatestJava8 -Value $Latest_java8
@@ -1074,7 +1074,7 @@ if (!(Test-Path $Destination))
     }
     else
     {
-    write-Warning "No download needed, file exists" 
+    Write-Host -ForegroundColor Gray "No download needed, file exists" 
     }
     return $ReturnCode 
 }
@@ -1136,7 +1136,7 @@ if (!(Test-Path $Destination))
         break
         }
     }
-Write-Warning "Receive Request for $NW_ver in $Destination"
+Write-Host -ForegroundColor Gray "Receive Request for $NW_ver in $Destination"
 if ($nw_ver -notin ('nw822','nw821','nw82'))
     {
     $nwdotver = $nw_ver -replace "nw",""
@@ -1240,7 +1240,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             }
         else
             {
-            Write-Warning "Networker $NW_ver already on $Destination, try -force to overwrite"
+            Write-Host -ForegroundColor Gray "Networker $NW_ver already on $Destination, try -force to overwrite"
             }
         if ($unzip)
             {
@@ -1288,7 +1288,7 @@ if (!(Test-Path $Destination))
         break
         }
     }
-Write-Warning "Receive Request for $NMM_ver in $Destination"
+Write-Host -ForegroundColor Gray "Receive Request for $NMM_ver in $Destination"
 
 #####
         $URLS = ""
@@ -1362,7 +1362,7 @@ Write-Warning "Receive Request for $NMM_ver in $Destination"
             }
                 else
                     {
-                    Write-Warning "Networker $Zipfilename already on $Destination, try -force to overwrite"
+                    Write-Host -ForegroundColor Gray "Networker $Zipfilename already on $Destination, try -force to overwrite"
                     }
                 $Destinationdir =  "$($Zipfile.replace(".zip"," "))"
                 Write-Verbose $Destinationdir
@@ -1489,7 +1489,7 @@ switch ($SC_Version)
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
             }
-        Write-Warning "Getting WAIK, Could take a While"
+        Write-Host -ForegroundColor Gray "Getting WAIK, Could take a While"
         Start-Process -FilePath "$WAIK_DIR\$FileName" -ArgumentList "/quiet /layout $WAIK_DIR\" -Wait
         }
     } # end SCVMM
@@ -1805,7 +1805,7 @@ if ($Exchange2013)
             Write-Verbose $EX_CU_PATH
             if ((Test-Path "$EX_CU_PATH\Setup.exe") -and (!$force.IsPresent))
                 { 
-                Write-Warning "setup.exe already exists, overwrite with -force"
+                Write-Host -ForegroundColor Gray "setup.exe already exists, overwrite with -force"
                 return $true
                 }
             else
@@ -1891,7 +1891,7 @@ if (!(Test-Path $Destination_path))
         {
         $Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
-        Write-Host -ForegroundColor Magenta "We found $FileName for $Arch on EMC Website"
+        Write-Host -ForegroundColor Gray "We found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
         if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             {
@@ -1924,7 +1924,7 @@ if (!(Test-Path $Destination_path))
             }
         Else
             {
-            Write-Warning "Found $Destination_File, using this one unless -force is specified ! "
+            Write-Host -ForegroundColor Gray "Found $Destination_File, using this one unless -force is specified ! "
             }
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -1985,7 +1985,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Warning "Found $Destination_File"
+    Write-Host -ForegroundColor Gray "Found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -2065,7 +2065,7 @@ function Receive-LABSQL
                     }
                 If ($Extract.ispresent)
                     {
-                    Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                    Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                     $FileName = Split-Path -Leaf $SQL2012_inst
                     Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                     }    
@@ -2112,7 +2112,7 @@ function Receive-LABSQL
                     }
                     If ($Extract.ispresent)
                         {
-                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
                         Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
@@ -2161,7 +2161,7 @@ function Receive-LABSQL
                     }
                 If ($Extract.ispresent)
                         {
-                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
                         Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
@@ -2197,7 +2197,7 @@ function Receive-LABSQL
                     }
                     If ($Extract.ispresent)
                         {
-                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                         Start-Process $SQL_BASEDIR\$FileName -ArgumentList "/X:$SQL_VER_DIR /q" -Wait
                         }
                     }
@@ -2236,7 +2236,7 @@ function Receive-LABSQL
                 # New-Item -ItemType Directory $Sourcedir\$SQLVER
                 if ($extract.IsPresent)
                     {
-                    Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                    Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                     Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                     } 
                 }
@@ -2267,7 +2267,7 @@ function Receive-LABSQL
                     }
                     if ($extract.ispresent)
                         {
-                        Write-Warning "Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray "Creating $SQLVER Installtree, this might take a while"
                         Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                         }
                 }
