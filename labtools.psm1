@@ -1362,7 +1362,7 @@ Write-Warning "Receive Request for $NMM_ver in $Destination"
             }
                 else
                     {
-                    Write-Warning "Networker NMM $nmm_ver already on $Destination, try -force to overwrite"
+                    Write-Warning "Networker $Zipfilename already on $Destination, try -force to overwrite"
                     }
                 $Destinationdir =  "$($Zipfile.replace(".zip"," "))"
                 Write-Verbose $Destinationdir
