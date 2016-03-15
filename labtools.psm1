@@ -367,6 +367,45 @@ function Set-LABSources
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABMasterpath
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABMaster")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
+    [ValidateLength(3,10)]
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateScript({ 
+    try
+        {
+        Get-Item -Path $_ -ErrorAction Stop | Out-Null 
+        }
+        catch
+        [System.Management.Automation.DriveNotFoundException] 
+        {
+        Write-Warning "Drive not found, make sure to have your Source Stick connected"
+        exit
+        }
+        catch #[System.Management.Automation.ItemNotFoundException]
+        {
+        write-warning "no Master directory found"
+        exit
+        }
+        return $True
+        })]$Masterpath
+    
+#Test-Path -Path $_ })]$Masterpath
+    )   
+    if (!(Test-Path $Masterpath)){exit} 
+
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray "Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.Masterpath = $Masterpath
+    Write-Verbose "Setting Masterpath $Masterpath"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 
 
 
