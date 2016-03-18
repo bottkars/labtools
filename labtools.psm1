@@ -1535,7 +1535,7 @@ switch ($SC_Version)
     } # end SCVMM
 if ($Component -match 'SCOM')
     {
-    Write-Verbose "We are now going to Test $Component Prereqs"
+    Write-Host -ForegroundColor Gray "We are now going to Test $Component Prereqs"
             $DownloadUrls= (
             'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
             'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
@@ -1635,10 +1635,12 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final')]$e16_cu = 'final',
+    [ValidateSet('final','cu1')]
+    $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11')]$e15_cu,
+    [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12')]
+    $e15_cu,
     [String]$Destination,
     [String]$Product_Dir= "Exchange",
     [String]$Prereq = "prereq",
@@ -1708,7 +1710,10 @@ if ($Exchange2016)
             {
             $URL = "http://download.microsoft.com/download/3/9/B/39B8DDA8-509C-4B9E-BCE9-4CD8CDC9A7DA/Exchange2016-x64.exe"
             }
-
+        'CU1'
+            {
+            $URL = "https://download.microsoft.com/download/6/4/8/648EB83C-00F9-49B2-806D-E46033DA4AE6/ExchangeServer2016-CU1.iso"
+            }
         }
     }
 if ($Exchange2013)
@@ -1802,6 +1807,11 @@ if ($Exchange2013)
         "CU11"
             {
             $url = "https://download.microsoft.com/download/A/A/B/AAB18934-BC8F-429D-8912-6A98CBC96B07/Exchange2013-x64-cu11.exe"
+            }
+
+        "CU12"
+            {
+            $url = "https://download.microsoft.com/download/2/C/1/2C151059-9B2A-466B-8220-5AE8B829489B/Exchange2013-x64-cu12.exe"
             }
         }
     }        
