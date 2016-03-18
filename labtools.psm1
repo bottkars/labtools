@@ -1849,6 +1849,7 @@ if ($Exchange2013)
             elseif ($Filename.Contains(".iso"))
                 { 
                 Write-Host -ForegroundColor Gray "no unzip required, CU delivered as ISO"
+                $return = $true
                 }
     return $return
 } #end else
