@@ -1830,7 +1830,7 @@ if ($Exchange2013)
                 exit
             }
         }
-        if ($unzip.IsPresent) 
+        if ($unzip.IsPresent -and $Filename.Contains(".exe")) 
             {
             $EX_CU_PATH = Join-Path $Product_Dir "$ex_version$ex_cu"
             Write-Verbose $EX_CU_PATH
@@ -1846,6 +1846,10 @@ if ($Exchange2013)
                 $return = $true
                 }
             }
+            elseif ($Filename.Contains(".iso"))
+                { 
+                Write-Host -ForegroundColor Gray "no unzip required, CU delivered as ISO"
+                }
     return $return
 } #end else
 
