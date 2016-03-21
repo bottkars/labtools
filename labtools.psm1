@@ -1004,7 +1004,8 @@ end
             Write-Verbose "Downloading $Latest_java8"
             Try
                 {
-                Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
+                Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination "$DownloadDir\$latest_java8" 
+                # Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
                 }
             catch [Exception] 
                 {
