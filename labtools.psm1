@@ -703,6 +703,7 @@ function Expand-LAB7Zip
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Expand-LABZip")]
 	param (
+        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
         [string]$Archive,
         [string]$destination=$vmxdir
         #[String]$Folder
@@ -725,8 +726,31 @@ function Expand-LAB7Zip
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
-        $destination = "-o"+$destination
-        .$7za x $destination $Archive
+        $Archivefile = Get-ChildItem $Archive
+        $7zdestination = "-o"+$destination
+        .$7za x $7zdestination $Archivefile.FullName
+        switch ($LASTEXITCODE)
+            {
+            0
+                {
+                Write-Host "Sucess expanding $Archive"
+                $object = New-Object psobject
+	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.BaseName)"
+                Write-Output $object
+                # return $true
+                }
+            1
+                { 
+                Write-Warning "There was an error $LASTEXITCODE"
+                return $false
+                break
+                }
+            default
+                {
+                Write-Host "expand exited with code $LASTEXITCODE"
+                }
+            }
 	}
 }
 
@@ -735,8 +759,8 @@ function Expand-LABZip
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Expand-LABZip")]
 	param (
-        [string]$zipfilename,
-        [string] $destination,
+        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })][string]$zipfilename,
+        [string]$destination,
         [String]$Folder)
 	$copyFlag = 16 # overwrite = yes
 	$Origin = $MyInvocation.MyCommand
@@ -1004,8 +1028,7 @@ end
             Write-Verbose "Downloading $Latest_java8"
             Try
                 {
-                Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination "$DownloadDir\$latest_java8" 
-                # Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
+                Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
                 }
             catch [Exception] 
                 {
