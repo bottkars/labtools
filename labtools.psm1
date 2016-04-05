@@ -759,7 +759,8 @@ function Expand-LABZip
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Expand-LABZip")]
 	param (
-        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })][string]$zipfilename,
+        #[Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
+        [string]$zipfilename,
         [string]$destination,
         [String]$Folder)
 	$copyFlag = 16 # overwrite = yes
