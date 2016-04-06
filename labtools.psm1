@@ -736,7 +736,7 @@ function Expand-LAB7Zip
                 Write-Host "Sucess expanding $Archive"
                 $object = New-Object psobject
 	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
-	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.BaseName)"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
                 Write-Output $object
                 # return $true
                 }
