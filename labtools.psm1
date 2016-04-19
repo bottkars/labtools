@@ -703,6 +703,7 @@ function Expand-LAB7Zip
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Expand-LABZip")]
 	param (
+        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
         [string]$Archive,
         [string]$destination=$vmxdir
         #[String]$Folder
@@ -725,8 +726,31 @@ function Expand-LAB7Zip
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
-        $destination = "-o"+$destination
-        .$7za x $destination $Archive
+        $Archivefile = Get-ChildItem $Archive
+        $7zdestination = "-o"+$destination
+        .$7za x $7zdestination $Archivefile.FullName
+        switch ($LASTEXITCODE)
+            {
+            0
+                {
+                Write-Host "Sucess expanding $Archive"
+                $object = New-Object psobject
+	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
+                Write-Output $object
+                # return $true
+                }
+            1
+                { 
+                Write-Warning "There was an error $LASTEXITCODE"
+                return $false
+                break
+                }
+            default
+                {
+                Write-Host "expand exited with code $LASTEXITCODE"
+                }
+            }
 	}
 }
 
@@ -735,8 +759,9 @@ function Expand-LABZip
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Expand-LABZip")]
 	param (
+        #[Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
         [string]$zipfilename,
-        [string] $destination,
+        [string]$destination,
         [String]$Folder)
 	$copyFlag = 16 # overwrite = yes
 	$Origin = $MyInvocation.MyCommand
@@ -1005,7 +1030,7 @@ end
             Try
                 {
                 Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination "$DownloadDir\$latest_java8" 
-                # Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
+                #Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
                 }
             catch [Exception] 
                 {
@@ -1127,7 +1152,7 @@ function Receive-LABNetworker
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nw90.DA','nw9001','nw9002','nw9003','nw9004',
+    [ValidateSet('nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005',
     'nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
@@ -1307,7 +1332,7 @@ function Receive-LABnmm
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004',
+    [ValidateSet('nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821')]
     $nmm_ver,
@@ -1970,7 +1995,115 @@ if (!(Test-Path $Destination_path))
             }
         }
 } #end ScaleIO
+function Receive-LABISIlon
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    $Destination,
+    [switch]$unzip,
+    [switch]$force
 
+)
+#requires -version 3.0
+$Product = 'ISILON'
+$Destination_path = Join-Path $Destination "$Product"
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest $Product version from EMC.com"
+$Uri = "http://www.emc.com/products-solutions/trial-software-download/isilon.htm"
+$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
+$Link = $request.Links | where OuterHTML -Match Onefs_simulator
+$Url = $link.href
+try
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    }
+catch
+    {
+    Write-Warning "could not extraxt filename from downlod page.
+    Maybe links changed, please report on https://github.com/bottkars/labtools/issues for $($MyInvocation.MyCommand)
+    including the text below:
+    $($_.Exception.Message) "
+        Break
+    }
+Write-Host -ForegroundColor Gray "We found $FileName for $Product at EMC Website"
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    if (!$force.IsPresent)
+        {
+        $ok = Get-labyesnoabort -title "Start Download" -message "Should we Download $FileName from www.emc.com ?"
+        }
+    else
+        {
+        $ok = "0"
+        }
+    switch ($ok)
+        {
+        "0"
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+            $Downloadok = $true
+            }
+        "1"
+            {
+            break
+            }   
+        "2"
+            {
+            Write-Verbose "User requested Abort"
+            exit
+            }
+        }
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray "Found $Destination_File, using this one unless -force is specified ! "
+    }
+
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
+    }
+} #end ISI
+
+
+
+<#
+
+                Write-Host -Foregroundcolor Magenta "No Sourcemaster or Package Found, we need to download ONEFS Simulator from EMC"
+                $request = invoke-webrequest http://www.emc.com/products-solutions/trial-software-download/isilon.htm?PID=SWD_isilon_trialsoftware
+                $Link = $request.Links | where OuterText -eq Download
+                $DownloadLink = $link.href
+                $Targetfile = (Join-Path $Sourcedir (Split-Path -Leaf $DownloadLink))
+ #               if (!(Receive-LABBitsFile -DownLoadUrl $DownloadLink -Destination $Targetfile))
+                 if (!( Receive-LABBitsFile -DownLoadUrl $DownloadLink -destination $Targetfile ))
+                    {
+                    Write-Warning "Failure downloading file, exit now ... "
+                    break
+                    }
+                }
+            
+            $Targetfile = (Get-ChildItem -Path  (Join-path $Sourcedir "EMC*isilon*onefs*.zip"))[0]
+            Expand-LABZip -zipfilename $Targetfile.FullName -destination $Sourcedir -verbose
+            }
+
+#>
 
 function Receive-LABOpenWRT
 {
