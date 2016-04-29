@@ -1450,6 +1450,7 @@ function Receive-LABSysCtrInstallers
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('SC2012_R2','SCTP3','SCTP4','SCTP5')]
+    $SC_VERSION = "SC2012_R2",
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "SysCtr",
