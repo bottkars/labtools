@@ -1449,7 +1449,7 @@ function Receive-LABSysCtrInstallers
 	[OutputType([psobject])]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('SC2012_R2','SCTP3','SCTP4')]$SC_Version,
+    [ValidateSet('SC2012_R2','SCTP3','SCTP4','SCTP5')]
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "SysCtr",
@@ -1525,6 +1525,13 @@ switch ($SC_Version)
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
             }
+        "SCTP5"
+            {
+            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
+            $url = "http://care.dlservice.microsoft.com/dl/download/F/E/6/FE60EBEB-EE0F-4457-951D-E89A4175F229/SCTP5_SCVMM_EN.exe"
+            $WAIK_VER = "WAIK_10"
+            }
+
         "SCTP4"
             {
             $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
@@ -1598,6 +1605,11 @@ if ($Component -match 'SCOM')
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
             }
+        "SCTP5"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/2/A/F/2AF219F5-37CB-4901-80D1-EED797ABDF6A/SCTP5_SCOM_EN.exe"
+            }
+
         }    
 }#end scom
 if ($Component -match 'SCDPM')
@@ -1619,8 +1631,12 @@ if ($Component -match 'SCDPM')
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/A/D/E/ADECA4CB-2E75-48AF-8FE8-A892531C7AD7/SCTP4_SCDPM_EN.exe"
             }
+        "SCTP5"
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/8/B/7/8B75A31B-48E9-463C-9E1E-53FD5BFAD0F1/SCTP5_SCDPM_EN.exe"
+            }        
         }    
-}#end scom
+}#end scdpm
     $FileName = Split-Path -Leaf -Path $Url
     Write-Verbose "Testing $SC_Version"
     if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
