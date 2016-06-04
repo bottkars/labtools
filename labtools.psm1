@@ -2183,7 +2183,91 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end OpenWRT
 
+function Receive-LABMaster
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    <#
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet('')]
+    $sio_ver,
+    #>
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT'
+    )]
+    [string]$Master,
+    [switch]$unzip
+    #[switch]$force
 
+)
+#requires -version 3.0
+$Product = 'Master'
+$Destination_path = $Destination 
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version from Azure"
+Switch ($Master)
+    {
+    "2012R2FallUpdate"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2FallUpdateV1.7z"
+        }
+    "CentOS7"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
+        }
+    "OpenSuse"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.7z"
+        }
+    "2016TP5"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2016TP5.7z"
+        }
+    "OpenWRT"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
+        }
+    }
+
+$Filename = Split-Path -Leaf $url
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    Write-Verbose "$FileName not found, trying Download"
+    $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+    $StopWatch.Stop()
+    Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
+
+    $Downloadok = $true
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray "Found $Destination_File"
+    }
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Expand-LAB7Zip "$Destination_File"
+    get-vmx $Master
+    }
+} #end OpenWRT
 
 
 function Receive-LABSQL
