@@ -2265,9 +2265,9 @@ Else
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
     Expand-LAB7Zip "$Destination_File" -destination $Destination
-    get-vmx $Master
+    # get-vmx -Path $Destination\$Master
     }
-} #end OpenWRT
+} 
 
 
 function Receive-LABSQL
