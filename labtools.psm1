@@ -2264,7 +2264,7 @@ Else
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
-    Expand-LAB7Zip "$Destination_File"
+    Expand-LAB7Zip "$Destination_File" -destination $Destination
     get-vmx $Master
     }
 } #end OpenWRT
