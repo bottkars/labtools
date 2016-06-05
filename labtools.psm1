@@ -1113,7 +1113,10 @@ return $Isnew
 }
 
 function Receive-LABBitsFile
-{ 
+{
+    [CmdletBinding(SupportsShouldProcess=$true,
+        ConfirmImpact="Medium")]
+	[OutputType([psobject])]
 param ([string]$DownLoadUrl,
         [string]$destination )
 $ReturnCode = $True
@@ -1126,7 +1129,7 @@ if (!(Test-Path $Destination))
             New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
             }
         Write-verbose "Starting Download of $DownLoadUrl"
-        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
+        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err #-Confirm:$false
                 If ($err) {Throw ""} 
 
         } 
