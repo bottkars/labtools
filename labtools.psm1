@@ -2245,18 +2245,45 @@ Switch ($Master)
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
         }
     }
-
 $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     Write-Verbose "$FileName not found, trying Download"
-    $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
-    $StopWatch.Stop()
-    Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
+    Write-Verbose $ConfirmPreference
+    if ($ConfirmPreference -match "none")
+        { 
+        $commit = 0 
+        }
+    else
+        {
+        $commit = Get-LAByesnoabort -title "confirm master $master download from labbuild repo" -message "master download may take a while"
+        }
+    Switch ($commit)
+        {
+            0
+            {
+            $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+            try
+                {
+                Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+                }
+            catch
+                {
+                Get-SIOWebException -ExceptionMessage $_.Exception.Message
+                break
+                }
+            $StopWatch.Stop()
+            Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
+            $Downloadok = $true
+            }
+            1
+            {
+            Write-Warning "Download was refused by user"
+            break
+            }      
+        }
 
-    $Downloadok = $true
     }
 Else
     {
