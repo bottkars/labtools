@@ -2270,7 +2270,6 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
                 }
             catch
                 {
-                Get-SIOWebException -ExceptionMessage $_.Exception.Message
                 break
                 }
             $StopWatch.Stop()
@@ -2279,7 +2278,6 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             1
             {
             Write-Warning "Download was refused by user"
-            return $false
             break
             }      
         }
