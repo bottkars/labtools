@@ -1126,7 +1126,7 @@ if (!(Test-Path $Destination))
             New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
             }
         Write-verbose "Starting Download of $DownLoadUrl"
-        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err 
+        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
                 If ($err) {Throw ""} 
 
         } 
@@ -2266,7 +2266,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
             try
                 {
-                Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+                Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File" 
                 }
             catch
                 {
