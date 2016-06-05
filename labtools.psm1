@@ -1115,7 +1115,7 @@ return $Isnew
 function Receive-LABBitsFile
 {
     [CmdletBinding(SupportsShouldProcess=$true,
-        ConfirmImpact="Medium")]
+        ConfirmImpact='none' )]
 	[OutputType([psobject])]
 param ([string]$DownLoadUrl,
         [string]$destination )
