@@ -2275,11 +2275,11 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
                 }
             $StopWatch.Stop()
             Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
-            $Downloadok = $true
             }
             1
             {
             Write-Warning "Download was refused by user"
+            return $false
             break
             }      
         }
@@ -2292,6 +2292,7 @@ Else
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
     Expand-LAB7Zip "$Destination_File" -destination $Destination
+    Return $true
     # get-vmx -Path $Destination\$Master
     }
 } 
