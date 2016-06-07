@@ -1503,7 +1503,7 @@ $Component_Dir = $Product_Dir
 if ($Component -match 'SCVMM')
     {
     $DownloadUrls= (
-            "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+            #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
             "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SqlCmdLnUtils.msi",
             "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/sqlncli.msi"
             )
@@ -1522,6 +1522,7 @@ if ($Component -match 'SCVMM')
             }
         }
     }
+Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
 
 switch ($SC_Version)
     {
@@ -1689,7 +1690,7 @@ param
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
     [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12')]
     $e15_cu,
-    [String]$Destination,
+    [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "Exchange",
     [String]$Prereq = "prereq",
     [switch]$unzip,
@@ -1721,7 +1722,7 @@ if ($Exchange2016)
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
-		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+		       #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
                 )
     if (Test-Path -Path "$Prereq_Dir")
@@ -1746,12 +1747,12 @@ if ($Exchange2016)
                 exit
                 }
             }
-            else
-                {
+        else
+            {
                 Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
                 }
         }
-
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
     switch ($e16_cu)
         {
         'final'
@@ -1771,7 +1772,7 @@ if ($Exchange2013)
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
-		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+		        #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe",
                 "http://download.microsoft.com/download/0/A/2/0A28BBFA-CBFA-4C03-A739-30CCA5E21659/FilterPack64bit.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
@@ -1793,7 +1794,8 @@ if ($Exchange2013)
             {
             Write-Verbose "$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
-                { write-warning "Error Downloading file $Url, Please check connectivity"
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
             }
@@ -1802,6 +1804,7 @@ if ($Exchange2013)
             Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
             }
         }
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
     Write-Verbose "Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
     if (!(test-path  "$Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
         {
@@ -1856,7 +1859,6 @@ if ($Exchange2013)
             {
             $url = "https://download.microsoft.com/download/A/A/B/AAB18934-BC8F-429D-8912-6A98CBC96B07/Exchange2013-x64-cu11.exe"
             }
-
         "CU12"
             {
             $url = "https://download.microsoft.com/download/2/C/1/2C151059-9B2A-466B-8220-5AE8B829489B/Exchange2013-x64-cu12.exe"
@@ -1900,8 +1902,7 @@ if ($Exchange2013)
                 $return = $true
                 }
     return $return
-} #end else
-
+} 
 
 
 function Receive-LABScaleIO
@@ -2104,8 +2105,6 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end ISI
 
-
-
 <#
 
                 Write-Host -Foregroundcolor Magenta "No Sourcemaster or Package Found, we need to download ONEFS Simulator from EMC"
@@ -2306,7 +2305,7 @@ function Receive-LABSQL
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
     param(
-    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014')]$SQLVER,
+    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016','SQL2016_ISO')]$SQLVER,
     [String]$Destination,
     [String]$Product_Dir= "SQL",
     [String]$Prereq = "prereq",
@@ -2324,6 +2323,9 @@ function Receive-LABSQL
     $SQL2014_ZIP = "http://care.dlservice.microsoft.com/dl/download/evalx/sqlserver2014/x64/SQLServer2014_x64_enus.zip"
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
+    $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
+    $SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
+    $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
     $Product_Dir = Join-Path $Destination $Product_Dir
     Write-Verbose "Destination: $Product_Dir"
     if (!(Test-Path $Product_Dir))    
@@ -2574,7 +2576,111 @@ function Receive-LABSQL
                         }
                 }
             }
-          } #end switch
+            "SQL2016"
+            {
+            $SQL_BASEVER = "SQL2016"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe"))
+                {
+                foreach ($url in ($SQL2016_box,$SQL2016_inst))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Verbose "Trying Download"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            {  
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit 
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                    if ($extract.ispresent)
+                        {
+                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
+                        }
+                }
+            }
+
+            "SQL2016ISO"
+            {
+            $SQL_BASEVER = "SQL2016"
+            $url = $SQL2016_ISO
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            $FileName = Split-Path -Leaf $SQL2016_ISO
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\$FileName"))
+                {
+                Write-Verbose "Trying $SQLVER Download"
+                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                    {  
+                    write-warning "Error Downloading file $Url, Please check connectivity"
+                    exit 
+                    }
+                Unblock-File "$SQL_BASEDir\$FileName"
+                }
+            }
+
+          } #end switch#
     Write-Host "$SQLVER is now available in $SQL_BASEDir"
     return $True
+    }
+
+function Receive-LABNetFramework
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    '452','46','461'
+    )]
+    [string]$Net_Ver="452"
+)
+
+Switch ($Net_Ver)
+    {
+    '452'
+        {
+        $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+        }
+    '46'
+        {
+        $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
+        }
+    '461'
+        {
+        $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
+        }
+    }
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Verbose "$Destination Found"
+        }
+        else
+        {
+        Write-Verbose "Creating Sourcedir for NetFramework Prereqs"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Magenta  "found $Filename in $Destination"
+            }
+        
     }
