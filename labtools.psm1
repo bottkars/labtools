@@ -2690,3 +2690,77 @@ Switch ($Net_Ver)
             }
         
     }
+
+function Receive-LABWinservISO
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2012R2','2016TP5'
+        )]
+    [string]$winserv_ver,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    'en-US','de-DE'
+        )]
+    [string]$lang
+
+)
+
+Switch ($lang)
+    {
+    'de_DE'
+        {
+        Switch ($winserv_ver)
+            {
+            '2012R2'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/4/33482C88-DBFB-43F6-925A-7E684D072B15/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_DE-DE-IR3_SSS_X64FREE_DE-DE_DV9.ISO"
+                }
+   
+         }
+        $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
+        }
+    'en-US'
+        {
+        Switch ($winserv_ver)
+            {
+            '2012R2'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
+                }
+   
+         }
+    }
+    }
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Verbose "$Destination Found"
+        }
+        else
+        {
+        Write-Verbose "Creating Sourcedir for NetFramework Prereqs"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Magenta  "found $Filename in $Destination"
+            }
+        
+    }
+
