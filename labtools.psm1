@@ -2291,10 +2291,11 @@ Else
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
+    Write-Host -ForegroundColor White " ==> Extracting Master $Master, this may take a while"
     Expand-LAB7Zip "$Destination_File" -destination $Destination
     Return $true
     # get-vmx -Path $Destination\$Master
-    }
+    
 } 
 
 
