@@ -2707,16 +2707,15 @@ param(
     [string]$winserv_ver,
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    'en-US','de-DE'
+    'en_US','de_DE'
         )]
     [string]$lang
-
 )
-
 Switch ($lang)
     {
     'de_DE'
         {
+        Write-Verbose $lang
         Switch ($winserv_ver)
             {
             '2012R2'
@@ -2725,7 +2724,7 @@ Switch ($lang)
                 }
          }
         }
-    'en-US'
+    'en_US'
         {
         Switch ($winserv_ver)
             {
