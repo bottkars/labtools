@@ -2295,7 +2295,7 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     Expand-LAB7Zip "$Destination_File" -destination $Destination
     Return $true
     # get-vmx -Path $Destination\$Master
-    
+    }
 } 
 
 
