@@ -2723,9 +2723,7 @@ Switch ($lang)
                 {
                 $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/4/33482C88-DBFB-43F6-925A-7E684D072B15/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_DE-DE-IR3_SSS_X64FREE_DE-DE_DV9.ISO"
                 }
-   
          }
-        $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
         }
     'en-US'
         {
@@ -2737,7 +2735,7 @@ Switch ($lang)
                 }
    
          }
-    }
+        }
     }
     if (Test-Path -Path "$Destination")
         {
@@ -2745,10 +2743,10 @@ Switch ($lang)
         }
         else
         {
-        Write-Verbose "Creating Sourcedir for NetFramework Prereqs"
+        Write-Verbose "Creating Sourcedir for ISO Files Prereqs"
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
-        $FileName = Split-Path -Leaf -Path $Url
+        $FileName = Split-Path -Leaf -Path $URL
         if (!(test-path  "$Destination\$FileName"))
             {
             Write-Verbose "$FileName not found, trying Download"
