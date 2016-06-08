@@ -2583,7 +2583,7 @@ function Receive-LABSQL
             $SQL_BASEVER = "SQL2016"
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
-            if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe"))
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe") -or !(Test-Path "$SQL_BASEDir\$SQLVER\ssms*.exe"))
                 {
                 foreach ($url in ($SQL2016_box,$SQL2016_inst,$SQL2016_SSMS))
                     {
