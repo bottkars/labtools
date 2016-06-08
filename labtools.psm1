@@ -608,8 +608,6 @@ process {
 end {}
 }
 
-
-
 function Set-LABSIOConfig   
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#set-labsioconfig")]
@@ -635,8 +633,6 @@ function Set-LABSIOConfig
 "
      $xmlcontent | Set-Content $defaultsfile
      }
-
-
 
 function New-LABdefaults   
 {
@@ -997,7 +993,7 @@ end
 }  
                
  function Get-LABJava64
-    {
+{
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABJava64")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$DownloadDir=$vmxdir
@@ -2302,8 +2298,6 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     # get-vmx -Path $Destination\$Master
     }
 } 
-
-
 function Receive-LABSQL
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2647,7 +2641,7 @@ param(
     $Destination=".\",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451''452','46','461'
+    '451','452','46','461'
     )]
     [string]$Net_Ver="452"
 )
@@ -2658,7 +2652,6 @@ Switch ($Net_Ver)
         {
         $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
         }
-
     '452'
         {
         $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
