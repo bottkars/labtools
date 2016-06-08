@@ -2201,7 +2201,7 @@ param(
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT'
+    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT','2012R2Fall_Ger'
     )]
     [string]$Master,
     [switch]$unzip
@@ -2230,6 +2230,11 @@ Switch ($Master)
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2FallUpdateV1.7z"
         }
+    "2012R2Fall_Ger"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.7z"
+        }
+
     "CentOS7"
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
