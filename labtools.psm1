@@ -2585,7 +2585,7 @@ function Receive-LABSQL
             Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
             if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe") -or !(Test-Path "$SQL_BASEDir\$SQLVER\ssms*.exe"))
                 {
-                foreach ($url in ($SQL2016_box,$SQL2016_inst,$SQL2016_SSMS))
+                foreach ($url in ($SQL2016_box,$SQL2016_SSMS,$SQL2016_inst))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
                     Write-Verbose "Testing $FileName in $SQL_BASEDir"
