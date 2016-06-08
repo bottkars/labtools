@@ -2327,6 +2327,7 @@ function Receive-LABSQL
     $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
     $SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
     $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
+    $SQL2016_SSMS = "http://download.microsoft.com/download/E/D/3/ED3B06EC-E4B5-40B3-B861-996B710A540C/SSMS-Setup-ENU.exe"
     $Product_Dir = Join-Path $Destination $Product_Dir
     Write-Verbose "Destination: $Product_Dir"
     if (!(Test-Path $Product_Dir))    
@@ -2584,7 +2585,7 @@ function Receive-LABSQL
             Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
             if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe"))
                 {
-                foreach ($url in ($SQL2016_box,$SQL2016_inst))
+                foreach ($url in ($SQL2016_box,$SQL2016_inst,$SQL2016_SSMS))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
                     Write-Verbose "Testing $FileName in $SQL_BASEDir"
