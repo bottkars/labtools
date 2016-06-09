@@ -1686,6 +1686,16 @@ param
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
     [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12')]
     $e15_cu,
+    [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('ur13')]
+    $e14_ur = "ur13",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('sp3')]
+    $e14_sp="sp3",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('de_DE')]
+    $e14_lang = "de_DE",
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "Exchange",
     [String]$Prereq = "prereq",
@@ -1709,6 +1719,15 @@ if (!(Test-Path $Product_Dir))
 }
     $Prereq_Dir = Join-Path $Destination $Prereq
     Write-Verbose "Prereq = $Prereq_Dir"
+    if (Test-Path -Path "$Prereq_Dir")
+        {
+        Write-Verbose "$Prereq_Dir Found"
+        }
+    else
+        {
+        Write-Verbose "Creating Sourcedir for $EX_Version Prereqs"
+        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+        }
 
   #############
 if ($Exchange2016)
@@ -1721,17 +1740,6 @@ if ($Exchange2016)
 		       #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
                 )
-    if (Test-Path -Path "$Prereq_Dir")
-        {
-        Write-Verbose "$Prereq_Dir Found"
-        }
-        else
-        {
-        Write-Verbose "Creating Sourcedir for Prereqs"
-        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
-        }
-
-
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
@@ -1774,15 +1782,7 @@ if ($Exchange2013)
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
                 "http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE"
                 )
-    if (Test-Path -Path "$Prereq_Dir")
-        {
-        Write-Verbose "$Prereq_Dir Found"
-        }
-        else
-        {
-        Write-Verbose "Creating Sourcedir for $EX_Version Prereqs"
-        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
-        }
+
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
@@ -1860,7 +1860,95 @@ if ($Exchange2013)
             $url = "https://download.microsoft.com/download/2/C/1/2C151059-9B2A-466B-8220-5AE8B829489B/Exchange2013-x64-cu12.exe"
             }
         }
-    }        
+    } 
+If ($Exchange2010)
+    {
+    $ex_cu = $e14_sp
+    $LANG_Prereq_Dir = Join-Path $Prereq_Dir $e14_lang
+    $ex_version = "E2010$e14_sp"
+    $Product_Dir = Join-Path $Product_Dir "$($ex_version)_$e14_lang"
+    Write-Verbose "We are now going to Test $EX_Version Prereqs"
+    $DownloadUrls = (
+                'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
+                'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
+                'https://download.microsoft.com/download/0/1/3/0131A8C8-001B-4448-9DD8-62C98D862560/filterpack2010sp1-kb2460041-x64-fullfile-de-de.exe',
+                'https://download.microsoft.com/download/D/1/2/D12F3512-6BED-4D5B-919A-DDD42C41F839/FilterPack64bit.exe'
+                )
+    if (Test-Path -Path "$LANG_$Prereq_Dir")
+        {
+        Write-Verbose "$LANG_Prereq_Dir Found"
+        }
+        else
+        {
+        Write-Verbose "Creating Sourcedir for $E14_EX_Version Prereqs"
+        New-Item -ItemType Directory -Path $LANG_Prereq_Dir -Force | Out-Null
+        }
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$LANG_Prereq_Dir\$FileName"))
+            {
+            Write-Verbose "$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$LANG_Prereq_Dir\$FileName"))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Magenta  "found $Filename in $LANG_Prereq_Dir"
+            }
+        }
+    Write-Verbose "Testing $LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
+    if (!(test-path  "$LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+        {
+        Write-Verbose "Extracting MAPICDO"
+        Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
+        }
+
+#"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
+    Switch ($e14_ur)
+        {
+        'ur_13'
+            {
+            $URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
+            $FileName = Split-Path -Leaf -Path $Url
+            $UR_Download_Path = join-path $Product_Dir $e14_ur
+            $Downloadfile = Join-Path $UR_Download_Path $FileName
+            if (!(test-path  $Downloadfile))
+                {
+                Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+                if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                    {
+                    Write-Verbose "Press any Key to continue"
+                    pause
+                    }
+                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+                    { 
+                    write-warning "Error Downloading file $Url, Please check connectivity"
+                    exit
+                    }
+                }
+            }
+        }
+    Switch ($e14_sp)
+        {
+        "SP3"
+            {
+            $URL = "https://download.microsoft.com/download/3/0/3/30383778-FB6F-429A-9F65-AF1FE57D7017/Exchange2010-SP3-x64.exe"
+            $de_DE_URL = "https://download.microsoft.com/download/3/0/3/30383778-FB6F-429A-9F65-AF1FE57D7017/Exchange2010-SP3-x64.exe"
+            }
+        }
+    Switch ($e14_lang)
+        {
+        "de_DE"
+            {
+            $URL = $de_DE_URL
+
+            }
+        }
+    } 
         $FileName = Split-Path -Leaf -Path $Url
         $Downloadfile = Join-Path $Product_Dir $FileName
         if (!(test-path  $Downloadfile))
@@ -2701,7 +2789,7 @@ param(
     $Destination=".\",
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    '2012R2','2016TP5'
+    '2012R2','2016TP5','2012'
         )]
     [string]$winserv_ver,
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
@@ -2721,7 +2809,20 @@ Switch ($lang)
                 {
                 $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/4/33482C88-DBFB-43F6-925A-7E684D072B15/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_DE-DE-IR3_SSS_X64FREE_DE-DE_DV9.ISO"
                 }
-         }
+            '2012'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/6/D/A/6DAB58BA-F939-451D-9101-7DE07DC09C03/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_EN-US-HRM_SSS_X64FREE_EN-US_DV5.ISO'
+                }
+            '2016TP5'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                }
+            default
+                {
+                write-host -ForegroundColor Magenta "this download will be integrated soon"
+                return
+                }
+            }
         }
     'en_US'
         {
@@ -2731,8 +2832,20 @@ Switch ($lang)
                 {
                 $URL = "http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
                 }
-   
-         }
+            '2012'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/6/D/A/6DAB58BA-F939-451D-9101-7DE07DC09C03/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_EN-US-HRM_SSS_X64FREE_EN-US_DV5.ISO"
+                }
+            '2016TP5'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                }
+            default
+                {
+                write-host -ForegroundColor Magenta "this download will be integrated soon"
+                return
+                }
+            }
         }
     }
     if (Test-Path -Path "$Destination")
@@ -2757,6 +2870,5 @@ Switch ($lang)
             {
             Write-Host -ForegroundColor Magenta  "found $Filename in $Destination"
             }
-        
     }
 
