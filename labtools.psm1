@@ -2285,7 +2285,7 @@ param(
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT','2012R2Fall_Ger'
+    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT','2012R2Fall_Ger','2012_Ger'
     )]
     [string]$Master,
     [switch]$unzip
@@ -2318,7 +2318,10 @@ Switch ($Master)
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.7z"
         }
-
+    "2012_Ger"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012_Ger.7z"
+        }
     "CentOS7"
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
@@ -2863,7 +2866,7 @@ Switch ($lang)
             Write-Verbose "$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
                 { write-warning "Error Downloading file $Url, Please check connectivity"
-                exit
+                return
                 }
             }
         else
