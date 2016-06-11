@@ -18,6 +18,8 @@
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
+#requires -modules vmxtoolkit
+#requires -version 3.0
 function Get-LAByesnoabort
 {
     [CmdletBinding(DefaultParameterSetName='Parameter Set 1', 
@@ -2285,7 +2287,10 @@ param(
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    '2012R2FallUpdate','2016TP5','CentOS7','OpenSUSE','OpenWRT','2012R2Fall_Ger','2012_Ger'
+    '2016TP5','2016TP5_GER',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE','OpenWRT','Centos7 Master'
     )]
     [string]$Master,
     [switch]$unzip
@@ -2322,7 +2327,11 @@ Switch ($Master)
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012_Ger.7z"
         }
-    "CentOS7"
+    '2012'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012.7z"
+        }
+    'CentOS7 Master'
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
         }
@@ -2330,14 +2339,34 @@ Switch ($Master)
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.7z"
         }
-    "2016TP5"
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2016TP5.7z"
-        }
     "OpenWRT"
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
         }
+    '2016TP5'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2016TP5_GER' 
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012R2_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2012_R2'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    default
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
     }
 $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
@@ -2875,3 +2904,52 @@ Switch ($lang)
             }
     }
 
+function  test-labmaster
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Masterpath=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2016TP5','2016TP5_GER',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE','OpenWRT','Centos7 Master'
+
+        )]
+    [string]$Master
+)
+
+
+$MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
+if (!$Mastervmx)
+    {
+    Write-Host -ForegroundColor Yellow " ==> Could not find $Masterpath\$Master"
+    Write-Host -ForegroundColor Gray " ==> Trying to load $Master from labbuildr Master Repo"
+    if (Receive-LABMaster -Master $Master -Destination $Masterpath -unzip -Confirm:$Confirm)
+        {
+        $MasterVMX = get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
+        }
+    else
+        {
+        Write-Warning "No valid master found /downloaded"
+        break
+        }
+    $MasterVMX = get-vmx -path "$Masterpath\$Master" -WarningAction SilentlyContinue
+    }
+if (!$MasterVMX.Template) 
+    {
+    write-verbose "Templating Master VMX"
+    $template = $MasterVMX | Set-VMXTemplate
+    }
+$Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
+    if (!$Basesnap) 
+    {
+    Write-verbose "Base snap does not exist, creating now"
+    $Basesnap = $MasterVMX | New-VMXSnapshot -SnapshotName BASE
+    }
+}
