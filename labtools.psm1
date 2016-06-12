@@ -2952,4 +2952,5 @@ $Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
     Write-verbose "Base snap does not exist, creating now"
     $Basesnap = $MasterVMX | New-VMXSnapshot -SnapshotName BASE
     }
+Write-Output $MasterVMX
 }
