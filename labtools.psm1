@@ -1873,7 +1873,7 @@ If ($Exchange2010)
     {
     $ex_cu = $e14_sp
     $LANG_Prereq_Dir = Join-Path $Prereq_Dir $e14_lang
-    $ex_version = "E2010$e14_sp"
+    $ex_version = "E2010"
     $Product_Dir = Join-Path $Product_Dir "$($ex_version)_$e14_lang"
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
@@ -1918,7 +1918,7 @@ If ($Exchange2010)
 #"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
     Switch ($e14_ur)
         {
-        'ur_13'
+        'ur13'
             {
             $URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
             $FileName = Split-Path -Leaf -Path $Url
