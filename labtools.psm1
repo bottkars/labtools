@@ -480,6 +480,8 @@ process
         $object | Add-Member -MemberType NoteProperty -Name IPv6PrefixLength -Value $Default.Config.IPV6PrefixLength
         $object | Add-Member -MemberType NoteProperty -Name Sourcedir -Value $Default.Config.Sourcedir
         $object | Add-Member -MemberType NoteProperty -Name SQLVer -Value $Default.config.sqlver
+        $object | Add-Member -MemberType NoteProperty -Name e14_ur -Value $Default.config.e14_ur
+        $object | Add-Member -MemberType NoteProperty -Name e14_sp -Value $Default.config.e14_sp
         $object | Add-Member -MemberType NoteProperty -Name e15_cu -Value $Default.config.e15_cu
         $object | Add-Member -MemberType NoteProperty -Name e16_cu -Value $Default.config.e16_cu
         $object | Add-Member -MemberType NoteProperty -Name NMM_Ver -Value $Default.config.nmm_ver
@@ -555,6 +557,8 @@ process {
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
         $xmlcontent += ("<master>$($Defaults.Master)</master>")
         $xmlcontent += ("<sqlver>$($Defaults.SQLVER)</sqlver>")
+        $xmlcontent += ("<e14_ur>$($Defaults.e14_ur)</e14_ur>")
+        $xmlcontent += ("<e14_sp>$($Defaults.e14_sp)</e14_sp>")
         $xmlcontent += ("<e15_cu>$($Defaults.e15_cu)</e15_cu>")
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
@@ -650,6 +654,8 @@ function New-LABdefaults
         $xmlcontent += ("<nw_ver></nw_ver>")
         $xmlcontent += ("<master></master>")
         $xmlcontent += ("<sqlver></sqlver>")
+        $xmlcontent += ("<e14_ur></e14_ur>")
+        $xmlcontent += ("<e14_sp></e14_sp>")
         $xmlcontent += ("<e15_cu></e15_cu>")
         $xmlcontent += ("<e16_cu></e16_cu>")
         $xmlcontent += ("<vmnet></vmnet>")
