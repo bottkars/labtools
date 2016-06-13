@@ -1920,26 +1920,35 @@ If ($Exchange2010)
         {
         'ur13'
             {
+            $de_DE_URL = "https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
             $URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
-            $FileName = Split-Path -Leaf -Path $Url
-            $UR_Download_Path = join-path $Product_Dir $e14_ur
-            $Downloadfile = Join-Path $UR_Download_Path $FileName
-            if (!(test-path  $Downloadfile))
-                {
-                Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
-                if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                    {
-                    Write-Verbose "Press any Key to continue"
-                    pause
-                    }
-                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
-                    { 
-                    write-warning "Error Downloading file $Url, Please check connectivity"
-                    exit
-                    }
-                }
             }
         }
+    Switch ($e14_lang)
+        {
+        "de_DE"
+            {
+            $URL = $de_DE_URL
+            }
+        }
+
+        $FileName = Split-Path -Leaf -Path $Url
+        $UR_Download_Path = join-path $Product_Dir $e14_ur
+        $Downloadfile = Join-Path $UR_Download_Path $FileName
+        if (!(test-path  $Downloadfile))
+            {
+            Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Verbose "Press any Key to continue"
+                pause
+                }
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
     Switch ($e14_sp)
         {
         "SP3"
