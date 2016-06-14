@@ -1696,7 +1696,7 @@ param
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur13')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -1874,7 +1874,7 @@ If ($Exchange2010)
     $ex_cu = $e14_sp
     $LANG_Prereq_Dir = Join-Path $Prereq_Dir $e14_lang
     $ex_version = "E2010"
-    $Product_Dir = Join-Path $Product_Dir "$($ex_version)_$e14_lang"
+    $Product_Dir = Join-Path $Product_Dir "$ex_version"
     Write-Verbose "We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
                 'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
@@ -1918,10 +1918,70 @@ If ($Exchange2010)
 #"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
     Switch ($e14_ur)
         {
+        'ur1'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/D/7/B/D7BD4C5C-BBA5-49A9-8FE4-430D9C4F42AE/Exchange2010-KB2803727-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/0/6/F/06FC58CA-94AE-4AC9-996B-52FF08B9DEA1/Exchange2010-KB2803727-x64-en.msp"
+            }
+        'ur2'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/3/B/9/3B9A60A1-2567-432A-AA7C-80592064702D/Exchange2010-KB2866475-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/E/E/A/EEA9BF1A-6996-4EDA-B0F6-C87F7CF46342/Exchange2010-KB2866475-x64-en.msp"
+            }
+        'ur3'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/6/A/5/6A5FEC21-58F4-4F94-83CF-ACAEA0B51804/Exchange2010-KB2891587-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/5/F/1/5F14A1C9-0B16-4811-BD13-CC7C9FDC5636/Exchange2010-KB2891587-x64-en.msp"
+            }
+        'ur4'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/2/5/9/259753E2-7C34-4678-A392-898FD79B67DB/Exchange2010-KB2905616-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/8/F/0/8F0F7879-B343-4CE8-95F4-647FC344AC45/Exchange2010-KB2905616-x64-en.msp"
+            }
+        'ur5'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/8/4/1/841E559B-33AE-4A91-9FF9-D8E9CF8E95A7/Exchange2010-KB2917508-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/C/B/E/CBE0481B-DA9D-4B80-AE62-93B438A620BB/Exchange2010-KB2917508-x64-en.msp"
+            }
+        'ur6'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/1/F/2/1F25992D-D7CB-4EE0-8E0D-29E5406D85AF/Exchange2010-KB2936871-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/1/7/2/1729F8A5-0B67-4543-A965-08A6F46F5587/Exchange2010-KB2936871-x64-en.msp"
+            }
+        'ur7'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/F/4/9/F49FA0F2-116B-4C7D-875D-B8E0D01EDE1E/Exchange2010-KB2961522-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/8/9/8/8985C71F-4251-47D6-BED4-6796F6EE34AA/Exchange2010-KB2961522-x64-en.msp"
+            }
+        'ur8v2'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/A/2/5/A25F765E-6D74-439A-B6F2-6435D7879F49/Exchange2010-KB2986475-v2-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/B/1/0/B102A2CD-9E03-4C01-A0EE-9CB3C9A1F00F/Exchange2010-KB2986475-v2-x64-en.msp"
+            }
+        'ur9'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/A/7/6/A76EA3C0-630F-458D-B415-BB57FBA2FADE/Exchange2010-KB3030085-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/3/D/C/3DC697AD-F886-4345-9097-4B3A04232296/Exchange2010-KB3030085-x64-en.msp"
+            }
+        'ur10'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/D/F/3/DF377207-8851-46C7-B051-A5B4FB9A0F43/Exchange2010-KB3049853-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/0/6/7/06782A49-43BC-4C49-98C3-059B3455D12A/Exchange2010-KB3049853-x64-en.msp"
+            }
+        'ur11'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/B/8/3/B83BACD6-1062-43A5-B175-55B2E3D36242/Exchange2010-KB3078674-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/4/9/3/4939D546-D91D-4E15-A8E4-D9829B9F4FCE/Exchange2010-KB3078674-x64-en.msp"
+            }
+        'ur12'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/2/9/A/29A37BD7-7CB8-4A79-BB88-E426BB1BAF22/Exchange2010-KB3096066-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/D/A/1/DA15AF48-E5EB-4D3A-805A-699C27969E9F/Exchange2010-KB3096066-x64-en.msp"
+            }
         'ur13'
             {
             $de_DE_URL = "https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
-            $URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
+            $en_US_URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
             }
         }
     Switch ($e14_lang)
@@ -1930,23 +1990,29 @@ If ($Exchange2010)
             {
             $URL = $de_DE_URL
             }
-        }
-
-        $FileName = Split-Path -Leaf -Path $Url
-        $UR_Download_Path = join-path $Product_Dir $e14_ur
-        $Downloadfile = Join-Path $UR_Download_Path $FileName
-        if (!(test-path  $Downloadfile))
+        "en_US"
             {
-            Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
-            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+            $URL = $en_US_URL
+            }
+        }
+        if ($URL)
+            {
+            $FileName = Split-Path -Leaf -Path $Url
+            $UR_Download_Path = join-path $Product_Dir $e14_ur
+            $Downloadfile = Join-Path $UR_Download_Path $FileName
+            if (!(test-path  $Downloadfile))
                 {
-                Write-Verbose "Press any Key to continue"
-                pause
-                }
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
-                { 
-                write-warning "Error Downloading file $Url, Please check connectivity"
-                exit
+                Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+                if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                    {
+                    Write-Verbose "Press any Key to continue"
+                    pause
+                    }
+                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+                    { 
+                    write-warning "Error Downloading file $Url, Please check connectivity"
+                    exit
+                    }
                 }
             }
     Switch ($e14_sp)
@@ -1954,15 +2020,6 @@ If ($Exchange2010)
         "SP3"
             {
             $URL = "https://download.microsoft.com/download/3/0/3/30383778-FB6F-429A-9F65-AF1FE57D7017/Exchange2010-SP3-x64.exe"
-            $de_DE_URL = "https://download.microsoft.com/download/3/0/3/30383778-FB6F-429A-9F65-AF1FE57D7017/Exchange2010-SP3-x64.exe"
-            }
-        }
-    Switch ($e14_lang)
-        {
-        "de_DE"
-            {
-            $URL = $de_DE_URL
-
             }
         }
     } 
