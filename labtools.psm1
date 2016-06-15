@@ -1159,7 +1159,8 @@ function Receive-LABNetworker
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006',
+    [ValidateSet(
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
     'nw8231','nw8232',
     'nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
@@ -1173,7 +1174,8 @@ param
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
     'nw8016','nw8015','nw81014','nw8013','nw8012',
     'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
-    'nwunknown')]
+    'nwunknown'
+    )]
     $nw_ver,
     [ValidateSet(
     'aixpower',
@@ -1340,10 +1342,12 @@ function Receive-LABnmm
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006',
+    [ValidateSet(
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007',
     'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821')]
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+    )]
     $nmm_ver,
     [String]$Destination,
     [switch]$unzip,
@@ -2360,9 +2364,11 @@ param(
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
-    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012R2_Ger','2012_R2',
+    '2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT','Centos7 Master'
+    'OpenSUSE','Centos7 Master',
+    'OpenWRT'
     )]
     [string]$Master,
     [switch]$unzip
@@ -2387,17 +2393,33 @@ if (!(Test-Path $Destination_path))
 write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version from Azure"
 Switch ($Master)
     {
-    "2012R2FallUpdate"
+    '2016TP5'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2016TP5_GER' 
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012R2FallUpdate'
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2FallUpdateV1.7z"
         }
-    "2012R2Fall_Ger"
+    '2012R2Fall_Ger'
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.7z"
         }
-    "2012_Ger"
+    '2012R2_Ger'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012_Ger.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2012_R2'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
         }
     '2012'
         {
@@ -2414,26 +2436,6 @@ Switch ($Master)
     "OpenWRT"
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
-        }
-    '2016TP5'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
-        }
-    '2016TP5_GER' 
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
-        }    
-    '2012R2_Ger'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
-        }
-    '2012_R2'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
-        }    
-    '2012_Ger'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
         }
     default
         {
