@@ -3075,7 +3075,10 @@ $readerfiles =
 foreach ($url in $readerfiles)
     {
     $File = Split-Path -Leaf $url
-    Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+    if (!(Test-Path "$Product_Dir\$File"))
+        {
+        Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+        }
     }
 
 }
