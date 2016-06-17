@@ -3075,9 +3075,13 @@ $readerfiles =
 foreach ($url in $readerfiles)
     {
     $File = Split-Path -Leaf $url
-    if (!(Test-Path "$Product_Dir\$File"))
+    if (!(Test-Path "$Product_Dir\$File") -or $force.IsPresent)
         {
         Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+        }
+    else
+        {
+        Write-Host "File $Product_Dir\$File already exists"
         }
     }
 
