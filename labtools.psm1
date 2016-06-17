@@ -316,7 +316,7 @@ function Set-LABBuilddomain
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateLength(1,15)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,15}[a-zA-Z0-9]+$")][string]$BuildDomain
+	[ValidateLength(1,63)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]$BuildDomain
     )
     if (!(Test-Path $Defaultsfile))
     {
