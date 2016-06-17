@@ -3028,3 +3028,54 @@ $Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
     }
 Write-Output $MasterVMX
 }
+
+function Receive-LABAcrobat
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+    [Parameter(Mandatory = $true)][String]$Destination,
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('en_US','de_DE')][string]$lang = "en_US",
+    [String]$Product_Dir= "Acrobat",
+    [String]$Prereq = "prereq",
+    [switch]$unzip,
+    [switch]$force
+)
+    $Product_Dir = Join-Path $Destination $Product_Dir
+    Write-Verbose "Destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Verbose "Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+}
+
+
+
+$readerfiles = (
+"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1500720033/AcroRdrDC1500720033_$lang.msi",
+"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501620045/AcroRdrDCUpd1501620045.msp"
+)
+
+$readerfiles = 
+
+
+
+foreach ($url in $readerfiles)
+    {
+    $File = Split-Path -Leaf $url
+    Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+    }
+
+}
