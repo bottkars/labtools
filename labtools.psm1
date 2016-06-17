@@ -3081,7 +3081,7 @@ foreach ($url in $readerfiles)
         }
     else
         {
-        Write-Host "File $Product_Dir\$File already exists"
+        Write-Host -ForegroundColor Yellow "File $Product_Dir\$File already exists, use -Force to overwrite"
         }
     }
 
