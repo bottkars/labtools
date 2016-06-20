@@ -2382,7 +2382,7 @@ if (!(Test-Path $Destination_path))
     {
     Try
         {
-        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force -Confirm:$false
         }
     catch
         {
@@ -2998,6 +2998,14 @@ param(
     [string]$Master
 )
 
+switch ($ConfirmPreference)
+    {
+    "None"
+    
+        {
+        $Confirm = $False
+        }
+    }
 
 $MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
 if (!$Mastervmx)
