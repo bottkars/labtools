@@ -1337,24 +1337,23 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
                 pause
                 }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -WarningAction SilentlyContinue))
                 { 
                 write-warning "Error Downloading Readme $Url, 
                 $url might not exist."
-                # break
                 }
             }
 
         }
     }
-    else
-        {
-        Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
-        break
-        }
-    return $nwversion
-
+else
+    {
+    Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
+    return
     }
+Write-Host "finish"
+return $nwversion
+}
 
 function Receive-LABnmm
 {
