@@ -1098,7 +1098,7 @@ function Update-LABfromGit
 					        {
 						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
                             }
-                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    Write-Host -ForegroundColor Gray  " ==>found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
                     if ($delete.IsPresent)
                         {
                         Write-Verbose "Cleaning $Destination"
@@ -1786,8 +1786,8 @@ if ($Exchange2016)
             }
         else
             {
-                Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
-                }
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
+            }
         }
     Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
     switch ($e16_cu)
@@ -1830,7 +1830,7 @@ if ($Exchange2013)
             }
         else
             {
-            Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
             }
         }
     Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
@@ -1930,7 +1930,7 @@ If ($Exchange2010)
             }
         else
             {
-            Write-Host -ForegroundColor Magenta  "found $Filename in $LANG_Prereq_Dir"
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $LANG_Prereq_Dir"
             }
         }
     Write-Verbose "Testing $LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
@@ -2159,7 +2159,7 @@ if (!(Test-Path $Destination_path))
         {
         $Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
-        Write-Host -ForegroundColor Gray "We found $FileName for $Arch on EMC Website"
+        Write-Host -ForegroundColor Gray  " ==>found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
         if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             {
@@ -2192,7 +2192,7 @@ if (!(Test-Path $Destination_path))
             }
         Else
             {
-            Write-Host -ForegroundColor Gray "Found $Destination_File, using this one unless -force is specified ! "
+            Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
             }
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2246,7 +2246,7 @@ catch
     $($_.Exception.Message) "
         Break
     }
-Write-Host -ForegroundColor Gray "We found $FileName for $Product at EMC Website"
+Write-Host -ForegroundColor Gray  " ==>found $FileName for $Product at EMC Website"
 $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
@@ -2279,7 +2279,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray "Found $Destination_File, using this one unless -force is specified ! "
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
     }
 
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2359,7 +2359,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray "Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -2503,7 +2503,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray "Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -2900,7 +2900,7 @@ Switch ($Net_Ver)
             }
         else
             {
-            Write-Host -ForegroundColor Magenta  "found $Filename in $Destination"
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
             }
         
     }
@@ -2995,7 +2995,7 @@ Switch ($lang)
             }
         else
             {
-            Write-Host -ForegroundColor Magenta  "found $Filename in $Destination"
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
             }
     }
 
