@@ -3110,7 +3110,7 @@ foreach ($url in $readerfiles)
         }
     else
         {
-        Write-Host -ForegroundColor Yellow "File $Product_Dir\$File already exists, use -Force to overwrite"
+        Write-Host -ForegroundColor Green " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
         }
     }
 
