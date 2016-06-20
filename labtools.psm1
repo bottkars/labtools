@@ -1337,7 +1337,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
                 pause
                 }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -WarningAction SilentlyContinue))
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
                 { 
                 write-warning "Error Downloading Readme $Url, 
                 $url might not exist."
