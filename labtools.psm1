@@ -1217,7 +1217,8 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
     $nwdotver = $nw_ver -replace "nw",""
     $nwdotver = $nwdotver.insert(1,'.')
     $nwdotver = $nwdotver.insert(3,'.')
-    $nwdotver = $nwdotver.insert(5,'.') 
+    $nwdotver = $nwdotver.insert(5,'.')
+    [System.Version]$nwversion = $nwdotver 
     Write-Verbose "NW Dot Ver $nwdotver"
     $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
     switch ($nwzip)
@@ -1310,7 +1311,6 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         else
             {
             Write-Host -ForegroundColor Gray "Networker $NW_ver already on $Destination, try -force to overwrite"
-            $nwversion
             }
         if ($unzip)
             {
@@ -1352,7 +1352,6 @@ else
     Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
     return
     }
-Write-Host "finish"
 Write-Output $nwversion
 }
 
