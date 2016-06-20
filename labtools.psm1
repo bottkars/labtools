@@ -1352,7 +1352,7 @@ else
     return
     }
 Write-Host "finish"
-$nwversion
+Write-Output $nwversion
 }
 
 function Receive-LABnmm
