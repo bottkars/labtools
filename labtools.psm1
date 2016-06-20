@@ -1111,7 +1111,7 @@ function Update-LABfromGit
                     }
                 else 
                     {
-                    Status "No update required for $repo on $branch, already newest version "                    
+                    Write-Host -ForegroundColor Gray " ==>No update required for $repo on $branch, already newest version "                    
                     }
 return $Isnew
 }
