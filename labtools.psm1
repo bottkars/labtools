@@ -1146,7 +1146,7 @@ if (!(Test-Path $Destination))
     }
     else
     {
-    Write-Host -ForegroundColor Gray "No download needed, file exists" 
+    Write-Host -ForegroundColor Gray " ==>No download needed, file exists" 
     }
     return $ReturnCode 
 }
