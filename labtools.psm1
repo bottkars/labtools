@@ -737,7 +737,7 @@ function Expand-LAB7Zip
             {
             0
                 {
-                Write-Host "Sucess expanding $Archive"
+                Write-Host -ForegroundColor Gray " ==>Sucess expanding $Archive"
                 $object = New-Object psobject
 	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
 	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
@@ -752,7 +752,7 @@ function Expand-LAB7Zip
                 }
             default
                 {
-                Write-Host "expand exited with code $LASTEXITCODE"
+                Write-Host -ForegroundColor Gray " ==>expand exited with code $LASTEXITCODE"
                 }
             }
 	}
@@ -1695,7 +1695,7 @@ if ($Component -match 'SCDPM')
                 }
             else
                 {
-                write-host "We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
                 $return = $true
                 }
@@ -2027,7 +2027,7 @@ If ($Exchange2010)
             $Downloadfile = Join-Path $UR_Download_Path $FileName
             if (!(test-path  $Downloadfile))
                 {
-                Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
                 if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                     {
                     Write-Verbose "Press any Key to continue"
@@ -2052,7 +2052,7 @@ If ($Exchange2010)
         $Downloadfile = Join-Path $Product_Dir $FileName
         if (!(test-path  $Downloadfile))
             {
-            Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+            Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
                 Write-Verbose "Press any Key to continue"
@@ -2074,7 +2074,7 @@ If ($Exchange2010)
                 }
             else
                 {
-                write-host "We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
@@ -2841,7 +2841,7 @@ function Receive-LABSQL
             }
 
           } #end switch#
-    Write-Host "$SQLVER is now available in $SQL_BASEDir"
+    Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
     }
 
@@ -3110,7 +3110,7 @@ foreach ($url in $readerfiles)
         }
     else
         {
-        Write-Host -ForegroundColor Green " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
+        Write-Host -ForegroundColor Gray " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
         }
     }
 
