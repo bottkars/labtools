@@ -1218,12 +1218,6 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
     $nwdotver = $nwdotver.insert(1,'.')
     $nwdotver = $nwdotver.insert(3,'.')
     $nwdotver = $nwdotver.insert(5,'.') 
-    [System.Version]$nwversion = $nwdotver
-    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-        {
-        Write-Verbose "Requested Networker Version is:"
-        $nwversion
-        }
     Write-Verbose "NW Dot Ver $nwdotver"
     $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
     switch ($nwzip)
