@@ -1161,16 +1161,16 @@ param
     (
     [ValidateSet(
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
-    'nw8231','nw8232',
-    'nw8223','nw8222','nw8221','nw822',
+    'nw8232','nw8231',
+    'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
-    'nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
     'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
     'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
     'nw8105','nw8104','nw8103','nw8102','nw81',
-    'nw81044','nw8043','nw8042','nw8041',
-    'nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
+    'nw8044','nw8043','nw8042','nw8041',
+    'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
     'nw8016','nw8015','nw81014','nw8013','nw8012',
     'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
@@ -1322,7 +1322,26 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             Write-Verbose $Zipfilename     
             Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
             }
-        
+        $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_readme.txt"
+        $FileName = Split-Path -Leaf $url
+        $Destination_Filename = Join-Path $Destinationdir $FileName
+                if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+            {
+            Write-Verbose "Readme $FileName not found, trying to download from $url"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Verbose "Press any Key to start Download"
+                pause
+                }
+
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials))
+                { 
+                write-warning "Error Downloading Readme $Url, 
+                $url might not exist."
+                # break
+                }
+            }
+
         }
     }
     else
