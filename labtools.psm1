@@ -1322,10 +1322,19 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             Write-Verbose $Zipfilename     
             Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
             }
-        $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_readme.txt"
+       if ($nwversion.Major -ge 9)
+            { 
+            $Readme = "Readmefile.txt"
+            }
+        else
+            {
+            $Readme = "Readme.txt"
+            }
+        Write-Host -ForegroundColor Magenta "trying download of Readme"
+        $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_$Readme"
         $FileName = Split-Path -Leaf $url
         $Destination_Filename = Join-Path $Destinationdir $FileName
-                if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
             {
             Write-Verbose "Readme $FileName not found, trying to download from $url"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
@@ -1334,7 +1343,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
                 pause
                 }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials))
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -WarningAction SilentlyContinue))
                 { 
                 write-warning "Error Downloading Readme $Url, 
                 $url might not exist."
