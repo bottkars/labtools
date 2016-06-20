@@ -1310,6 +1310,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         else
             {
             Write-Host -ForegroundColor Gray "Networker $NW_ver already on $Destination, try -force to overwrite"
+            $nwversion
             }
         if ($unzip)
             {
