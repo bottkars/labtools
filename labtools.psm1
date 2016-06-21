@@ -1525,7 +1525,7 @@ catch
      {
      Write-Warning "error finding Destination Directory !"
      }
-Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
+Write-Host -ForegroundColor Gray " ==>Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 #############
 $Component_Dir = $Product_Dir
