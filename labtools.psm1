@@ -1160,6 +1160,7 @@ function Receive-LABNetworker
 param
     (
     [ValidateSet(
+    'nw9010',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
     'nw8232','nw8231',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
@@ -1282,8 +1283,6 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         }
          
     $nwzip = "nw$($nwzip)_$arch.$Extension"
-<<<<<<< HEAD
-    Write-Verbose "nwzip for ftp: $nwzip"
     switch ($nw_ver)
         {
         "nw9010"
@@ -1296,13 +1295,9 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
             }
         }
-=======
     Write-Host -ForegroundColor Gray " ==>nwzip for ftp: $nwzip"
-    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
->>>>>>> master
     if ($url)
         {
-            # $FileName = Split-Path -Leaf -Path $Url
         $FileName = "$($nw_ver)_$arch.$extension"
         $Zipfilename = Join-Path $Destination $FileName
         Write-Verbose $Zipfilename
@@ -1380,6 +1375,7 @@ function Receive-LABnmm
 param
     (
     [ValidateSet(
+    'nmm9010',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007',
     'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
@@ -1424,22 +1420,30 @@ Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destinat
             $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
             switch ($nmm_family)
                 {
+                "901"
+                    {
+                    $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+                    $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+                    $urls = ("ftp://ftp.legato.com/pub/eval/2016Q2/$nmm_zip",
+                     "ftp://ftp.legato.com/pub/eval/2016Q2/$scvmm_zip")
+                    }
                 "900"
                     {
                     $nmm_zip = "nmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
                     $SCVMM_zip = "scvmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
-
+                    $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
                     }
                 default
                     {
                     $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
                     $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+                    $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
                     }
                 }
             Write-Host -ForegroundColor Gray " ==>SVCMM Zip Version : $SCVMM_zip"
             Write-Host -ForegroundColor Gray " ==>NMM Zip Version : $nmm_zip"
-            $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
-                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
             }
 
         if ($urls)
@@ -1490,7 +1494,6 @@ Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destinat
             }
 
 }
-
 function Receive-LABSysCtrInstallers
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -1500,10 +1503,7 @@ function Receive-LABSysCtrInstallers
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('SC2012_R2','SCTP3','SCTP4','SCTP5')]
-<<<<<<< HEAD
-=======
     $SC_VERSION = "SC2012_R2",
->>>>>>> master
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "SysCtr",
@@ -1721,7 +1721,6 @@ if ($Component -match 'SCDPM')
             }
 return $return
 }
-
 function Receive-LABExchange
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2105,8 +2104,6 @@ If ($Exchange2010)
                 }
     return $return
 } 
-
-
 function Receive-LABScaleIO
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2306,27 +2303,6 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
     }
 } #end ISI
-
-<#
-
-                Write-Host -Foregroundcolor Magenta "No Sourcemaster or Package Found, we need to download ONEFS Simulator from EMC"
-                $request = invoke-webrequest http://www.emc.com/products-solutions/trial-software-download/isilon.htm?PID=SWD_isilon_trialsoftware
-                $Link = $request.Links | where OuterText -eq Download
-                $DownloadLink = $link.href
-                $Targetfile = (Join-Path $Sourcedir (Split-Path -Leaf $DownloadLink))
- #               if (!(Receive-LABBitsFile -DownLoadUrl $DownloadLink -Destination $Targetfile))
-                 if (!( Receive-LABBitsFile -DownLoadUrl $DownloadLink -destination $Targetfile ))
-                    {
-                    Write-Warning "Failure downloading file, exit now ... "
-                    break
-                    }
-                }
-            
-            $Targetfile = (Get-ChildItem -Path  (Join-path $Sourcedir "EMC*isilon*onefs*.zip"))[0]
-            Expand-LABZip -zipfilename $Targetfile.FullName -destination $Sourcedir -verbose
-            }
-
-#>
 
 function Receive-LABOpenWRT
 {
@@ -3018,7 +2994,7 @@ Switch ($lang)
             }
     }
 
-function  test-labmaster
+function Test-LABmaster
 {
 [CmdletBinding(DefaultParametersetName = "1",
     SupportsShouldProcess=$true,
