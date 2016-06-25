@@ -1278,7 +1278,18 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
          
     $nwzip = "nw$($nwzip)_$arch.$Extension"
     Write-Verbose "nwzip for ftp: $nwzip"
-    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+    switch ($nw_ver)
+        {
+        "nw9010"
+            {
+            $nwzip = "nw901_$arch.$Extension"
+            $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
+            }
+        default
+            {
+            $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+            }
+        }
     if ($url)
         {
             # $FileName = Split-Path -Leaf -Path $Url
