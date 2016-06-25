@@ -18,6 +18,8 @@
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
+#requires -modules vmxtoolkit
+#requires -version 3.0
 function Get-LAByesnoabort
 {
     [CmdletBinding(DefaultParameterSetName='Parameter Set 1', 
@@ -56,7 +58,7 @@ function Set-LABDefaultGateway
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.DefaultGateway = $DefaultGateway
-    Write-Verbose "Setting Default Gateway $DefaultGateway"
+    Write-Host -ForegroundColor Gray " ==>Setting Default Gateway $DefaultGateway"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -75,7 +77,7 @@ function Set-LABDNS1
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.DNS1 = $DNS1
-    Write-Verbose "Setting DNS1 $DNS1"
+    Write-Host -ForegroundColor Gray " ==>Setting DNS1 $DNS1"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -102,7 +104,7 @@ function Set-LABDNS
         {
         $Defaults.DNS2 = $DNS2
         }
-    Write-Verbose "Setting DNS"
+    Write-Host -ForegroundColor Gray " ==>Setting DNS"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -120,7 +122,7 @@ function Set-LABvmnet
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.vmnet = $VMnet
-    Write-Verbose "Setting LABVMnet $VMnet"
+    Write-Host -ForegroundColor Gray " ==>Setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -138,7 +140,7 @@ function Set-LABVlanID
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.vlanID = $vlanID
-    Write-Verbose "Setting LABVMnet $VMnet"
+    Write-Host -ForegroundColor Gray " ==>Setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 <#
@@ -177,7 +179,7 @@ function Set-LABvmnet2hvswitch
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     $SwitchDefaults.$($vmnet) = $hvswitch
-    Write-Verbose "Setting $VMnet 2 $hvswitch"
+    Write-Host -ForegroundColor Gray " ==>Setting $VMnet 2 $hvswitch"
     Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -SwitchDefaults $SwitchDefaults
 }
 
@@ -195,7 +197,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Gateway = $enabled.IsPresent
-    Write-Verbose "Setting $Gateway"
+    Write-Host -ForegroundColor Gray " ==>Setting $Gateway"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -213,7 +215,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.NoDomainCheck = $enabled.IsPresent
-    Write-Verbose "Setting $NoDomainCheck"
+    Write-Host -ForegroundColor Gray " ==>Setting $NoDomainCheck"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -231,7 +233,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.puppet = $enabled.IsPresent
-    Write-Verbose "Setting $puppet"
+    Write-Host -ForegroundColor Gray " ==>Setting $puppet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -249,7 +251,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.puppetmaster = $PuppetMaster
-    Write-Verbose "Setting $puppetMaster"
+    Write-Host -ForegroundColor Gray " ==>Setting $puppetMaster"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -268,7 +270,7 @@ function Set-LABnmm
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.NMM = $NMM.IsPresent
-    Write-Verbose "Setting NMM to $($NMM.IsPresent)"
+    Write-Host -ForegroundColor Gray " ==>Setting NMM to $($NMM.IsPresent)"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -286,7 +288,7 @@ function Set-LABsubnet
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Mysubnet = $subnet
-    Write-Verbose "Setting subnet $subnet"
+    Write-Host -ForegroundColor Gray " ==>Setting subnet $subnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -304,7 +306,7 @@ function Set-LABHostKey
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.HostKey = $HostKey
-    Write-Verbose "Setting HostKey $HostKey"
+    Write-Host -ForegroundColor Gray " ==>Setting HostKey $HostKey"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -314,7 +316,7 @@ function Set-LABBuilddomain
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateLength(1,15)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,15}[a-zA-Z0-9]+$")][string]$BuildDomain
+	[ValidateLength(1,63)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]$BuildDomain
     )
     if (!(Test-Path $Defaultsfile))
     {
@@ -323,7 +325,7 @@ function Set-LABBuilddomain
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.builddomain = $builddomain.ToLower()
-    Write-Verbose "Setting builddomain $($builddomain.ToLower())"
+    Write-Host -ForegroundColor Gray " ==>Setting builddomain $($builddomain.ToLower())"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -363,7 +365,7 @@ function Set-LABSources
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.sourcedir = $Sourcedir
-    Write-Verbose "Setting Sourcedir $Sourcedir"
+    Write-Host -ForegroundColor Gray " ==>Setting Sourcedir $Sourcedir"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -403,7 +405,7 @@ function Set-LABMasterpath
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Masterpath = $Masterpath
-    Write-Verbose "Setting Masterpath $Masterpath"
+    Write-Host -ForegroundColor Gray " ==>Setting Masterpath $Masterpath"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -426,7 +428,7 @@ process
     else
         {
 
-        Write-Verbose "Loading defaults from $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Loading defaults from $Defaultsfile"
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name mdm_ipa -Value $Default.scaleio.sio_mdm_ipa
@@ -460,7 +462,7 @@ process
     else
         {
 
-        Write-Verbose "Loading defaults from $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Loading defaults from $Defaultsfile"
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name Master -Value $Default.config.master
@@ -478,6 +480,8 @@ process
         $object | Add-Member -MemberType NoteProperty -Name IPv6PrefixLength -Value $Default.Config.IPV6PrefixLength
         $object | Add-Member -MemberType NoteProperty -Name Sourcedir -Value $Default.Config.Sourcedir
         $object | Add-Member -MemberType NoteProperty -Name SQLVer -Value $Default.config.sqlver
+        $object | Add-Member -MemberType NoteProperty -Name e14_ur -Value $Default.config.e14_ur
+        $object | Add-Member -MemberType NoteProperty -Name e14_sp -Value $Default.config.e14_sp
         $object | Add-Member -MemberType NoteProperty -Name e15_cu -Value $Default.config.e15_cu
         $object | Add-Member -MemberType NoteProperty -Name e16_cu -Value $Default.config.e16_cu
         $object | Add-Member -MemberType NoteProperty -Name NMM_Ver -Value $Default.config.nmm_ver
@@ -513,7 +517,7 @@ process
     else
         {
 
-        Write-Verbose "Loading SwitchDefaults from $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Loading SwitchDefaults from $SwitchDefaultsfile"
         [xml]$Default = Get-Content -Path $SwitchDefaultsfile
         $object = New-Object psobject
 
@@ -545,7 +549,7 @@ function Save-LABdefaults
 begin {
     }
 process {
-        Write-Verbose "Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
@@ -553,6 +557,8 @@ process {
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
         $xmlcontent += ("<master>$($Defaults.Master)</master>")
         $xmlcontent += ("<sqlver>$($Defaults.SQLVER)</sqlver>")
+        $xmlcontent += ("<e14_ur>$($Defaults.e14_ur)</e14_ur>")
+        $xmlcontent += ("<e14_sp>$($Defaults.e14_sp)</e14_sp>")
         $xmlcontent += ("<e15_cu>$($Defaults.e15_cu)</e15_cu>")
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
@@ -590,7 +596,7 @@ function Save-LABSwitchdefaults
 begin {
     }
 process {
-        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Saving defaults to $SwitchDefaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<vmnet0>$($SwitchDefaults.VMnet0)</vmnet0>")
@@ -608,8 +614,6 @@ process {
 end {}
 }
 
-
-
 function Set-LABSIOConfig   
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#set-labsioconfig")]
@@ -622,7 +626,7 @@ function Set-LABSIOConfig
     [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pool_name,
     [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pd_name
     )
-        Write-Verbose "Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
         #$xmlcontent =@()
         $xmlcontent = "<scaleio>
 <sio_mdm_ipa>$mdm_ipa</sio_mdm_ipa>
@@ -636,15 +640,13 @@ function Set-LABSIOConfig
      $xmlcontent | Set-Content $defaultsfile
      }
 
-
-
 function New-LABdefaults   
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#New-LABDefaults")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile=".\defaults.xml"
     )
-        Write-Verbose "Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<nmm_ver></nmm_ver>")
@@ -652,6 +654,8 @@ function New-LABdefaults
         $xmlcontent += ("<nw_ver></nw_ver>")
         $xmlcontent += ("<master></master>")
         $xmlcontent += ("<sqlver></sqlver>")
+        $xmlcontent += ("<e14_ur></e14_ur>")
+        $xmlcontent += ("<e14_sp></e14_sp>")
         $xmlcontent += ("<e15_cu></e15_cu>")
         $xmlcontent += ("<e16_cu></e16_cu>")
         $xmlcontent += ("<vmnet></vmnet>")
@@ -682,7 +686,7 @@ function New-LABSwitchdefaults
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml"
     )
-        Write-Verbose "Saving defaults to $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Saving defaults to $SwitchDefaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<vmnet0></vmnet0>")
@@ -721,7 +725,7 @@ function Expand-LAB7Zip
             {
             Write-Warning "7za not found in $vmwarepath"
             }	
-        Write-Verbose "extracting $Archive to $destination"
+        Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
         if (!(test-path  $destination))
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
@@ -733,7 +737,7 @@ function Expand-LAB7Zip
             {
             0
                 {
-                Write-Host "Sucess expanding $Archive"
+                Write-Host -ForegroundColor Gray " ==>Sucess expanding $Archive"
                 $object = New-Object psobject
 	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
 	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
@@ -748,7 +752,7 @@ function Expand-LAB7Zip
                 }
             default
                 {
-                Write-Host "expand exited with code $LASTEXITCODE"
+                Write-Host -ForegroundColor Gray " ==>expand exited with code $LASTEXITCODE"
                 }
             }
 	}
@@ -772,7 +776,7 @@ function Expand-LABZip
         $zipfilename = Join-Path $zipfilename $Folder
         }
     		
-        Write-Verbose "extracting $zipfilename to $destination"
+        Write-Host -ForegroundColor Gray " ==>extracting $zipfilename to $destination"
         if (!(test-path  $destination))
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
@@ -830,11 +834,11 @@ try
     }
 catch
     {
-    Write-Warning "Error downlaoding $Source"
-    break
+    Write-Error "Error downlaoding $Source"
+    return
     }
 Write-Verbose $ftpresponse.WelcomeMessage
-Write-Verbose "Filesize: $($ftpresponse.ContentLength)"
+Write-Host -ForegroundColor Gray " ==>Filesize: $($ftpresponse.ContentLength)"
  
 # Get a download stream from the server response 
 $responsestream = $ftpresponse.GetResponseStream() 
@@ -842,7 +846,7 @@ $responsestream = $ftpresponse.GetResponseStream()
 # create the tarGet file on the local system and the download buffer 
 $tarGetfile = New-Object IO.FileStream ($TarGet,[IO.FileMode]::Create) 
 [byte[]]$readbuffer = New-Object byte[] 1024 
-Write-Verbose "Downloading $Source via ftp" 
+Write-Host -ForegroundColor Gray " ==>Downloading $Source via ftp" 
 # loop through the download stream and send the data to the tarGet file 
 $I = 1
 do{ 
@@ -997,7 +1001,7 @@ end
 }  
                
  function Get-LABJava64
-    {
+{
     [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABJava64")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$DownloadDir=$vmxdir
@@ -1013,20 +1017,20 @@ end
         Write-Warning $_.Exception
         break
         }
-    write-verbose "Analyzing response Stream"
+    Write-Host -ForegroundColor Gray " ==>Analyzing response Stream"
     $Link = $javaparse.Links | Where-Object outerText -Match "Windows Offline \(64-Bit\)" | Select-Object href
     If ($Link)
         {
         $latest_java8uri = $link.href
-        Write-Verbose "$($link.href)"
+        Write-Host -ForegroundColor Gray " ==>$($link.href)"
         $Headers = Invoke-WebRequest  $Link.href -UseBasicParsing -Method Head
         $File =  $Headers.BaseResponse | Select-Object responseUri
         $Length = $Headers.Headers.'Content-Length'
         $Latest_java8 = split-path -leaf $File.ResponseUri.AbsolutePath
-        Write-verbose "We found $latest_java8 online"
+        Write-Host -ForegroundColor Gray " ==>We found $latest_java8 online"
         if (!(Test-Path "$DownloadDir\$Latest_java8"))
             {
-            Write-Verbose "Downloading $Latest_java8"
+            Write-Host -ForegroundColor Gray " ==>Downloading $Latest_java8"
             Try
                 {
                 Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination "$DownloadDir\$latest_java8" 
@@ -1069,7 +1073,7 @@ function Update-LABfromGit
             [switch]$delete
             )
         $Isnew = $false
-        Write-Verbose "Using update-fromgit function for $repo"
+        Write-Host -ForegroundColor Gray " ==>Using update-fromgit function for $repo"
         $Uri = "https://api.github.com/repos/$RepoLocation/$repo/commits/$branch"
         $Zip = ("https://github.com/$RepoLocation/$repo/archive/$branch.zip").ToLower()
         try
@@ -1086,7 +1090,7 @@ function Update-LABfromGit
             exit
             }
         [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
-                Write-Verbose "We have $repo version $latest_local_Git, $latest_OnGit is online !"
+                Write-Host -ForegroundColor Gray " ==>We have $repo version $latest_local_Git, $latest_OnGit is online !"
                 if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
                     {
                     $Updatepath = "$Builddir\Update"
@@ -1094,10 +1098,10 @@ function Update-LABfromGit
 					        {
 						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
                             }
-                    Write-host "We found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
+                    Write-Host -ForegroundColor Gray  " ==>found a newer Version for $repo on Git Dated $($request.Headers.'Last-Modified')"
                     if ($delete.IsPresent)
                         {
-                        Write-Verbose "Cleaning $Destination"
+                        Write-Host -ForegroundColor Gray " ==>Cleaning $Destination"
                         Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
                         }
                     Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
@@ -1107,13 +1111,16 @@ function Update-LABfromGit
                     }
                 else 
                     {
-                    Status "No update required for $repo on $branch, already newest version "                    
+                    Write-Host -ForegroundColor Gray " ==>No update required for $repo on $branch, already newest version "                    
                     }
 return $Isnew
 }
 
 function Receive-LABBitsFile
-{ 
+{
+    [CmdletBinding(SupportsShouldProcess=$true,
+        ConfirmImpact='None' )]
+	[OutputType([psobject])]
 param ([string]$DownLoadUrl,
         [string]$destination )
 $ReturnCode = $True
@@ -1125,8 +1132,8 @@ if (!(Test-Path $Destination))
             {
             New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
             }
-        Write-verbose "Starting Download of $DownLoadUrl"
-        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err 
+        Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl"
+        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
                 If ($err) {Throw ""} 
 
         } 
@@ -1139,7 +1146,7 @@ if (!(Test-Path $Destination))
     }
     else
     {
-    Write-Host -ForegroundColor Gray "No download needed, file exists" 
+    Write-Host -ForegroundColor Gray " ==>No download needed, file exists" 
     }
     return $ReturnCode 
 }
@@ -1152,20 +1159,23 @@ function Receive-LABNetworker
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005',
-    'nw8223','nw8222','nw8221','nw822',
+    [ValidateSet(
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
+    'nw8232','nw8231',
+    'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
-    'nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
     'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
     'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
     'nw8105','nw8104','nw8103','nw8102','nw81',
-    'nw81044','nw8043','nw8042','nw8041',
-    'nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
+    'nw8044','nw8043','nw8042','nw8041',
+    'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
     'nw8016','nw8015','nw81014','nw8013','nw8012',
     'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
-    'nwunknown')]
+    'nwunknown'
+    )]
     $nw_ver,
     [ValidateSet(
     'aixpower',
@@ -1207,14 +1217,9 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
     $nwdotver = $nw_ver -replace "nw",""
     $nwdotver = $nwdotver.insert(1,'.')
     $nwdotver = $nwdotver.insert(3,'.')
-    $nwdotver = $nwdotver.insert(5,'.') 
-    [System.Version]$nwversion = $nwdotver
-    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-        {
-        Write-Verbose "Requested Networker Version is:"
-        $nwversion
-        }
-    Write-Verbose "NW Dot Ver $nwdotver"
+    $nwdotver = $nwdotver.insert(5,'.')
+    [System.Version]$nwversion = $nwdotver 
+    Write-Host -ForegroundColor Gray " ==>NW Dot Ver $nwdotver"
     $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
     switch ($nwzip)
         {
@@ -1277,6 +1282,7 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         }
          
     $nwzip = "nw$($nwzip)_$arch.$Extension"
+<<<<<<< HEAD
     Write-Verbose "nwzip for ftp: $nwzip"
     switch ($nw_ver)
         {
@@ -1290,6 +1296,10 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
             }
         }
+=======
+    Write-Host -ForegroundColor Gray " ==>nwzip for ftp: $nwzip"
+    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+>>>>>>> master
     if ($url)
         {
             # $FileName = Split-Path -Leaf -Path $Url
@@ -1299,10 +1309,10 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
         $Destinationdir = Join-Path $Destination $nw_ver
         if (!(test-path $Zipfilename ) -or $force.IsPresent)
             {
-            Write-Verbose "$FileName not found, trying to download from $url"
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
-                Write-Verbose "Press any Key to start Download"
+                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
                 pause
                 }
 
@@ -1323,17 +1333,43 @@ if ($nw_ver -notin ('nw822','nw821','nw82'))
             Write-Verbose $Zipfilename     
             Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
             }
-        
-        }
-    }
-    else
-        {
-        Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
-        break
-        }
-    return $nwversion
+       if ($nwversion.Major -ge 9)
+            { 
+            $Readme = "Readmefile.txt"
+            }
+        else
+            {
+            $Readme = "Readme.txt"
+            }
+        Write-Host -ForegroundColor Magenta "trying download of Readme"
+        $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_$Readme"
+        $FileName = Split-Path -Leaf $url
+        $Destination_Filename = Join-Path $Destinationdir $FileName
+        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+            {
+            Write-Host -ForegroundColor Gray " ==>Readme $FileName not found, trying to download from $url"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                pause
+                }
 
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+                { 
+                write-warning "Error Downloading Readme $Url, 
+                $url might not exist."
+                }
+            }
+
+        }
     }
+else
+    {
+    Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
+    return
+    }
+Write-Output $nwversion
+}
 
 function Receive-LABnmm
 {
@@ -1343,9 +1379,12 @@ function Receive-LABnmm
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet('nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005',
+    [ValidateSet(
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007',
+    'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821')]
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+    )]
     $nmm_ver,
     [String]$Destination,
     [switch]$unzip,
@@ -1378,10 +1417,10 @@ Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destinat
             [System.Version]$nmmversion = $nmmdotver
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
-                Write-Verbose "Requested Networker Version is:"
+                Write-Host -ForegroundColor Gray " ==>Requested Networker Version is:"
                 $nmmversion
                 }
-            Write-Verbose "NMM Dot Ver $nmmdotver"
+            Write-Host -ForegroundColor Gray " ==>NMM Dot Ver $nmmdotver"
             $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
             switch ($nmm_family)
                 {
@@ -1397,8 +1436,8 @@ Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destinat
                     $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
                     }
                 }
-            Write-Verbose "SVCMM Zip Version : $SCVMM_zip"
-            Write-Verbose "NMM Zip Version : $nmm_zip"
+            Write-Host -ForegroundColor Gray " ==>SVCMM Zip Version : $SCVMM_zip"
+            Write-Host -ForegroundColor Gray " ==>NMM Zip Version : $nmm_zip"
             $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
                      "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
             }
@@ -1421,10 +1460,10 @@ Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destinat
                 Write-Verbose $Zipfile
                 if (!(test-path  $Zipfile ) -or $force.IsPresent)
                     {
-                    Write-Verbose "$FileName not found, trying to download from $url"
+                    Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
                     if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                         {
-                        Write-Verbose "Press any Key to start Download"
+                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
                         pause
                         }
 
@@ -1461,6 +1500,10 @@ function Receive-LABSysCtrInstallers
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('SC2012_R2','SCTP3','SCTP4','SCTP5')]
+<<<<<<< HEAD
+=======
+    $SC_VERSION = "SC2012_R2",
+>>>>>>> master
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "SysCtr",
@@ -1479,12 +1522,12 @@ param(
         }    
     
     
-    Write-Verbose "SCDIR : $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>SCDIR : $Product_Dir"
 if (!(Test-Path $Product_Dir)
 )    {
     Try
         {
-        Write-Verbose "Trying to create $Product_Dir"
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
         $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
         }
     catch
@@ -1501,14 +1544,14 @@ catch
      {
      Write-Warning "error finding Destination Directory !"
      }
-Write-Warning "Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
+Write-Host -ForegroundColor Gray " ==>Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 #############
 $Component_Dir = $Product_Dir
 if ($Component -match 'SCVMM')
     {
     $DownloadUrls= (
-            "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+            #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
             "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SqlCmdLnUtils.msi",
             "http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/sqlncli.msi"
             )
@@ -1516,10 +1559,10 @@ if ($Component -match 'SCVMM')
     Foreach ($URL in $DownloadUrls)
     {
     $FileName = Split-Path -Leaf -Path $Url
-    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $Prereq_Dir"
     if (!(test-path  "$Prereq_Dir\$FileName"))
         {
-        Write-Verbose "Trying Download"
+        Write-Host -ForegroundColor Gray " ==>Trying Download"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -1527,6 +1570,7 @@ if ($Component -match 'SCVMM')
             }
         }
     }
+Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
 
 switch ($SC_Version)
     {
@@ -1556,7 +1600,7 @@ switch ($SC_Version)
             $WAIK_VER = "WAIK_10"
             }
     }# end switch
-    Write-Verbose "Testing $WAIK_VER in $Destination"
+    Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
     $WAIK_DIR = Join-Path $Destination $WAIK_VER
     if (!(test-path  "$WAIK_DIR"))
         {
@@ -1566,7 +1610,7 @@ switch ($SC_Version)
     if (!(test-path  "$WAIK_DIR\Installers"))
         {
         # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
-        Write-Verbose "Trying Download of $WAIK_VER"
+        Write-Host -ForegroundColor Gray " ==>Trying Download of $WAIK_VER"
         if (!(receive-LABBitsFile -DownLoadUrl $adkurl -destination "$WAIK_DIR\$FileName"))
             { 
             write-warning "Error Downloading file $adkurl, Please check connectivity"
@@ -1587,10 +1631,10 @@ if ($Component -match 'SCOM')
     Foreach ($URL in $DownloadUrls)
     {
     $FileName = Split-Path -Leaf -Path $Url
-    Write-Verbose "Testing $FileName in $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $Prereq_Dir"
     if (!(test-path  "$Prereq_Dir\$FileName")) 
         {
-        Write-Verbose "Trying Download"
+        Write-Host -ForegroundColor Gray " ==>Trying Download"
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -1649,7 +1693,7 @@ if ($Component -match 'SCDPM')
         }    
 }#end scdpm
     $FileName = Split-Path -Leaf -Path $Url
-    Write-Verbose "Testing $SC_Version"
+    Write-Host -ForegroundColor Gray " ==>Testing $SC_Version"
     if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
         {
         Write-Host -ForegroundColor Gray " ==> Getting $SC_Version $FileName, Could take a While"
@@ -1670,7 +1714,7 @@ if ($Component -match 'SCDPM')
                 }
             else
                 {
-                write-host "We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
                 $return = $true
                 }
@@ -1694,19 +1738,29 @@ param
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
     [ValidateSet('cu1', 'cu2', 'cu3', 'sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12')]
     $e15_cu,
-    [String]$Destination,
+    [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13')]
+    $e14_ur = "ur13",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('sp3')]
+    $e14_sp="sp3",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('de_DE')]
+    $e14_lang = "de_DE",
+    [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "Exchange",
     [String]$Prereq = "prereq",
     [switch]$unzip,
     [switch]$force
 )
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Verbose "Destination : $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
 if (!(Test-Path $Product_Dir))    
     {
     Try
         {
-        Write-Verbose "Trying to create $Product_Dir"
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
         $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
         }
     catch
@@ -1716,47 +1770,45 @@ if (!(Test-Path $Product_Dir))
         }
 }
     $Prereq_Dir = Join-Path $Destination $Prereq
-    Write-Verbose "Prereq = $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>Prereq = $Prereq_Dir"
+    if (Test-Path -Path "$Prereq_Dir")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Prereq_Dir Found"
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for $EX_Version Prereqs"
+        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+        }
 
-  #############
+#############
 if ($Exchange2016)
     {    
     $ex_cu = $e16_cu
     $ex_version = "E2016"
     $Product_Dir = Join-Path $Product_Dir $ex_version
-    Write-Verbose "We are now going to Test $EX_Version Prereqs"
+    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
-		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+		       #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
                 )
-    if (Test-Path -Path "$Prereq_Dir")
-        {
-        Write-Verbose "$Prereq_Dir Found"
-        }
-        else
-        {
-        Write-Verbose "Creating Sourcedir for Prereqs"
-        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
-        }
-
-
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
         if (!(test-path  "$Prereq_Dir\$FileName"))
             {
-            Write-Verbose "$FileName not found, trying Download"
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
                 { write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
             }
-            else
-                {
-                Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
-                }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
+            }
         }
-
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
     switch ($e16_cu)
         {
         'final'
@@ -1774,43 +1826,37 @@ if ($Exchange2013)
     $ex_cu = $e15_cu
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
-    Write-Verbose "We are now going to Test $EX_Version Prereqs"
+    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
     $DownloadUrls = (
-		        "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
+		        #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe",
                 "http://download.microsoft.com/download/0/A/2/0A28BBFA-CBFA-4C03-A739-30CCA5E21659/FilterPack64bit.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
                 "http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE"
                 )
-    if (Test-Path -Path "$Prereq_Dir")
-        {
-        Write-Verbose "$Prereq_Dir Found"
-        }
-        else
-        {
-        Write-Verbose "Creating Sourcedir for $EX_Version Prereqs"
-        New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
-        }
+
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
         if (!(test-path  "$Prereq_Dir\$FileName"))
             {
-            Write-Verbose "$FileName not found, trying Download"
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
-                { write-warning "Error Downloading file $Url, Please check connectivity"
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
             }
         else
             {
-            Write-Host -ForegroundColor Magenta  "found $Filename in $Prereq_Dir"
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
             }
         }
-    Write-Verbose "Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
+    Write-Host -ForegroundColor Gray " ==>Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
     if (!(test-path  "$Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
         {
-        Write-Verbose "Extracting MAPICDO"
+        Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
         Start-Process -FilePath "$Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$Prereq_Dir /q" -Wait
         }
 
@@ -1861,21 +1907,174 @@ if ($Exchange2013)
             {
             $url = "https://download.microsoft.com/download/A/A/B/AAB18934-BC8F-429D-8912-6A98CBC96B07/Exchange2013-x64-cu11.exe"
             }
-
         "CU12"
             {
             $url = "https://download.microsoft.com/download/2/C/1/2C151059-9B2A-466B-8220-5AE8B829489B/Exchange2013-x64-cu12.exe"
             }
         }
-    }        
+    } 
+If ($Exchange2010)
+    {
+    $ex_cu = $e14_sp
+    $LANG_Prereq_Dir = Join-Path $Prereq_Dir $e14_lang
+    $ex_version = "E2010"
+    $Product_Dir = Join-Path $Product_Dir "$ex_version"
+    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
+    $DownloadUrls = (
+                'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
+                'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
+                'https://download.microsoft.com/download/0/1/3/0131A8C8-001B-4448-9DD8-62C98D862560/filterpack2010sp1-kb2460041-x64-fullfile-de-de.exe',
+                'https://download.microsoft.com/download/D/1/2/D12F3512-6BED-4D5B-919A-DDD42C41F839/FilterPack64bit.exe'
+                )
+    if (Test-Path -Path "$LANG_$Prereq_Dir")
+        {
+        Write-Host -ForegroundColor Gray " ==>$LANG_Prereq_Dir Found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for $E14_EX_Version Prereqs"
+        New-Item -ItemType Directory -Path $LANG_Prereq_Dir -Force | Out-Null
+        }
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$LANG_Prereq_Dir\$FileName"))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$LANG_Prereq_Dir\$FileName"))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $LANG_Prereq_Dir"
+            }
+        }
+    Write-Host -ForegroundColor Gray " ==>Testing $LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
+    if (!(test-path  "$LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+        {
+        Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
+        Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
+        }
+
+#"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
+    Switch ($e14_ur)
+        {
+        'ur1'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/D/7/B/D7BD4C5C-BBA5-49A9-8FE4-430D9C4F42AE/Exchange2010-KB2803727-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/0/6/F/06FC58CA-94AE-4AC9-996B-52FF08B9DEA1/Exchange2010-KB2803727-x64-en.msp"
+            }
+        'ur2'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/3/B/9/3B9A60A1-2567-432A-AA7C-80592064702D/Exchange2010-KB2866475-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/E/E/A/EEA9BF1A-6996-4EDA-B0F6-C87F7CF46342/Exchange2010-KB2866475-x64-en.msp"
+            }
+        'ur3'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/6/A/5/6A5FEC21-58F4-4F94-83CF-ACAEA0B51804/Exchange2010-KB2891587-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/5/F/1/5F14A1C9-0B16-4811-BD13-CC7C9FDC5636/Exchange2010-KB2891587-x64-en.msp"
+            }
+        'ur4'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/2/5/9/259753E2-7C34-4678-A392-898FD79B67DB/Exchange2010-KB2905616-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/8/F/0/8F0F7879-B343-4CE8-95F4-647FC344AC45/Exchange2010-KB2905616-x64-en.msp"
+            }
+        'ur5'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/8/4/1/841E559B-33AE-4A91-9FF9-D8E9CF8E95A7/Exchange2010-KB2917508-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/C/B/E/CBE0481B-DA9D-4B80-AE62-93B438A620BB/Exchange2010-KB2917508-x64-en.msp"
+            }
+        'ur6'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/1/F/2/1F25992D-D7CB-4EE0-8E0D-29E5406D85AF/Exchange2010-KB2936871-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/1/7/2/1729F8A5-0B67-4543-A965-08A6F46F5587/Exchange2010-KB2936871-x64-en.msp"
+            }
+        'ur7'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/F/4/9/F49FA0F2-116B-4C7D-875D-B8E0D01EDE1E/Exchange2010-KB2961522-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/8/9/8/8985C71F-4251-47D6-BED4-6796F6EE34AA/Exchange2010-KB2961522-x64-en.msp"
+            }
+        'ur8v2'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/A/2/5/A25F765E-6D74-439A-B6F2-6435D7879F49/Exchange2010-KB2986475-v2-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/B/1/0/B102A2CD-9E03-4C01-A0EE-9CB3C9A1F00F/Exchange2010-KB2986475-v2-x64-en.msp"
+            }
+        'ur9'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/A/7/6/A76EA3C0-630F-458D-B415-BB57FBA2FADE/Exchange2010-KB3030085-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/3/D/C/3DC697AD-F886-4345-9097-4B3A04232296/Exchange2010-KB3030085-x64-en.msp"
+            }
+        'ur10'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/D/F/3/DF377207-8851-46C7-B051-A5B4FB9A0F43/Exchange2010-KB3049853-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/0/6/7/06782A49-43BC-4C49-98C3-059B3455D12A/Exchange2010-KB3049853-x64-en.msp"
+            }
+        'ur11'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/B/8/3/B83BACD6-1062-43A5-B175-55B2E3D36242/Exchange2010-KB3078674-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/4/9/3/4939D546-D91D-4E15-A8E4-D9829B9F4FCE/Exchange2010-KB3078674-x64-en.msp"
+            }
+        'ur12'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/2/9/A/29A37BD7-7CB8-4A79-BB88-E426BB1BAF22/Exchange2010-KB3096066-x64-de.msp" 
+            $en_US_URL = "https://download.microsoft.com/download/D/A/1/DA15AF48-E5EB-4D3A-805A-699C27969E9F/Exchange2010-KB3096066-x64-en.msp"
+            }
+        'ur13'
+            {
+            $de_DE_URL = "https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
+            $en_US_URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
+            }
+        }
+    Switch ($e14_lang)
+        {
+        "de_DE"
+            {
+            $URL = $de_DE_URL
+            }
+        "en_US"
+            {
+            $URL = $en_US_URL
+            }
+        }
+        if ($URL)
+            {
+            $FileName = Split-Path -Leaf -Path $Url
+            $UR_Download_Path = join-path $Product_Dir $e14_ur
+            $Downloadfile = Join-Path $UR_Download_Path $FileName
+            if (!(test-path  $Downloadfile))
+                {
+                Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+                if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                    {
+                    Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
+                    pause
+                    }
+                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+                    { 
+                    write-warning "Error Downloading file $Url, Please check connectivity"
+                    exit
+                    }
+                }
+            }
+    Switch ($e14_sp)
+        {
+        "SP3"
+            {
+            $URL = "https://download.microsoft.com/download/3/0/3/30383778-FB6F-429A-9F65-AF1FE57D7017/Exchange2010-SP3-x64.exe"
+            }
+        }
+    } 
         $FileName = Split-Path -Leaf -Path $Url
         $Downloadfile = Join-Path $Product_Dir $FileName
         if (!(test-path  $Downloadfile))
             {
-            Write-host "we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+            Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
-                Write-Verbose "Press any Key to continue"
+                Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
                 pause
                 }
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
@@ -1894,19 +2093,18 @@ if ($Exchange2013)
                 }
             else
                 {
-                write-host "We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
             }
             elseif ($Filename.Contains(".iso"))
                 { 
-                Write-Host -ForegroundColor Gray "no unzip required, CU delivered as ISO"
+                Write-Host -ForegroundColor Gray " ==>no unzip required, CU delivered as ISO"
                 $return = $true
                 }
     return $return
-} #end else
-
+} 
 
 
 function Receive-LABScaleIO
@@ -1980,7 +2178,7 @@ if (!(Test-Path $Destination_path))
         {
         $Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
-        Write-Host -ForegroundColor Gray "We found $FileName for $Arch on EMC Website"
+        Write-Host -ForegroundColor Gray  " ==>found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
         if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
             {
@@ -1996,7 +2194,7 @@ if (!(Test-Path $Destination_path))
                 {
                 "0"
                     {
-                    Write-Verbose "$FileName not found, trying Download"
+                    Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
                     Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
                     $Downloadok = $true
                     }
@@ -2006,14 +2204,14 @@ if (!(Test-Path $Destination_path))
                     }   
                 "2"
                     {
-                    Write-Verbose "User requested Abort"
+                    Write-Host -ForegroundColor Gray " ==>User requested Abort"
                     exit
                     }
                 }
             }
         Else
             {
-            Write-Host -ForegroundColor Gray "Found $Destination_File, using this one unless -force is specified ! "
+            Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
             }
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2022,7 +2220,113 @@ if (!(Test-Path $Destination_path))
             }
         }
 } #end ScaleIO
+function Receive-LABISIlon
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    $Destination,
+    [switch]$unzip,
+    [switch]$force
 
+)
+#requires -version 3.0
+$Product = 'ISILON'
+$Destination_path = Join-Path $Destination "$Product"
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest $Product version from EMC.com"
+$Uri = "http://www.emc.com/products-solutions/trial-software-download/isilon.htm"
+$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
+$Link = $request.Links | where OuterHTML -Match Onefs_simulator
+$Url = $link.href
+try
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    }
+catch
+    {
+    Write-Warning "could not extraxt filename from downlod page.
+    Maybe links changed, please report on https://github.com/bottkars/labtools/issues for $($MyInvocation.MyCommand)
+    including the text below:
+    $($_.Exception.Message) "
+        Break
+    }
+Write-Host -ForegroundColor Gray  " ==>found $FileName for $Product at EMC Website"
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    if (!$force.IsPresent)
+        {
+        $ok = Get-labyesnoabort -title "Start Download" -message "Should we Download $FileName from www.emc.com ?"
+        }
+    else
+        {
+        $ok = "0"
+        }
+    switch ($ok)
+        {
+        "0"
+            {
+            Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+            Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+            $Downloadok = $true
+            }
+        "1"
+            {
+            break
+            }   
+        "2"
+            {
+            Write-Host -ForegroundColor Gray " ==>User requested Abort"
+            exit
+            }
+        }
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
+    }
+
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
+    }
+} #end ISI
+
+<#
+
+                Write-Host -Foregroundcolor Magenta "No Sourcemaster or Package Found, we need to download ONEFS Simulator from EMC"
+                $request = invoke-webrequest http://www.emc.com/products-solutions/trial-software-download/isilon.htm?PID=SWD_isilon_trialsoftware
+                $Link = $request.Links | where OuterText -eq Download
+                $DownloadLink = $link.href
+                $Targetfile = (Join-Path $Sourcedir (Split-Path -Leaf $DownloadLink))
+ #               if (!(Receive-LABBitsFile -DownLoadUrl $DownloadLink -Destination $Targetfile))
+                 if (!( Receive-LABBitsFile -DownLoadUrl $DownloadLink -destination $Targetfile ))
+                    {
+                    Write-Warning "Failure downloading file, exit now ... "
+                    break
+                    }
+                }
+            
+            $Targetfile = (Get-ChildItem -Path  (Join-path $Sourcedir "EMC*isilon*onefs*.zip"))[0]
+            Expand-LABZip -zipfilename $Targetfile.FullName -destination $Sourcedir -verbose
+            }
+
+#>
 
 function Receive-LABOpenWRT
 {
@@ -2068,13 +2372,13 @@ $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
-    Write-Verbose "$FileName not found, trying Download"
+    Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
     Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
     $Downloadok = $true
     }
 Else
     {
-    Write-Host -ForegroundColor Gray "Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -2083,9 +2387,151 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end OpenWRT
 
+function Receive-LABMaster
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    <#
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet('')]
+    $sio_ver,
+    #>
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2016TP5','2016TP5_GER',
+    '2012R2_Ger','2012_R2',
+    '2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE','Centos7 Master',
+    'OpenWRT'
+    )]
+    [string]$Master,
+    [switch]$unzip
+    #[switch]$force
 
+)
+#requires -version 3.0
+$Product = 'Master'
+$Destination_path = $Destination 
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force -Confirm:$false
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version from Azure"
+Switch ($Master)
+    {
+    '2016TP5'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2016TP5_GER' 
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012R2FallUpdate'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2FallUpdateV1.7z"
+        }
+    '2012R2Fall_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.7z"
+        }
+    '2012R2_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2012_R2'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    '2012_Ger'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }
+    '2012'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012.7z"
+        }
+    'CentOS7 Master'
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
+        }
+    "OpenSuse"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.7z"
+        }
+    "OpenWRT"
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
+        }
+    default
+        {
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        }    
+    }
+$Filename = Split-Path -Leaf $url
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+    Write-Verbose $ConfirmPreference
+    if ($ConfirmPreference -match "none")
+        { 
+        $commit = 0 
+        }
+    else
+        {
+        $commit = Get-LAByesnoabort -title "confirm master $master download from labbuild repo" -message "master download may take a while"
+        }
+    Switch ($commit)
+        {
+            0
+            {
+            $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+            try
+                {
+                Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File" 
+                }
+            catch
+                {
+                break
+                }
+            $StopWatch.Stop()
+            Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
+            }
+            1
+            {
+            Write-Warning "Download was refused by user"
+            break
+            }      
+        }
 
-
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    }
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Write-Host -ForegroundColor White " ==> Extracting Master $Master, this may take a while"
+    Expand-LAB7Zip "$Destination_File" -destination $Destination
+    Return $true
+    # get-vmx -Path $Destination\$Master
+    }
+} 
 function Receive-LABSQL
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2093,7 +2539,7 @@ function Receive-LABSQL
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
     param(
-    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014')]$SQLVER,
+    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016','SQL2016_ISO')]$SQLVER,
     [String]$Destination,
     [String]$Product_Dir= "SQL",
     [String]$Prereq = "prereq",
@@ -2111,13 +2557,17 @@ function Receive-LABSQL
     $SQL2014_ZIP = "http://care.dlservice.microsoft.com/dl/download/evalx/sqlserver2014/x64/SQLServer2014_x64_enus.zip"
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
+    $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
+    $SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
+    $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
+    $SQL2016_SSMS = "http://download.microsoft.com/download/E/D/3/ED3B06EC-E4B5-40B3-B861-996B710A540C/SSMS-Setup-ENU.exe"
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Verbose "Destination: $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>Destination: $Product_Dir"
     if (!(Test-Path $Product_Dir))    
     {
     Try
         {
-        Write-Verbose "Trying to create $Product_Dir"
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
         $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
         }
     catch
@@ -2127,8 +2577,8 @@ function Receive-LABSQL
         }
     }
     $Prereq_Dir = Join-Path $Destination $Prereq
-    Write-Verbose "Prereq = $Prereq_Dir"
-    Write-Verbose "We are now going to Test $SQLVER"
+    Write-Host -ForegroundColor Gray " ==>Prereq = $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>We are now going to Test $SQLVER"
     Switch ($SQLVER)
         {
             "SQL2012"
@@ -2140,7 +2590,7 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
                         Write-Host -ForegroundColor Gray " ==> Trying Download of $FileName"
@@ -2170,10 +2620,10 @@ function Receive-LABSQL
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
             $SQL_SPSETUP = Join-Path $SQL_VER_DIR $FileName
-            Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
+            Write-Host -ForegroundColor Gray " ==>Testing SQL Setup $SQL_SPSETUP"
                 if (!(test-path  "$SQL_SPSETUP"))
                     {
-                    Write-Verbose "Trying Download"
+                    Write-Host -ForegroundColor Gray " ==>Trying Download $FileName"
                     if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $SQL_SPSETUP))
                         { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2187,10 +2637,10 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
-                        Write-Verbose "Trying Download"
+                        Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
                             { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2219,10 +2669,10 @@ function Receive-LABSQL
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             $SQL_VER_DIR = Join-Path $SQL_BASEDir $SQLVER
             $SQL_SPSETUP = Join-Path $SQL_VER_DIR $FileName
-            Write-Verbose "Testing SQL Setup $SQL_SPSETUP"
+            Write-Host -ForegroundColor Gray " ==>Testing SQL Setup $SQL_SPSETUP"
                 if (!(test-path  "$SQL_SPSETUP"))
                     {
-                    Write-Verbose "Trying Download"
+                    Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
                     if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $SQL_SPSETUP))
                         { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2236,10 +2686,10 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2012_inst,$SQL2012_lang,$SQL2012_core))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
-                        Write-Verbose "Trying Download"
+                        Write-Host -ForegroundColor Gray " ==>Trying Download $FileName"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
                             { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2272,10 +2722,10 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2012SP1SLIP_box,$SQL2012SP1SLIP_INST))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $SQL_BASEDIR"
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
                     if (!(test-path  "$SQL_BASEDIR\$FileName"))
                         {
-                        Write-Verbose "Trying Download"
+                        Write-Host -ForegroundColor Gray " ==>Trying Download $Filename"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDIR\$FileName"))
                             {  
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2302,14 +2752,14 @@ function Receive-LABSQL
             foreach ($url in ($SQL2014_ZIP))
                 {
                 $FileName = Split-Path -Leaf -Path $Url
-                Write-Verbose "Testing $FileName in $SQL_BASEDIR"
+                Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
                 ### Test if the 2014 ENU´s are there
                 if (!(test-path  "$SQL_BASEDir\SQLServer2014-x64-ENU.exe"))
                     {
                     ## Test if we already have the ZIP
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
-                        Write-Verbose "Trying Download"
+                        Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
                             { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2342,10 +2792,10 @@ function Receive-LABSQL
                 foreach ($url in ($SQL2014SP1SLIP_box,$SQL2014SP1SLIP_INST))
                     {
                     $FileName = Split-Path -Leaf -Path $Url
-                    Write-Verbose "Testing $FileName in $SQL_BASEDir"
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
-                        Write-Verbose "Trying Download"
+                        Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
                             {  
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2361,7 +2811,326 @@ function Receive-LABSQL
                         }
                 }
             }
-          } #end switch
-    Write-Host "$SQLVER is now available in $SQL_BASEDir"
+            "SQL2016"
+            {
+            $SQL_BASEVER = "SQL2016"
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe") -or !(Test-Path "$SQL_BASEDir\$SQLVER\ssms*.exe"))
+                {
+                foreach ($url in ($SQL2016_box,$SQL2016_SSMS,$SQL2016_inst))
+                    {
+                    $FileName = Split-Path -Leaf -Path $Url
+                    Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
+                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                        {
+                        Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                            {  
+                            write-warning "Error Downloading file $Url, Please check connectivity"
+                            exit 
+                            }
+                        Unblock-File "$SQL_BASEDir\$FileName"
+                        }
+                    }
+                    if ($extract.ispresent)
+                        {
+                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
+                        }
+                }
+            }
+
+            "SQL2016ISO"
+            {
+            $SQL_BASEVER = "SQL2016"
+            $url = $SQL2016_ISO
+            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+            $FileName = Split-Path -Leaf $SQL2016_ISO
+            if (!(Test-Path "$SQL_BASEDir\$SQLVER\$FileName"))
+                {
+                Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
+                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                    {  
+                    write-warning "Error Downloading file $Url, Please check connectivity"
+                    exit 
+                    }
+                Unblock-File "$SQL_BASEDir\$FileName"
+                }
+            }
+
+          } #end switch#
+    Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
     }
+
+function Receive-LABNetFramework
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    '451','452','46','461'
+    )]
+    [string]$Net_Ver="452"
+)
+
+Switch ($Net_Ver)
+    {
+    '451'
+        {
+        $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
+        }
+    '452'
+        {
+        $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+        }
+    '46'
+        {
+        $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
+        }
+    '461'
+        {
+        $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
+        }
+    }
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for NetFramework Prereqs"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+            }
+        
+    }
+
+function Receive-LABWinservISO
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2012R2','2016TP5','2012'
+        )]
+    [string]$winserv_ver,
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    'en_US','de_DE'
+        )]
+    [string]$lang
+)
+Switch ($lang)
+    {
+    'de_DE'
+        {
+        Write-Verbose $lang
+        Switch ($winserv_ver)
+            {
+            '2012R2'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/4/33482C88-DBFB-43F6-925A-7E684D072B15/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_DE-DE-IR3_SSS_X64FREE_DE-DE_DV9.ISO"
+                }
+            '2012'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/7/C/6/7C6A5A9A-321B-4EF8-95FD-0A483C1EBDC2/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_DE-DE-HRM_SSS_X64FREE_DE-DE_DV5.ISO'
+                }
+            '2016TP5'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                }
+            default
+                {
+                write-host -ForegroundColor Magenta "this download will be integrated soon"
+                return
+                }
+            }
+        }
+    'en_US'
+        {
+        Switch ($winserv_ver)
+            {
+            '2012R2'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
+                }
+            '2012'
+                {
+                $URL = "http://care.dlservice.microsoft.com/dl/download/6/D/A/6DAB58BA-F939-451D-9101-7DE07DC09C03/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_EN-US-HRM_SSS_X64FREE_EN-US_DV5.ISO"
+                }
+            '2016TP5'
+                {
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                }
+            default
+                {
+                write-host -ForegroundColor Magenta "this download will be integrated soon"
+                return
+                }
+            }
+        }
+    }
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files Prereqs"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $URL
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                return
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+            }
+    }
+
+function  test-labmaster
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Masterpath=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '2016TP5','2016TP5_GER',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE','OpenWRT','Centos7 Master'
+
+        )]
+    [string]$Master
+)
+
+switch ($ConfirmPreference)
+    {
+    "None"
+    
+        {
+        $Confirm = $False
+        }
+    }
+
+$MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
+if (!$Mastervmx)
+    {
+    Write-Host -ForegroundColor Yellow " ==> Could not find $Masterpath\$Master"
+    Write-Host -ForegroundColor Gray " ==> Trying to load $Master from labbuildr Master Repo"
+    if (Receive-LABMaster -Master $Master -Destination $Masterpath -unzip -Confirm:$Confirm)
+        {
+        $MasterVMX = get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
+        }
+    else
+        {
+        Write-Warning "No valid master found /downloaded"
+        break
+        }
+    $MasterVMX = get-vmx -path "$Masterpath\$Master" -WarningAction SilentlyContinue
+    }
+if (!$MasterVMX.Template) 
+    {
+    Write-Host -ForegroundColor Gray " ==>Templating Master VMX"
+    $template = $MasterVMX | Set-VMXTemplate
+    }
+$Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
+    if (!$Basesnap) 
+    {
+    Write-Host -ForegroundColor Gray " ==>Base snap does not exist, creating now"
+    $Basesnap = $MasterVMX | New-VMXSnapshot -SnapshotName BASE
+    }
+Write-Output $MasterVMX
+}
+
+function Receive-LABAcrobat
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+    [Parameter(Mandatory = $true)][String]$Destination,
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('en_US','de_DE')][string]$lang = "en_US",
+    [String]$Product_Dir= "Acrobat",
+    [String]$Prereq = "prereq",
+    [switch]$unzip,
+    [switch]$force
+)
+    $Product_Dir = Join-Path $Destination $Product_Dir
+    Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+}
+
+
+
+$readerfiles = (
+"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1500720033/AcroRdrDC1500720033_$lang.msi",
+"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501620045/AcroRdrDCUpd1501620045.msp"
+)
+
+$readerfiles = 
+
+
+
+foreach ($url in $readerfiles)
+    {
+    $File = Split-Path -Leaf $url
+    if (!(Test-Path "$Product_Dir\$File") -or $force.IsPresent)
+        {
+        Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
+        }
+    }
+
+}
