@@ -1153,13 +1153,13 @@ if (!(Test-Path $Destination))
 
 function Receive-LABNetworker
 {
-[CmdletBinding(DefaultParametersetName = "1",
+[CmdletBinding(DefaultParametersetName = "installer",
     SupportsShouldProcess=$true,
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
 param
     (
-    [ValidateSet(
+    [Parameter(ParameterSetName = "installer",Mandatory = $true)][ValidateSet(
     'nw9010',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
     'nw8232','nw8231',
@@ -1178,6 +1178,10 @@ param
     'nwunknown'
     )]
     $nw_ver,
+    [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
+    [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
+    '9.0.1-72')]$nve_ver,
+    [Parameter(ParameterSetName = "installer",Mandatory = $true)]
     [ValidateSet(
     'aixpower',
     'hpux11_64',
@@ -1193,10 +1197,15 @@ param
     'solaris_x86',
     'win_x64',
     'win_x86'
-    )][string]$arch="win_x64",
-
+    )]
+    [string]$arch="win_x64",
+    [Parameter(ParameterSetName = "nve",Mandatory = $true)]
+    [Parameter(ParameterSetName = "installer",Mandatory = $true)]
     [String]$Destination,
+    [Parameter(ParameterSetName = "nve",Mandatory = $false)]
     [switch]$unzip,
+    [Parameter(ParameterSetName = "nve",Mandatory = $false)]
+    [Parameter(ParameterSetName = "installer",Mandatory = $false)]
     [switch]$force
     )
         
@@ -1212,160 +1221,192 @@ if (!(Test-Path $Destination))
         break
         }
     }
-Write-Host -ForegroundColor Gray " ==> Receive Request for $NW_ver in $Destination"
-if ($nw_ver -notin ('nw822','nw821','nw82'))
+switch ($PsCmdlet.ParameterSetName)
     {
-    $nwdotver = $nw_ver -replace "nw",""
-    $nwdotver = $nwdotver.insert(1,'.')
-    $nwdotver = $nwdotver.insert(3,'.')
-    $nwdotver = $nwdotver.insert(5,'.')
-    [System.Version]$nwversion = $nwdotver 
-    Write-Host -ForegroundColor Gray " ==>NW Dot Ver $nwdotver"
-    $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
-    switch ($nwzip)
+    "nve"
         {
-        "80"
+        switch ($nve_ver)
             {
-            if ($nwversion.Build -in (1,2))
+            "9.0.1-72"
                 {
-                $nwzip = "$($nwzip)sp$($nwversion.Build)"
-                }
-            if ($nwversion.Build -gt (2))
-                {
-                $nwzip = "$($nwzip)$($nwversion.Build)"
-                }
-            }
-        "81"
-            {
-            if ($nwversion.Build -eq (3))
-                {
-                $nwzip = "$($nwzip)sp$($nwversion.Build)"
-                }
-            if ($nwversion.Build -in (1,2))
-                {
-                $nwzip = "$($nwzip)$($nwversion.Build)"
-                }
-            }
-         "82"
-            {
-            if ($nwversion.Build -ne (0))
-                {
-                $nwzip = "$($nwzip)$($nwversion.Build)"
-                }
-            }
+                $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NVE-9.0.1.72.ova"
+                $FileName = Split-Path -Leaf $url
+                $Destination_Filename = Join-Path $Destination $FileName
+                if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+                    {
+                    Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
+                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                        {
+                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                        pause
+                        }
 
-
+                    if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+                        { 
+                        write-warning "Error Downloading $file from $Url, 
+                        $url might not exist."
+                        }
+                    }
+                }
+            }
         }
-    Switch ($arch)
+    "installer"
         {
-            {($_ -match "mac")}
+        Write-Host -ForegroundColor Gray " ==> Receive Request for $NW_ver in $Destination"
+        if ($nw_ver -notin ('nw822','nw821','nw82'))
+            {
+            $nwdotver = $nw_ver -replace "nw",""
+            $nwdotver = $nwdotver.insert(1,'.')
+            $nwdotver = $nwdotver.insert(3,'.')
+            $nwdotver = $nwdotver.insert(5,'.')
+            [System.Version]$nwversion = $nwdotver 
+            Write-Host -ForegroundColor Gray " ==>NW Dot Ver $nwdotver"
+            $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
+            switch ($nwzip)
                 {
-                if ($($nwversion.Minor) -lt 1)
-                    { 
-                    $extension = "tar.gz"
+                "80"
+                    {
+                    if ($nwversion.Build -in (1,2))
+                        {
+                        $nwzip = "$($nwzip)sp$($nwversion.Build)"
+                        }
+                    if ($nwversion.Build -gt (2))
+                        {
+                        $nwzip = "$($nwzip)$($nwversion.Build)"
+                        }
+                    }
+                "81"
+                    {
+                    if ($nwversion.Build -eq (3))
+                        {
+                        $nwzip = "$($nwzip)sp$($nwversion.Build)"
+                        }
+                    if ($nwversion.Build -in (1,2))
+                        {
+                        $nwzip = "$($nwzip)$($nwversion.Build)"
+                        }
+                    }
+                 "82"
+                    {
+                    if ($nwversion.Build -ne (0))
+                        {
+                        $nwzip = "$($nwzip)$($nwversion.Build)"
+                        }
+                    }
+
+
+                }
+            Switch ($arch)
+                {
+                    {($_ -match "mac")}
+                        {
+                        if ($($nwversion.Minor) -lt 1)
+                            { 
+                            $extension = "tar.gz"
+                            }
+                        else
+                            {
+                            $extension = "dmg"
+                            $unzip = $false
+                            }
+                        }
+
+                    {($_ -match "win")}
+                        {
+                        $extension = "zip"
+                        }
+                    default
+                        {
+                        $extension = "tar.gz"
+                        $unzip = $false
+                        }
+                }
+         
+            $nwzip = "nw$($nwzip)_$arch.$Extension"
+            switch ($nw_ver)
+                {
+                "nw9010"
+                    {
+                    $nwzip = "nw901_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
+                    }
+                default
+                    {
+                    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+                    }
+                }
+            Write-Host -ForegroundColor Gray " ==>nwzip for ftp: $nwzip"
+            if ($url)
+                {
+                $FileName = "$($nw_ver)_$arch.$extension"
+                $Zipfilename = Join-Path $Destination $FileName
+                Write-Verbose $Zipfilename
+                $Destinationdir = Join-Path $Destination $nw_ver
+                if (!(test-path $Zipfilename ) -or $force.IsPresent)
+                    {
+                    Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
+                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                        {
+                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                        pause
+                        }
+
+                    if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -Defaultcredentials))
+                        { 
+                        write-warning "Error Downloading file $Url, 
+                        $url might not exist.
+                        Please check connectivity or download manually"
+                        break
+                        }
                     }
                 else
                     {
-                    $extension = "dmg"
-                    $unzip = $false
+                    Write-Host -ForegroundColor Gray "Networker $NW_ver already on $Destination, try -force to overwrite"
                     }
-                }
+                if ($unzip)
+                    {
+                    Write-Verbose $Zipfilename     
+                    Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
+                    }
+               if ($nwversion.Major -ge 9)
+                    { 
+                    $Readme = "Readmefile.txt"
+                    }
+                else
+                    {
+                    $Readme = "Readme.txt"
+                    }
+                Write-Host -ForegroundColor Magenta "trying download of Readme"
+                $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_$Readme"
+                $FileName = Split-Path -Leaf $url
+                $Destination_Filename = Join-Path $Destinationdir $FileName
+                if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+                    {
+                    Write-Host -ForegroundColor Gray " ==>Readme $FileName not found, trying to download from $url"
+                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                        {
+                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                        pause
+                        }
 
-            {($_ -match "win")}
-                {
-                $extension = "zip"
-                }
-            default
-                {
-                $extension = "tar.gz"
-                $unzip = $false
-                }
-        }
-         
-    $nwzip = "nw$($nwzip)_$arch.$Extension"
-    switch ($nw_ver)
-        {
-        "nw9010"
-            {
-            $nwzip = "nw901_$arch.$Extension"
-            $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
-            }
-        default
-            {
-            $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
-            }
-        }
-    Write-Host -ForegroundColor Gray " ==>nwzip for ftp: $nwzip"
-    if ($url)
-        {
-        $FileName = "$($nw_ver)_$arch.$extension"
-        $Zipfilename = Join-Path $Destination $FileName
-        Write-Verbose $Zipfilename
-        $Destinationdir = Join-Path $Destination $nw_ver
-        if (!(test-path $Zipfilename ) -or $force.IsPresent)
-            {
-            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
-            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                {
-                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                pause
-                }
+                    if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+                        { 
+                        write-warning "Error Downloading Readme $Url, 
+                        $url might not exist."
+                        }
+                    }
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Zipfilename -Defaultcredentials))
-                { 
-                write-warning "Error Downloading file $Url, 
-                $url might not exist.
-                Please check connectivity or download manually"
-                break
                 }
             }
         else
             {
-            Write-Host -ForegroundColor Gray "Networker $NW_ver already on $Destination, try -force to overwrite"
+            Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
+            return
             }
-        if ($unzip)
-            {
-            Write-Verbose $Zipfilename     
-            Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
-            }
-       if ($nwversion.Major -ge 9)
-            { 
-            $Readme = "Readmefile.txt"
-            }
-        else
-            {
-            $Readme = "Readme.txt"
-            }
-        Write-Host -ForegroundColor Magenta "trying download of Readme"
-        $URL = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/Cumulative_$($nwdotver.Substring(0,3))_$Readme"
-        $FileName = Split-Path -Leaf $url
-        $Destination_Filename = Join-Path $Destinationdir $FileName
-        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
-            {
-            Write-Host -ForegroundColor Gray " ==>Readme $FileName not found, trying to download from $url"
-            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                {
-                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                pause
-                }
-
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
-                { 
-                write-warning "Error Downloading Readme $Url, 
-                $url might not exist."
-                }
-            }
-
+        Write-Output $nwversion
         }
     }
-else
-    {
-    Write-Warning "We can only autodownload Cumulative Updates from ftp, please get $nw_ver from support.emc.com"
-    return
-    }
-Write-Output $nwversion
 }
-
 function Receive-LABnmm
 {
 [CmdletBinding(DefaultParametersetName = "1",
