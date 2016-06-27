@@ -2858,13 +2858,13 @@ function Receive-LABSQL
                 }
             }
 
-            "SQL2016ISO"
+            "SQL2016_ISO"
             {
             $SQL_BASEVER = "SQL2016"
             $url = $SQL2016_ISO
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
             $FileName = Split-Path -Leaf $SQL2016_ISO
-            if (!(Test-Path "$SQL_BASEDir\$SQLVER\$FileName"))
+            if (!(Test-Path "$SQL_BASEDir\$FileName"))
                 {
                 Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
                 if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
