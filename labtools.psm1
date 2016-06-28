@@ -18,7 +18,6 @@
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
-#requires -modules vmxtoolkit
 #requires -version 3.0
 function Get-LAByesnoabort
 {
