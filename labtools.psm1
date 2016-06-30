@@ -1139,8 +1139,9 @@ if (!(Test-Path $Destination))
         Catch 
         { 
             $ReturnCode = $False 
-            Write-Warning " - An error occurred downloading `'$FileName`'" 
-            Write-Error $_ 
+            Write-Error " - An error occurred  downloading `'$FileName`'" 
+            #Write-Error $_ 
+            break
         }
     }
     else
@@ -2405,28 +2406,25 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
 
 function Receive-LABMaster
 {
-[CmdletBinding(DefaultParametersetName = "1",
+[CmdletBinding(DefaultParametersetName = "vmware",
     SupportsShouldProcess=$true,
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
 param(
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
     $Destination=".\",
-    <#
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
-    [ValidateSet('')]
-    $sio_ver,
-    #>
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
-    '2012R2_Ger','2012_R2',
-    '2012R2FallUpdate','2012R2Fall_Ger',
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','Centos7 Master',
-    'OpenWRT'
+    'OpenSUSE','OpenWRT','Centos7 Master'
     )]
     [string]$Master,
+    [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
+    [ValidateSet('vmware','hyperv')]
+    [string]$mastertype = 'vmware',
     [switch]$unzip
     #[switch]$force
 
@@ -2447,55 +2445,67 @@ if (!(Test-Path $Destination_path))
         }
     }
 write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version from Azure"
+Switch ($mastertype)
+    {
+    "vmware"
+        {
+        $Packer = "7z"
+        }
+    "hyperv"
+        {
+        $Packer = "zip"
+        }
+    }
+
 Switch ($Master)
     {
     '2016TP5'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }
     '2016TP5_GER' 
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }    
     '2012R2FallUpdate'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2FallUpdateV1.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$master.$Packer"
         }
     '2012R2Fall_Ger'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.$Packer"
         }
     '2012R2_Ger'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }
     '2012_R2'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }    
     '2012_Ger'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }
     '2012'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }
     'CentOS7 Master'
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.$Packer"
         }
     "OpenSuse"
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.$Packer"
         }
     "OpenWRT"
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.$Packer"
         }
     default
         {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.7z"
+        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }    
     }
 $Filename = Split-Path -Leaf $url
@@ -2523,8 +2533,9 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
                 }
             catch
                 {
+                Write-Error "Error receiving $Destination_File"
                 break
-                }
+                    }
             $StopWatch.Stop()
             Write-host -ForegroundColor White "Master Download took $($StopWatch.Elapsed.ToString())"
             }
@@ -2543,9 +2554,18 @@ Else
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
     Write-Host -ForegroundColor White " ==> Extracting Master $Master, this may take a while"
-    Expand-LAB7Zip "$Destination_File" -destination $Destination
+    Switch ($mastertype)
+        {
+        "vmware"
+            {
+            Expand-LAB7Zip "$Destination_File" -destination $Destination
+            }
+        "hyperv"
+            {
+            Expand-LABZip -zipfilename $Destination_File -destination $Destination
+            }
+        }
     Return $true
-    # get-vmx -Path $Destination\$Master
     }
 } 
 function Receive-LABSQL
@@ -3024,8 +3044,9 @@ Switch ($lang)
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
-                { write-warning "Error Downloading file $Url, Please check connectivity"
-                return
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                break
                 }
             }
         else
@@ -3036,22 +3057,25 @@ Switch ($lang)
 
 function Test-LABmaster
 {
-[CmdletBinding(DefaultParametersetName = "1",
+[CmdletBinding(DefaultParametersetName = "vmware",
     SupportsShouldProcess=$true,
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
 param(
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
     $Masterpath=".\",
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
+    '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','OpenWRT','Centos7 Master'
-
         )]
-    [string]$Master
+    [string]$Master,
+    [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
+    [ValidateSet('vmware','hyperv')]
+    $mastertype = 'vmware'
 )
 
 switch ($ConfirmPreference)
@@ -3063,32 +3087,58 @@ switch ($ConfirmPreference)
         }
     }
 
-$MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
-if (!$Mastervmx)
+switch ($mastertype)
     {
-    Write-Host -ForegroundColor Yellow " ==> Could not find $Masterpath\$Master"
-    Write-Host -ForegroundColor Gray " ==> Trying to load $Master from labbuildr Master Repo"
-    if (Receive-LABMaster -Master $Master -Destination $Masterpath -unzip -Confirm:$Confirm)
+    "vmware"
         {
-        $MasterVMX = get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
+        $MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
+        if (!$Mastervmx)
+            {
+            Write-Host -ForegroundColor Yellow " ==> Could not find $Masterpath\$Master"
+            Write-Host -ForegroundColor Gray " ==> Trying to load $Master from labbuildr Master Repo"
+            if (Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
+                {
+                $MasterVMX = get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
+                }
+            else
+                {
+                Write-Warning "No valid master found /downloaded"
+                break
+                }
+            $MasterVMX = get-vmx -path "$Masterpath\$Master" -WarningAction SilentlyContinue
+            }
+        if (!$MasterVMX.Template) 
+            {
+            Write-Host -ForegroundColor Gray " ==>Templating Master VMX"
+            $template = $MasterVMX | Set-VMXTemplate
+            }
+        $Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
+            if (!$Basesnap) 
+            {
+            Write-Host -ForegroundColor Gray " ==>Base snap does not exist, creating now"
+            $Basesnap = $MasterVMX | New-VMXSnapshot -SnapshotName BASE
+            }
         }
-    else
+    "hyperv"
         {
-        Write-Warning "No valid master found /downloaded"
-        break
+        Write-Host -ForegroundColor Magenta " ==>Testing for Hyper-V Master $Masterpath\$Master.vhdx "
+        if (!($MasterVMX = (Get-ChildItem -Path $Masterpath -Filter "$Master.vhdx" -Recurse).FullName))
+            {
+            try
+                {
+                Receive-LABMaster -Destination $Masterpath -Master $Master -mastertype hyperv -unzip -Confirm:$false -ErrorAction Stop
+                }
+            catch
+                {
+                Write-Error "Error Downloading Master"
+                Return $false
+                }
+            }
+        else 
+            {
+            Write-Host -ForegroundColor Magenta " ==>Found Master $Mastervmx"
+            }
         }
-    $MasterVMX = get-vmx -path "$Masterpath\$Master" -WarningAction SilentlyContinue
-    }
-if (!$MasterVMX.Template) 
-    {
-    Write-Host -ForegroundColor Gray " ==>Templating Master VMX"
-    $template = $MasterVMX | Set-VMXTemplate
-    }
-$Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
-    if (!$Basesnap) 
-    {
-    Write-Host -ForegroundColor Gray " ==>Base snap does not exist, creating now"
-    $Basesnap = $MasterVMX | New-VMXSnapshot -SnapshotName BASE
     }
 Write-Output $MasterVMX
 }
