@@ -2419,7 +2419,7 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT','Centos7 Master'
+    'OpenSUSE','OpenWRT','Centos7 Master','Ubuntu15_4'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -2459,45 +2459,13 @@ Switch ($mastertype)
 
 Switch ($Master)
     {
-    '2016TP5'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }
-    '2016TP5_GER' 
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }    
-    '2012R2FallUpdate'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$master.$Packer"
-        }
     '2012R2Fall_Ger'
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/2012R2Fall_Ger.$Packer"
         }
-    '2012R2_Ger'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }
-    '2012_R2'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }    
-    '2012_Ger'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }
-    '2012'
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
-        }
     'CentOS7 Master'
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/CentOS7.$Packer"
-        }
-    "OpenSuse"
-        {
-        $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenSUSE.$Packer"
         }
     "OpenWRT"
         {
