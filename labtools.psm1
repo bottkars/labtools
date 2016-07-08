@@ -2419,7 +2419,8 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT','Centos7 Master','Ubuntu15_4'
+    'OpenSUSE','OpenWRT','Centos7 Master',
+    'Ubuntu15_4','Ubuntu16_4'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -3038,7 +3039,8 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT','Centos7 Master','Ubuntu15_4'
+    'OpenSUSE','OpenWRT','Centos7 Master',
+    'Ubuntu15_4','Ubuntu16_4'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
