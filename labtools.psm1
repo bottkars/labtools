@@ -1202,7 +1202,7 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)]
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
     [String]$Destination,
-    [Parameter(ParameterSetName = "nve",Mandatory = $false)]
+    [Parameter(ParameterSetName = "installer",Mandatory = $false)]
     [switch]$unzip,
     [Parameter(ParameterSetName = "nve",Mandatory = $false)]
     [Parameter(ParameterSetName = "installer",Mandatory = $false)]
