@@ -334,27 +334,24 @@ function Set-LABSources
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
     [ValidateLength(3,10)]
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateScript({ 
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
+    )   
     try
         {
         Get-Item -Path $_ -ErrorAction Stop | Out-Null 
         }
-        catch
+    catch
         [System.Management.Automation.DriveNotFoundException] 
         {
         Write-Warning "Drive not found, make sure to have your Source Stick connected"
         exit
         }
-        catch #[System.Management.Automation.ItemNotFoundException]
+    catch #[System.Management.Automation.ItemNotFoundException]
         {
-        write-warning "no sources directory found"
-        exit
+        Write-Warning "no sources directory found, trying to create"
+        New-Item -ItemType Directory -Path $Sourcedir -Force| Out-Null
         }
-        return $True
-        })]$Sourcedir
-    
-#Test-Path -Path $_ })]$Sourcedir
-    )   
+
     if (!(Test-Path $Sourcedir)){exit} 
 
     if (!(Test-Path $Defaultsfile))
@@ -392,7 +389,10 @@ function Set-LABMasterpath
         write-warning "no Master directory found, creating now"
         New-Item -ItemType Directory -Path $Masterpath -Force | Out-Null
         }
-   
+    if (!(Test-Path $Masterpath))
+        {
+        exit
+        }
     if (!(Test-Path $Defaultsfile))
     {
         Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
