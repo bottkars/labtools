@@ -388,7 +388,7 @@ function Set-LABMasterpath
         catch #[System.Management.Automation.ItemNotFoundException]
         {
         write-warning "no Master directory found"
-        New-Item -ItemType Directory $Masterpath
+        New-Item -ItemType Directory -path $Masterpath
         }
         return $True
         })]$Masterpath
