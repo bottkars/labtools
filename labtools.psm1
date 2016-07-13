@@ -388,6 +388,7 @@ function Set-LABMasterpath
         catch #[System.Management.Automation.ItemNotFoundException]
         {
         write-warning "no Master directory found"
+        write-host "should we create $Masterpath ?"
         exit
         }
         return $True
