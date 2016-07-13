@@ -388,8 +388,7 @@ function Set-LABMasterpath
         catch #[System.Management.Automation.ItemNotFoundException]
         {
         write-warning "no Master directory found"
-        write-host "should we create $Masterpath ?"
-        exit
+        New-Item -ItemType Directory $Masterpath
         }
         return $True
         })]$Masterpath
@@ -397,7 +396,6 @@ function Set-LABMasterpath
 #Test-Path -Path $_ })]$Masterpath
     )   
     if (!(Test-Path $Masterpath)){exit} 
-
     if (!(Test-Path $Defaultsfile))
     {
         Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
