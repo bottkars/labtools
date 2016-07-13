@@ -333,7 +333,7 @@ function Set-LABSources
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABSources")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
-    [ValidateLength(3,10)]
+    [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
     )   
     try
