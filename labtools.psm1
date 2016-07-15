@@ -2,7 +2,7 @@
 .Synopsis
    Short description
 .DESCRIPTION
-   Long description
+   Labtools are common extensions to Labbuildr, used for downlods, checks, environment settings
 .EXAMPLE
    Example of how to use this cmdlet
 .EXAMPLE
