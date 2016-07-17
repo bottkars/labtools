@@ -51,7 +51,7 @@ function Set-LABDefaultGateway
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -70,7 +70,7 @@ function Set-LABDNS1
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -90,7 +90,7 @@ function Set-LABDNS
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -116,7 +116,7 @@ function Set-LABvmnet
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -134,7 +134,7 @@ function Set-LABVlanID
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -173,7 +173,7 @@ function Set-LABvmnet2hvswitch
     )
     if (!(Test-Path $SwitchDefaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
@@ -191,7 +191,7 @@ function Set-LABGateway
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -209,7 +209,7 @@ function Set-LABNoDomainCheck
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -227,7 +227,7 @@ function Set-LABpuppet
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -245,7 +245,7 @@ function Set-LABPuppetMaster
     )
 if (!(Test-Path $Defaultsfile))
     {
-    Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -263,7 +263,7 @@ function Set-LABnmm
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
@@ -282,7 +282,7 @@ function Set-LABsubnet
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -300,7 +300,7 @@ function Set-LABHostKey
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -319,7 +319,7 @@ function Set-LABBuilddomain
     )
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -356,7 +356,7 @@ function Set-LABSources
 
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -395,7 +395,7 @@ function Set-LABMasterpath
         }
     if (!(Test-Path $Defaultsfile))
     {
-        Write-Host -ForegroundColor Gray " ==> Creating New defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
@@ -1001,7 +1001,7 @@ end
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$DownloadDir=$vmxdir
     )
-    Write-Host -ForegroundColor Gray " ==> Asking for latest Java"
+    Write-Host -ForegroundColor Gray " ==>Asking for latest Java"
     Try
         {
         $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp
@@ -1248,7 +1248,7 @@ switch ($PsCmdlet.ParameterSetName)
         }
     "installer"
         {
-        Write-Host -ForegroundColor Gray " ==> Receive Request for $NW_ver in $Destination"
+        Write-Host -ForegroundColor Gray " ==>Receive Request for $NW_ver in $Destination"
         if ($nw_ver -notin ('nw822','nw821','nw82'))
             {
             $nwdotver = $nw_ver -replace "nw",""
@@ -1436,7 +1436,7 @@ if (!(Test-Path $Destination))
         break
         }
     }
-Write-Host -ForegroundColor Gray " ==> Receive Request for $NMM_ver in $Destination"
+Write-Host -ForegroundColor Gray " ==>Receive Request for $NMM_ver in $Destination"
 
 #####
         $URLS = ""
@@ -1653,7 +1653,7 @@ switch ($SC_Version)
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
             }
-        Write-Host -ForegroundColor Gray " ==> Getting WAIK, Could take a While, please do not kill process adksetup !"
+        Write-Host -ForegroundColor Gray " ==>Getting WAIK, Could take a While, please do not kill process adksetup !"
         Write-Host -ForegroundColor Gray "Install Tree will be in $WAIK_DIR"
         Start-Process -FilePath "$WAIK_DIR\$FileName" -ArgumentList "/quiet /layout $WAIK_DIR" -Wait -WindowStyle Normal -PassThru
         }
@@ -1733,7 +1733,7 @@ if ($Component -match 'SCDPM')
     Write-Host -ForegroundColor Gray " ==>Testing $SC_Version"
     if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
         {
-        Write-Host -ForegroundColor Gray " ==> Getting $SC_Version $FileName, Could take a While"
+        Write-Host -ForegroundColor Gray " ==>Getting $SC_Version $FileName, Could take a While"
 
         if (!(receive-LABBitsFile -DownLoadUrl $URL -destination  "$Product_Dir\$FileName"))
             { 
@@ -2615,7 +2615,7 @@ Else
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
-    Write-Host -ForegroundColor White " ==> Extracting Master $Master, this may take a while"
+    Write-Host -ForegroundColor White " ==>Extracting Master $Master, this may take a while"
     Switch ($mastertype)
         {
         "vmware"
@@ -2691,7 +2691,7 @@ function Receive-LABSQL
                     Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
                     if (!(test-path  "$SQL_BASEDir\$FileName"))
                         {
-                        Write-Host -ForegroundColor Gray " ==> Trying Download of $FileName"
+                        Write-Host -ForegroundColor Gray " ==>Trying Download of $FileName"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
                             { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
@@ -2702,7 +2702,7 @@ function Receive-LABSQL
                     }
                 If ($Extract.ispresent)
                     {
-                    Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                    Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                     $FileName = Split-Path -Leaf $SQL2012_inst
                     Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                     }    
@@ -2749,7 +2749,7 @@ function Receive-LABSQL
                     }
                     If ($Extract.ispresent)
                         {
-                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
                         Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
@@ -2798,7 +2798,7 @@ function Receive-LABSQL
                     }
                 If ($Extract.ispresent)
                         {
-                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                         $FileName = Split-Path -Leaf $SQL2012_inst
                         Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                         }    
@@ -2834,7 +2834,7 @@ function Receive-LABSQL
                     }
                     If ($Extract.ispresent)
                         {
-                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                         Start-Process $SQL_BASEDIR\$FileName -ArgumentList "/X:$SQL_VER_DIR /q" -Wait
                         }
                     }
@@ -2873,7 +2873,7 @@ function Receive-LABSQL
                 # New-Item -ItemType Directory $Sourcedir\$SQLVER
                 if ($extract.IsPresent)
                     {
-                    Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                    Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                     Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                     } 
                 }
@@ -2904,7 +2904,7 @@ function Receive-LABSQL
                     }
                     if ($extract.ispresent)
                         {
-                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                         Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                         }
                 }
@@ -2933,7 +2933,7 @@ function Receive-LABSQL
                     }
                     if ($extract.ispresent)
                         {
-                        Write-Host -ForegroundColor Gray " ==> Creating $SQLVER Installtree, this might take a while"
+                        Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                         Start-Process $SQL_BASEDir\$FileName -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                         }
                 }
@@ -3033,9 +3033,8 @@ param(
     $Destination=".\"
     #[Parameter(ParameterSetName = "1", Mandatory = $false)]
     #[ValidateSet(
-    #'451','452','46','461'
     #)]
-    #[#string]$Net_Ver="452"
+    #[#string]$_Ver="452"
 )
 
 if (Test-Path -Path "$Destination")
@@ -3044,7 +3043,7 @@ if (Test-Path -Path "$Destination")
     }
 else
     {
-    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for NetFramework Prereqs"
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for OpenSSL"
     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
     }
 Write-Host -ForegroundColor Gray " ==>Checking for latests OpenSSL light"
@@ -3062,7 +3061,7 @@ catch
 	}
 try 
 	{
-	Write-Host " ==> Trying to Parse OpenSSL Site $OpenSSL_URL"
+	Write-Host -ForegroundColor Gray " ==>Trying to Parse OpenSSL Site $OpenSSL_URL"
 	$Parse = $Req.Links | where {$_ -Match "Win64OpenSSL_Light"}
 	} 
 catch
@@ -3075,7 +3074,7 @@ catch
 $File = ($Parse | Select-Object -First 1).outerHTML
 $link = $File.Split('"') | where {$_ -Match "/download"}
 $URL = "https://slproweb.com" + $($link)
-Write-Verbose " ==> got $URL"
+Write-Verbose " ==>got $URL"
     $FileName = Split-Path -Leaf -Path $Url
     if (!(test-path  "$Destination\$FileName"))
         {
@@ -3232,8 +3231,8 @@ switch ($mastertype)
         $MasterVMX = get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
         if (!$Mastervmx)
             {
-            Write-Host -ForegroundColor Yellow " ==> Could not find $Masterpath\$Master"
-            Write-Host -ForegroundColor Gray " ==> Trying to load $Master from labbuildr Master Repo"
+            Write-Host -ForegroundColor Yellow " ==>Could not find $Masterpath\$Master"
+            Write-Host -ForegroundColor Gray " ==>Trying to load $Master from labbuildr Master Repo"
             if (Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
                 {
                 $MasterVMX = get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
