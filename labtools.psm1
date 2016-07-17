@@ -3022,6 +3022,76 @@ Switch ($Net_Ver)
         
     }
 
+function Receive-LABOpenSSL
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\"
+    #[Parameter(ParameterSetName = "1", Mandatory = $false)]
+    #[ValidateSet(
+    #'451','452','46','461'
+    #)]
+    #[#string]$Net_Ver="452"
+)
+
+if (Test-Path -Path "$Destination")
+    {
+    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    }
+else
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for NetFramework Prereqs"
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    }
+Write-Host -ForegroundColor Gray " ==>Checking for latests OpenSSL light"
+
+$OpenSSL_URL = "https://slproweb.com/products/Win32OpenSSL.html"
+try
+	{
+	$Req = Invoke-WebRequest  -UseBasicParsing -Uri $OpenSSL_URL
+	}
+catch 
+	{
+	Write-Host "Error getting OpenSSL"
+	$_
+	break
+	}
+try 
+	{
+	Write-Host " ==> Trying to Parse OpenSSL Site $OpenSSL_URL"
+	$Parse = $Req.Links | where {$_ -Match "Win64OpenSSL_Light"}
+	} 
+catch
+	{
+	Write-Host -ForegroundColor Yellow "Error Parsing"
+	$_
+	break
+	}
+
+$File = ($Parse | Select-Object -First 1).outerHTML
+$link = $File.Split('"') | where {$_ -Match "/download"}
+$URL = "https://slproweb.com" + $($link)
+Write-Verbose " ==> got $URL"
+    $FileName = Split-Path -Leaf -Path $Url
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+        
+}
+
 function Receive-LABWinservISO
 {
 [CmdletBinding(DefaultParametersetName = "1",
