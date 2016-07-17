@@ -3089,7 +3089,12 @@ Write-Verbose " ==> got $URL"
         {
         Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
         }
-        
+$Version = $FileName -replace "Win64OpenSSL_Light-"
+$Version = $Version -replace ".exe"
+$object = New-Object psobject
+$object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
+$object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
+Write-Output $object 
 }
 
 function Receive-LABWinservISO
