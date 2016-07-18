@@ -704,7 +704,8 @@ function Expand-LAB7Zip
 	param (
         [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
         [string]$Archive,
-        [string]$destination=$vmxdir
+        [string]$destination=$vmxdir,
+        [switch]$force
         #[String]$Folder
         )
 	$Origin = $MyInvocation.MyCommand
@@ -727,7 +728,15 @@ function Expand-LAB7Zip
             }
         $Archivefile = Get-ChildItem $Archive
         $7zdestination = "-o"+$destination
-        .$7za x $7zdestination $Archivefile.FullName
+        if ($force.ispresent)
+            {
+            $command = "x -y"
+            }
+        else
+            {
+            $command = "x"
+            }
+        .$7za $command $7zdestination $Archivefile.FullName
         switch ($LASTEXITCODE)
             {
             0
