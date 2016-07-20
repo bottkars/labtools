@@ -328,6 +328,24 @@ function Set-LABBuilddomain
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABCustomDomainSuffix
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABCustom_DomainSuffix")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
+	[ValidateLength(1,63)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]$Custom_DomainSuffix
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.Custom_DomainSuffix = $Custom_DomainSuffix.ToLower()
+    Write-Host -ForegroundColor Gray " ==>Setting Custom_DomainSuffix $($Custom_DomainSuffix.ToLower())"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 function Set-LABSources
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABSources")]
@@ -463,6 +481,7 @@ process
 	    $object | Add-Member -MemberType NoteProperty -Name Master -Value $Default.config.master
         $object | Add-Member -MemberType NoteProperty -Name ScaleIOVer -Value $Default.config.scaleiover
         $object | Add-Member -MemberType NoteProperty -Name BuildDomain -Value $Default.config.Builddomain
+        $object | Add-Member -MemberType NoteProperty -Name Custom_DomainSuffix  -Value $Default.config.Custom_DomainSuffix
         $object | Add-Member -MemberType NoteProperty -Name MySubnet -Value $Default.config.MySubnet
         $object | Add-Member -MemberType NoteProperty -Name vmnet -Value $Default.config.vmnet
         $object | Add-Member -MemberType NoteProperty -Name vlanID -Value $Default.config.vlanID
@@ -656,6 +675,7 @@ function New-LABdefaults
         $xmlcontent += ("<vmnet></vmnet>")
         $xmlcontent += ("<vlanID></vlanID>")
         $xmlcontent += ("<BuildDomain></BuildDomain>")
+        $xmlcontent += ("<Custom_DomainSuffix></Custom_DomainSuffix>")
         $xmlcontent += ("<MySubnet></MySubnet>")
         $xmlcontent += ("<AddressFamily></AddressFamily>")
         $xmlcontent += ("<IPV6Prefix></IPV6Prefix>")
