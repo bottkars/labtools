@@ -1036,7 +1036,7 @@ end
     Write-Host -ForegroundColor Gray " ==>Asking for latest Java"
     Try
         {
-        $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp -UseBasicParsing
+        $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp
         }
     catch [Exception] 
         {
