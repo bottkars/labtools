@@ -334,7 +334,7 @@ function Set-LABCustomDomainSuffix
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateLength(1,63)][ValidatePattern("?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}\.?$")]
+	[ValidateLength(1,63)]
 	#"^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]
 	$Custom_DomainSuffix
     )
@@ -579,6 +579,7 @@ process {
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
         $xmlcontent += ("<vlanID>$($Defaults.vlanID)</vlanID>")
+        $xmlcontent += ("<Custom_DomainSuffix>$($Defaults.Custom_DomainSuffix)</Custom_DomainSuffix>")
         $xmlcontent += ("<BuildDomain>$($Defaults.BuildDomain)</BuildDomain>")
         $xmlcontent += ("<MySubnet>$($Defaults.MySubnet)</MySubnet>")
         $xmlcontent += ("<AddressFamily>$($Defaults.AddressFamily)</AddressFamily>")
