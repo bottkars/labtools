@@ -334,7 +334,9 @@ function Set-LABCustomDomainSuffix
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateLength(1,63)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]$Custom_DomainSuffix
+	[ValidateLength(1,63)][ValidatePattern("?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}\.?$")]
+	#"^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]
+	$Custom_DomainSuffix
     )
     if (!(Test-Path $Defaultsfile))
     {
