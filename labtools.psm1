@@ -1189,7 +1189,7 @@ param
     (
     [Parameter(ParameterSetName = "installer",Mandatory = $true)][ValidateSet(
     'nw9010',
-    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
     'nw8232','nw8231',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
@@ -1445,7 +1445,7 @@ param
     (
     [ValidateSet(
     'nmm9010',
-    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007',
     'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
