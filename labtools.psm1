@@ -3257,7 +3257,7 @@ Write-Verbose " ==>got $URL"
         }
     else
         {
-        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Product_Dir"
         }
 $Version = $FileName -replace "python-"
 $Version = $Version -replace ".amd64.msi"
