@@ -2518,6 +2518,7 @@ Else
     {
     Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
     }
+Write-Output $Filename
 } #end ECSCLI
 function Receive-LABOpenWRT
 {
