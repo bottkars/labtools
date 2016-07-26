@@ -1189,7 +1189,7 @@ param
     (
     [Parameter(ParameterSetName = "installer",Mandatory = $true)][ValidateSet(
     'nw9010',
-    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007',
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
     'nw8232','nw8231',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
@@ -1445,7 +1445,7 @@ param
     (
     [ValidateSet(
     'nmm9010',
-    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007',
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
     'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
@@ -2469,7 +2469,56 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end ISI
 
+function Receive-LABECScli
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet('2.2.1')]
+    $ECS_ver = "2.2.1"
+    #[switch]$force
 
+)
+#requires -version 3.0
+$Product = 'ecscli'
+$Destination_path = Join-Path $Destination $Product 
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+switch ($ECS_ver)
+    {
+    '2.2.1'
+        {
+        $url = "https://community.emc.com/servlet/JiveServlet/downloadBody/52139-102-3-171387/ecscli_2.2.1.tar.gz"
+        }
+    }
+write-host -ForegroundColor Gray  " ==>we will download ECSCLI $ECS_ver"
+$Filename = Split-Path -Leaf $url
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+    $DownloadOK = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    }
+} #end ECSCLI
 function Receive-LABOpenWRT
 {
 [CmdletBinding(DefaultParametersetName = "1",
