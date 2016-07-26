@@ -3178,6 +3178,96 @@ $object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
 Write-Output $object 
 }
 
+function Receive-LABPython
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\"
+    #[Parameter(ParameterSetName = "1", Mandatory = $false)]
+    #[ValidateSet(
+    #)]
+    #[#string]$_Ver="452"
+)
+$Product = "Python"
+if (Test-Path -Path "$Destination")
+    {
+    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    }
+else
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Python"
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    }
+$Product_Dir = Join-Path $Destination $Product
+Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+}
+
+Write-Host -ForegroundColor Gray " ==>Checking for latests Python"
+
+$Python_URL = "https://www.python.org/downloads/windows/"
+try
+	{
+	$Req = Invoke-WebRequest  -UseBasicParsing -Uri $Python_URL
+	}
+catch 
+	{
+	Write-Host "Error getting Python"
+	$_
+	break
+	}
+try 
+	{
+	Write-Host -ForegroundColor Gray " ==>Trying to Parse Python on $Python_URL"
+	$Parse = $Req.Links | where {$_ -Match "-2.7.*.amd64.msi"} # | Sort-Object -Descending |Select-Object -First 1
+	} 
+catch
+	{
+	Write-Host -ForegroundColor Yellow "Error Parsing"
+	$_
+	break
+	}
+
+$URL= ($Parse | Select-Object -First 1).href
+$FileName = Split-Path -Leaf $URL
+Write-Verbose " ==>got $URL"
+    $FileName = Split-Path -Leaf -Path $Url
+    if (!(test-path  "$Product_Dir\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Product_Dir\$FileName"))
+            { write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+$Version = $FileName -replace "python-"
+$Version = $Version -replace ".amd64.msi"
+$object = New-Object psobject
+$object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
+$object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
+Write-Output $object 
+}
+
+
 function Receive-LABWinservISO
 {
 [CmdletBinding(DefaultParametersetName = "1",
