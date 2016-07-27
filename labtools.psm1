@@ -3186,11 +3186,11 @@ function Receive-LABPython
 	[OutputType([psobject])]
 param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    $Destination=".\"
-    #[Parameter(ParameterSetName = "1", Mandatory = $false)]
-    #[ValidateSet(
-    #)]
-    #[#string]$_Ver="452"
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet('2.7','3.5'
+    )]
+    [string]$Py_Release="2"
 )
 $Product = "Python"
 if (Test-Path -Path "$Destination")
@@ -3234,7 +3234,17 @@ catch
 try 
 	{
 	Write-Host -ForegroundColor Gray " ==>Trying to Parse Python on $Python_URL"
-	$Parse = $Req.Links | where {$_ -Match "-2.7.*.amd64.msi"} # | Sort-Object -Descending |Select-Object -First 1
+	switch ($Py_Release)
+		{
+		"2.7"
+			{
+			$Parse = $Req.Links | where {$_ -match "python-$($Py_Release).*.amd64.msi"} # | Sort-Object -Descending |Select-Object -First 1
+			}
+		"3.5"
+			{
+			$Parse = $Req.Links | where {$_ -match "python-$($Py_Release).*-amd64.exe"} # | Sort-Object -Descending |Select-Object -First 1
+			}
+		}
 	} 
 catch
 	{
