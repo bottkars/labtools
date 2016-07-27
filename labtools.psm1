@@ -3190,7 +3190,7 @@ param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet('2.7','3.5'
     )]
-    [string]$Py_Release="2"
+    [string]$Py_Release="2.7"
 )
 $Product = "Python"
 if (Test-Path -Path "$Destination")
