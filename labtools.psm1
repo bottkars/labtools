@@ -253,6 +253,24 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Setting $puppetMaster"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
+function Set-LABLanguageTag
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Set-LABLanguageTag")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('de_DE','en_US')]$LanguageTag = "en_US"
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.LanguageTag = $LanguageTag
+    Write-Host -ForegroundColor Gray " ==>Setting $LanguageTag"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 
 function Set-LABnmm
 {
@@ -480,6 +498,7 @@ process
         Write-Host -ForegroundColor Gray " ==>Loading defaults from $Defaultsfile"
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
+	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
 	    $object | Add-Member -MemberType NoteProperty -Name Master -Value $Default.config.master
         $object | Add-Member -MemberType NoteProperty -Name ScaleIOVer -Value $Default.config.scaleiover
         $object | Add-Member -MemberType NoteProperty -Name BuildDomain -Value $Default.config.Builddomain
@@ -568,6 +587,7 @@ process {
         Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
+        $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
         $xmlcontent += ("<nmm>$($Defaults.nmm)</nmm>")
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
@@ -666,6 +686,7 @@ function New-LABdefaults
         Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
+        $xmlcontent += ("<LanguageTag</LanguageTag>")
         $xmlcontent += ("<nmm_ver></nmm_ver>")
         $xmlcontent += ("<nmm></nmm>")
         $xmlcontent += ("<nw_ver></nw_ver>")
@@ -1054,6 +1075,12 @@ end
         $File =  $Headers.BaseResponse | Select-Object responseUri
         $Length = $Headers.Headers.'Content-Length'
         $Latest_java8 = split-path -leaf $File.ResponseUri.AbsolutePath
+
+		if (!$Latest_java8)
+			{
+			Write-Warning "Could not retrieve latest java, please download manually"
+			break
+			}
         Write-Host -ForegroundColor Gray " ==>We found $latest_java8 online"
         if (!(Test-Path "$DownloadDir\$Latest_java8"))
             {
