@@ -750,14 +750,14 @@ function Expand-LAB7Zip
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
         $Archivefile = Get-ChildItem $Archive
-        $7zdestination = "-o"+$destination
+        $command = "x"
         if ($force.ispresent)
             {
-            $command = "x -y"
+			$7zdestination = "-yo"+$destination
             }
         else
             {
-            $command = "x"
+			$7zdestination = "-o"+$destination
             }
         .$7za $command $7zdestination $Archivefile.FullName
         switch ($LASTEXITCODE)
