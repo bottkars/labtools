@@ -2547,6 +2547,72 @@ Else
     }
 Write-Output $Filename
 } #end ECSCLI
+
+
+function Receive-LABDocker
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    <#
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet('')]
+    $sio_ver,
+    #>
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    '1.12'
+    )]
+    [string]$ver="1.12",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    'win'
+    )]
+    [string]$arch="win",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    'beta','stable'
+    )]
+    [string]$branch="beta",
+	[switch]$force
+)
+#requires -version 3.0
+$Product = 'docker'
+$Destination_path = Join-Path $Destination $Product 
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+
+$url = "https://download.docker.com/win/$($branch)/InstallDocker.msi"
+
+write-host -ForegroundColor Gray  " ==>we will download $Product $ver"
+$Filename = Split-Path -Leaf $url
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+    $DownloadOK = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    }
+Write-Output $Filename
+} #end docker
+
 function Receive-LABOpenWRT
 {
 [CmdletBinding(DefaultParametersetName = "1",
