@@ -2689,7 +2689,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_10','Ubuntu16_4'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -3484,7 +3484,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_10','Ubuntu16_4'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
