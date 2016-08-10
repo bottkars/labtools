@@ -2271,6 +2271,15 @@ If ($Exchange2010)
                 }
     return $return
 } 
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABScaleIO
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABScaleIO
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2735,6 +2744,17 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end OpenWRT
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   receives latest os masters from labbuildr repo on azure
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABMaster
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABMaster
 {
 [CmdletBinding(DefaultParametersetName = "vmware",
@@ -2744,7 +2764,19 @@ function Receive-LABMaster
 param(
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
     $Destination=".\",
-    [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
+    <#
+	Available Masters:
+	==================
+	'2016TP5','2016TP5_GER',
+	'2016TP4',
+	'2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+	'2012_Ger','2012',
+	'OpenSUSE'
+	'OpenWRT',
+	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+	#>
+	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
     '2016TP4',
@@ -3445,6 +3477,15 @@ Write-Output $object
 }
 
 
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABWinservISO
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABWinservISO
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -3454,6 +3495,10 @@ function Receive-LABWinservISO
 param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     $Destination=".\",
+	<#
+	Versions:
+	'2012R2','2016TP5','2012'
+	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
     '2012R2','2016TP5','2012'
