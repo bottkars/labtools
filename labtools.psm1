@@ -1048,9 +1048,9 @@ end
 {}
 }  
                
- function Get-LABJava64
+ function receive-labjava64
 {
-    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#Get-LABJava64")]
+    [CmdletBinding(HelpUri = "https://github.com/bottkars/LABbuildr/wiki/LABtools#receive-labjava64")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$DownloadDir=$vmxdir
     )
@@ -1206,6 +1206,17 @@ if (!(Test-Path $Destination))
     return $ReturnCode 
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   receive-labnetworker receives all versions of networker client and server from legato´s ftp. see get-help receive-labnetworker -online for details
+.LINK
+   https://github.com/bottkars/labtools/wiki/receive-labnetworker 
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABNetworker
 {
 [CmdletBinding(DefaultParametersetName = "installer",
@@ -1214,8 +1225,28 @@ function Receive-LABNetworker
 	[OutputType([psobject])]
 param
     (
+	<#
+	Version Of Networker Server / Client to be installed
+    'nw9010','nw9011',#
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
+    'nw8232','nw8231',
+    'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
+    'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
+    'nw8105','nw8104','nw8103','nw8102','nw81',
+    'nw8044','nw8043','nw8042','nw8041',
+    'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
+    'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
+    'nw8016','nw8015','nw81014','nw8013','nw8012',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
+    'nwunknown'
+#>
+
     [Parameter(ParameterSetName = "installer",Mandatory = $true)][ValidateSet(
-    'nw9010',
+    'nw9010','nw9011',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
     'nw8232','nw8231',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
@@ -1236,6 +1267,23 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
     '9.0.1-72')]$nve_ver,
+	<#
+	architecture to be downloaded, valid values are
+	'aixpower',
+    'hpux11_64',
+    'hpux11_ia64',
+    'linux_ia64',
+    'linux_ppc64',
+    'linux_x86',
+    'linux_x86_64',
+    'linux_s390',
+    'macosx',
+    'solaris_64',
+    'solaris_am64',
+    'solaris_x86',
+    'win_x64',
+    'win_x86'
+	#>
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
     [ValidateSet(
     'aixpower',
@@ -1317,7 +1365,7 @@ switch ($PsCmdlet.ParameterSetName)
             [System.Version]$nwversion = $nwdotver 
             Write-Host -ForegroundColor Gray " ==>NW Dot Ver $nwdotver"
             $nwzip = "$($nwversion.Major)$($nwversion.Minor)"
-            switch ($nwzip)
+			switch ($nwzip)
                 {
                 "80"
                     {
@@ -1341,15 +1389,20 @@ switch ($PsCmdlet.ParameterSetName)
                         $nwzip = "$($nwzip)$($nwversion.Build)"
                         }
                     }
-                 "82"
+                "82"
                     {
                     if ($nwversion.Build -ne (0))
                         {
                         $nwzip = "$($nwzip)$($nwversion.Build)"
                         }
                     }
-
-
+				"90"
+					{
+                    if ($nwversion.Build -ne (0))
+                        {
+                        $nwzip = "$($nwzip)$($nwversion.Build)"
+                        }
+                    }
                 }
             Switch ($arch)
                 {
@@ -1471,7 +1524,7 @@ function Receive-LABnmm
 param
     (
     [ValidateSet(
-    'nmm9010',
+    'nmm9010','nmm9011',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
     'nmm8231','nmm8232',  
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
