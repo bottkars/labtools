@@ -1653,6 +1653,16 @@ Write-Host -ForegroundColor Gray " ==>Receive Request for $NMM_ver in $Destinati
             }
 
 }
+<#
+.Synopsis
+
+.DESCRIPTION
+  retrieves system center eval versions along with prerequirements
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABSysCtrInstallers
+.EXAMPLE
+#>
+#requires -version 3
 function Receive-LABSysCtrInstallers
 {
 [CmdletBinding(DefaultParametersetName = "1",
