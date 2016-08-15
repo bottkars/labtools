@@ -913,21 +913,44 @@ $tarGetfile.close()
 Write-Host
 return $true
 }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Enable-LABFolders
+.EXAMPLE
 
+#>
+#requires -version 3
 function Enable-LABfolders
     {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Enable-Labfolders")]
     param()
     Get-vmx | where state -match running  | Set-VMXSharedFolderState -Enabled
     }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Get-LABScenario
 
+#>
+#requires -version 3
 function Get-LABscenario
     {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Get-LABScenario")]
     param()
     Get-VMX | Get-vmxscenario | Sort-Object Scenarioname | ft -AutoSize
     }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Start-LABScenario
+.EXAMPLE
 
+#>
+#requires -version 3
 function Start-LABScenario
     {
     [CmdletBinding(DefaultParametersetName = "1",
@@ -947,7 +970,15 @@ process
 	}
 end { }
 }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Stop-LABScenario
+.EXAMPLE
 
+#>
+#requires -version 3
 function Stop-LABScenario
     {
     [CmdletBinding(DefaultParametersetName = "1",
@@ -971,7 +1002,15 @@ process
 	}
 end { }
 }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Start-LABPC
+.EXAMPLE
 
+#>
+#requires -version 3
 function Start-LABPC
    {
     [cmdletbinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Start-LABPC")]
@@ -988,7 +1027,15 @@ function Start-LABPC
     [void] $UDPclient.Send($packet, $packet.Length)
     write "Wake-On-Lan magic packet sent to $MACAddrString, length $($packet.Length)"
  }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABHttpFile
+.EXAMPLE
 
+#>
+#requires -version 3
 function Get-LABHttpFile
  {
     [CmdletBinding(DefaultParametersetName = "1",
@@ -998,8 +1045,6 @@ function Get-LABHttpFile
     [Parameter(ParameterSetName = "1", Mandatory = $false)]$TarGetFile,
     [Parameter(ParameterSetName = "1", Mandatory = $false)][switch]$ignoresize
     )
-
-
 begin
 {}
 process
@@ -1058,7 +1103,7 @@ end
 
 #>
 #requires -version 3              
- function Receive-LABjava64
+function Receive-LABjava64
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Receive-LABjava64")]
 	param (
@@ -1123,12 +1168,18 @@ end
             Write-Output $object
         }
     }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Update-LABfromGit
+.EXAMPLE
 
+#>
+#requires -version 3
 function Update-LABfromGit
 {
-
-
-	param (
+param (
             [string]$Repo,
             [string]$RepoLocation,
             [string]$branch,
@@ -1179,7 +1230,15 @@ function Update-LABfromGit
                     }
 return $Isnew
 }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABBitsFile
+.EXAMPLE
 
+#>
+#requires -version 3
 function Receive-LABBitsFile
 {
     [CmdletBinding(SupportsShouldProcess=$true,
@@ -1224,7 +1283,6 @@ if (!(Test-Path $Destination))
 .LINK
    https://github.com/bottkars/labtools/wiki/Receive-LABnetworker 
 .EXAMPLE
-
 #>
 #requires -version 3
 function Receive-LABNetworker
@@ -1525,6 +1583,14 @@ switch ($PsCmdlet.ParameterSetName)
         }
     }
 }
+<#
+.DESCRIPTION
+   receives specific Networker Modules for Microsoft from EMC Legato FTP Site
+   https://github.com/bottkars/labtools/wiki/Receive-LABnmm
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABnmm
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -1533,6 +1599,13 @@ function Receive-LABnmm
 	[OutputType([psobject])]
 param
     (
+	<#
+	'nmm9010','nmm9011',#
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
+    'nmm8231','nmm8232',  
+    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+	#>
     [ValidateSet(
     'nmm9010','nmm9011',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
@@ -1559,99 +1632,105 @@ if (!(Test-Path $Destination))
         }
     }
 Write-Host -ForegroundColor Gray " ==>Receive Request for $NMM_ver in $Destination"
-
-#####
         $URLS = ""
         # if ($nmm_ver -notin ('nmm822','nmm821','nmm82','nmm90.DA','nmm9001') -and 
-        if ($nmm_ver -gt 'nmm_82')
+if ($nmm_ver -gt 'nmm_82')
+    {
+    $nmmdotver = $nmm_ver -replace "nmm",""
+    $nmmdotver = $nmmdotver.insert(1,'.')
+    $nmmdotver = $nmmdotver.insert(3,'.')
+    $nmmdotver = $nmmdotver.insert(5,'.')
+    [System.Version]$nmmversion = $nmmdotver
+    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+        {
+        Write-Host -ForegroundColor Gray " ==>Requested Networker Version is:"
+        $nmmversion
+        }
+    Write-Host -ForegroundColor Gray " ==>NMM Dot Ver $nmmdotver"
+    $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
+    switch ($nmm_family)
+        {
+        "901"
             {
-            $nmmdotver = $nmm_ver -replace "nmm",""
-            $nmmdotver = $nmmdotver.insert(1,'.')
-            $nmmdotver = $nmmdotver.insert(3,'.')
-            $nmmdotver = $nmmdotver.insert(5,'.')
-            [System.Version]$nmmversion = $nmmdotver
+			if ($nmm_ver -eq "nmm9010")
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/eval/2016Q2/$nmm_zip",
+					"ftp://ftp.legato.com/pub/eval/2016Q2/$scvmm_zip")
+				}
+			else
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+					"ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+				}
+            }
+        "900"
+            {
+            $nmm_zip = "nmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
+            $SCVMM_zip = "scvmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
+            $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+                "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+            }
+        default
+            {
+            $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+            $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+            $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+                "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+            }
+        }
+    Write-Host -ForegroundColor Gray " ==>SVCMM Zip Version : $SCVMM_zip"
+    Write-Host -ForegroundColor Gray " ==>NMM Zip Version : $nmm_zip"
+    }
+if ($urls)
+    {
+    foreach ($url in $urls)
+        {
+        Write-Verbose $url
+        $FileName = Split-Path -Leaf -Path $Url
+        if ($FileName -match "nmm")
+            {
+            $Zipfilename = "$nmm_ver.zip"
+            }
+        if ($FileName -match "scvmm")
+            {
+            $Zipfilename = "$NMM_scvmm_ver.zip"
+            }
+        $Zipfile = Join-Path $Destination $Zipfilename
+        Write-Verbose $Zipfile
+        if (!(test-path  $Zipfile ) -or $force.IsPresent)
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
-                Write-Host -ForegroundColor Gray " ==>Requested Networker Version is:"
-                $nmmversion
+                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                pause
                 }
-            Write-Host -ForegroundColor Gray " ==>NMM Dot Ver $nmmdotver"
-            $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
-            switch ($nmm_family)
-                {
-                "901"
-                    {
-                    $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
-                    $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
-                    $urls = ("ftp://ftp.legato.com/pub/eval/2016Q2/$nmm_zip",
-                     "ftp://ftp.legato.com/pub/eval/2016Q2/$scvmm_zip")
-                    }
-                "900"
-                    {
-                    $nmm_zip = "nmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
-                    $SCVMM_zip = "scvmm$($nmmversion.Major)$($nmmversion.Minor)_win_x64.zip"
-                    $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
-                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
-                    }
-                default
-                    {
-                    $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
-                    $SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
-                    $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
-                     "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
-                    }
-                }
-            Write-Host -ForegroundColor Gray " ==>SVCMM Zip Version : $SCVMM_zip"
-            Write-Host -ForegroundColor Gray " ==>NMM Zip Version : $nmm_zip"
-            }
 
-        if ($urls)
+        if (!( Get-LABFTPFile -Source $URL -Target $Zipfile -verbose -Defaultcredentials))
+            { 
+            write-warning "Error Downloading file $Url, 
+            $url might not exist.
+            Please check connectivity or download manually"
+            break
+            }
+    }
+        else
             {
-            foreach ($url in $urls)
-                {
-                Write-Verbose $url
-                $FileName = Split-Path -Leaf -Path $Url
-                if ($FileName -match "nmm")
-                    {
-                    $Zipfilename = "$nmm_ver.zip"
-                    }
-                if ($FileName -match "scvmm")
-                    {
-                    $Zipfilename = "$NMM_scvmm_ver.zip"
-                    }
-                $Zipfile = Join-Path $Destination $Zipfilename
-                Write-Verbose $Zipfile
-                if (!(test-path  $Zipfile ) -or $force.IsPresent)
-                    {
-                    Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download from $url"
-                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                        {
-                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                        pause
-                        }
-
-                if (!( Get-LABFTPFile -Source $URL -Target $Zipfile -verbose -Defaultcredentials))
-                    { 
-                    write-warning "Error Downloading file $Url, 
-                    $url might not exist.
-                    Please check connectivity or download manually"
-                    break
-                    }
+            Write-Host -ForegroundColor Gray "Networker $Zipfilename already on $Destination, try -force to overwrite"
             }
-                else
-                    {
-                    Write-Host -ForegroundColor Gray "Networker $Zipfilename already on $Destination, try -force to overwrite"
-                    }
-                $Destinationdir =  "$($Zipfile.replace(".zip"," "))"
-                Write-Verbose $Destinationdir
-                if ($unzip)
-                    {
-                    Write-Verbose $Zipfilename     
-                    Expand-LABZip -zipfilename "$Zipfile" -destination "$Destinationdir" -verbose
-                    }
-                }
+        $Destinationdir =  "$($Zipfile.replace(".zip"," "))"
+        Write-Verbose $Destinationdir
+        if ($unzip)
+            {
+            Write-Verbose $Zipfilename     
+            Expand-LABZip -zipfilename "$Zipfile" -destination "$Destinationdir" -verbose
             }
-
+        }
+    }
 }
 <#
 .Synopsis
@@ -1890,6 +1969,15 @@ if ($Component -match 'SCDPM')
             }
 return $return
 }
+<#
+.DESCRIPTION
+   receives latest Exchange Versions from Microsoft by Give CU / SP
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABExchange
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABExchange
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2403,6 +2491,15 @@ if (!(Test-Path $Destination_path))
             }
         }
 } #end ScaleIO
+
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABIsilon
+.EXAMPLE
+#>
+#requires -version 3
 function Receive-LABISIlon
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2416,7 +2513,6 @@ param(
     [switch]$force
 
 )
-#requires -version 3.0
 $Product = 'ISILON'
 $Destination_path = Join-Path $Destination "$Product"
 if (!(Test-Path $Destination_path))
@@ -2490,7 +2586,15 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 } #end ISI
 
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABAppSync
+.EXAMPLE
 
+#>
+#requires -version 3
 function Receive-LABAppSync
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2504,7 +2608,6 @@ param(
     [switch]$force
 
 )
-#requires -version 3.0
 $Product = 'appsync'
 $Destination_path = Join-Path $Destination "$Product"
 if (!(Test-Path $Destination_path))
@@ -2630,7 +2733,15 @@ Else
 Write-Output $Filename
 } #end ECSCLI
 
+<#
+.DESCRIPTION
+   receives latest free docker for Windows
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABDocker
+.EXAMPLE
 
+#>
+#requires -version 3
 function Receive-LABDocker
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2662,7 +2773,6 @@ param(
     [string]$branch="beta",
 	[switch]$force
 )
-#requires -version 3.0
 $Product = 'docker'
 $Destination_path = Join-Path $Destination $Product 
 if (!(Test-Path $Destination_path))
@@ -2695,6 +2805,15 @@ Else
 Write-Output $Filename
 } #end docker
 
+<#
+.DESCRIPTION
+   receives latest labbuildr OpenWRT
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABOpenWrt
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABOpenWRT
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -2705,9 +2824,7 @@ param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     $Destination=".\",
     <#
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
-    [ValidateSet('')]
-    $sio_ver,
+	Version of openwrt for labbuilde
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
@@ -2718,7 +2835,6 @@ param(
     #[switch]$force
 
 )
-#requires -version 3.0
 $Product = 'OpenWRT'
 $Destination_path = $Destination 
 if (!(Test-Path $Destination_path))
@@ -2804,7 +2920,6 @@ param(
     #[switch]$force
 
 )
-#requires -version 3.0
 $Product = 'Master'
 $Destination_path = $Destination 
 if (!(Test-Path $Destination_path))
@@ -2910,7 +3025,16 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
         }
     Return $true
     }
-} 
+}
+<#
+.DESCRIPTION
+   receives latest trila version of SQL from Microsoft
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABSQL
+.EXAMPLE
+
+#>
+#requires -version 3 
 function Receive-LABSQL
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -3242,7 +3366,15 @@ function Receive-LABSQL
     Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
     }
+<#
+.DESCRIPTION
+   receives latest .Net Versions from Microsoft
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABNetFramework
+.EXAMPLE
 
+#>
+#requires -version 3
 function Receive-LABNetFramework
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -3387,6 +3519,15 @@ $object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
 Write-Output $object 
 }
 
+<#
+.DESCRIPTION
+   receives Python for Windows latest / stable
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABPython
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABPython
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -3485,8 +3626,6 @@ $object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
 $object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
 Write-Output $object 
 }
-
-
 <#
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
@@ -3594,7 +3733,15 @@ Switch ($lang)
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
             }
     }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Test-LABMaster
+.EXAMPLE
 
+#>
+#requires -version 3
 function Test-LABmaster
 {
 [CmdletBinding(DefaultParametersetName = "vmware",
@@ -3685,6 +3832,15 @@ switch ($mastertype)
 Write-Output $MasterVMX
 }
 
+<#
+.DESCRIPTION
+   receives latest Acropbat from Adobe
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABAcrobat
+.EXAMPLE
+
+#>
+#requires -version 3
 function Receive-LABAcrobat
 {
 [CmdletBinding(DefaultParametersetName = "1",
@@ -3725,9 +3881,6 @@ $readerfiles = (
 )
 
 $readerfiles = 
-
-
-
 foreach ($url in $readerfiles)
     {
     $File = Split-Path -Leaf $url
@@ -3740,5 +3893,4 @@ foreach ($url in $readerfiles)
         Write-Host -ForegroundColor Gray " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
         }
     }
-
 }
