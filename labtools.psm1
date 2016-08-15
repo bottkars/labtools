@@ -3337,7 +3337,7 @@ else
     Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for OpenSSL"
     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
     }
-Write-Host -ForegroundColor Gray " ==>Checking for latests OpenSSL light"
+Write-Host -ForegroundColor Gray " ==>Checking for latest OpenSSL light"
 
 $OpenSSL_URL = "https://slproweb.com/products/Win32OpenSSL.html"
 try
