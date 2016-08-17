@@ -3852,29 +3852,28 @@ param(
         {
         Write-Host -ForegroundColor Gray " ==>$Destination Found"
         }
-        else
+    else
         {
         Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files"
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
-        $FileName = Split-Path -Leaf -Path $URL
-        if (!(test-path  "$Destination\$FileName"))
-            {
-            Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-            if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
-                { 
-                write-warning "Error Downloading file $Url, Please check connectivity"
-                break
-                }
+    $FileName = Split-Path -Leaf -Path $URL
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            break
             }
-        else
-            {
-            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
-			$ISO = Join-Path $Destination $FileName
-			
-            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+	$ISO = Join-Path $Destination $FileName
 	Write-Output $ISO
-    }
+}
 <#
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
