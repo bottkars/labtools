@@ -3941,7 +3941,7 @@ switch ($mastertype)
             {
             Write-Host -ForegroundColor Yellow " ==>Could not find $Masterpath\$Master"
             Write-Host -ForegroundColor Gray " ==>Trying to load $Master from labbuildr Master Repo"
-            if (Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
+            if ($recvok = Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
                 {
                 $MasterVMX = Get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
                 }
