@@ -3873,7 +3873,7 @@ switch ($mastertype)
             Write-Host -ForegroundColor Gray " ==>Templating Master VMX"
             $template = $MasterVMX | Set-VMXTemplate
             }
-        $Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
+        $Basesnap = $MasterVMX | Get-VMXSnapshot -WarningAction SilentlyContinue | where Snapshot -Match "Base"
             if (!$Basesnap) 
             {
             Write-Host -ForegroundColor Gray " ==>Base snap does not exist, creating now"
