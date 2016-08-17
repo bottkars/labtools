@@ -1249,7 +1249,7 @@ param ([string]$DownLoadUrl,
 $ReturnCode = $True
 if (!(Test-Path $Destination))
     {
-        Try 
+    Try 
         {
         if (!(Test-Path (Split-Path $destination)))
             {
@@ -1257,10 +1257,9 @@ if (!(Test-Path $Destination))
             }
         Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl"
         Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
-                If ($err) {Throw ""} 
-
+        If ($err) {Throw ""} 
         } 
-        Catch 
+    Catch 
         { 
             $ReturnCode = $False 
             Write-Error " - An error occurred  downloading `'$FileName`'" 
@@ -2893,14 +2892,15 @@ param(
     <#
 	Available Masters:
 	==================
-	'2016TP5','2016TP5_GER',
-	'2016TP4',
-	'2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
-	'2012_Ger','2012',
-	'OpenSUSE'
+    '2016TP5','2016TP5_GER',
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE',
 	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-	'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
@@ -2908,9 +2908,11 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT',
+    'OpenSUSE',
+	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -3520,6 +3522,90 @@ Write-Output $object
 }
 
 <#
+.Synopsis
+   Short description
+.DESCRIPTION
+   receives Fling, see get-help rEceive-LabFling -online for details
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABFling
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABFling
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    'esxi-embedded-host-client'
+	)]
+    [string]$FLING="esxi-embedded-host-client"
+)
+
+if (Test-Path -Path "$Destination")
+    {
+    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    }
+else
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Fling"
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    }
+Write-Host -ForegroundColor Gray " ==>Checking for latest Fling $FLING"
+
+$Fling_URL = "https://labs.vmware.com/flings/$FLING"
+try
+	{
+	$Req = Invoke-WebRequest  -UseBasicParsing -Uri $Fling_URL
+	}
+catch 
+	{
+	Write-Host "Error getting Fling"
+	$_
+	break
+	}
+try 
+	{
+	Write-Host -ForegroundColor Gray " ==>Trying to Parse Fling Site $Fling_URL"
+	$Parse = $Req.Links | where href -match esxui-signed-
+	} 
+catch
+	{
+	Write-Host -ForegroundColor Yellow "Error Parsing"
+	$_
+	break
+	}
+
+$URL = $Parse.href
+Write-Verbose " ==>got $URL"
+    $FileName = Split-Path -Leaf -Path $Url
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+$Version = $FileName -replace "esxui-signed-"
+$Version = $Version -replace ".vib"
+$object = New-Object psobject
+$object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
+$object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
+Write-Output $object 
+}
+
+<#
 .DESCRIPTION
    receives Python for Windows latest / stable
 .LINK
@@ -3737,6 +3823,62 @@ Switch ($lang)
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
 .LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABlabbuildresxiISO
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABlabbuildresxiISO
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+	<#
+	Versions: VMware-VMvisor-Installer-6.0.0.update01-labbuildr-ks.x86_64
+	'6.0.0.update01','6.0.0.update02'
+	#>
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '6.0.0.update01','6.0.0.update02'
+        )]
+    [string]$labbuildresxi_ver
+)
+	$URL = "https://labbuildrmaster.blob.core.windows.net/iso/VMware-VMvisor-Installer-$($labbuildresxi_ver)-labbuildr-ks.x86_64.iso"
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $URL
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+            if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                break
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+			$ISO = Join-Path $Destination $FileName
+			Write-Output $ISO
+            }
+
+    }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
    https://github.com/bottkars/labtools/wiki/Test-LABMaster
 .EXAMPLE
 
@@ -3751,15 +3893,29 @@ function Test-LABmaster
 param(
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
     $Masterpath=".\",
+	<#
+	Possible Master for labbuildr:
+	'2016TP5','2016TP5_GER',
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE',
+	'OpenWRT',
+	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
+	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT',
+    'OpenSUSE',
+	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -3785,7 +3941,7 @@ switch ($mastertype)
             {
             Write-Host -ForegroundColor Yellow " ==>Could not find $Masterpath\$Master"
             Write-Host -ForegroundColor Gray " ==>Trying to load $Master from labbuildr Master Repo"
-            if (Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
+            if ($recvok = Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
                 {
                 $MasterVMX = Get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
                 }
@@ -3801,7 +3957,7 @@ switch ($mastertype)
             Write-Host -ForegroundColor Gray " ==>Templating Master VMX"
             $template = $MasterVMX | Set-VMXTemplate
             }
-        $Basesnap = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base"
+        $Basesnap = $MasterVMX | Get-VMXSnapshot -WarningAction SilentlyContinue | where Snapshot -Match "Base"
             if (!$Basesnap) 
             {
             Write-Host -ForegroundColor Gray " ==>Base snap does not exist, creating now"
