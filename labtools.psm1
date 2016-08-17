@@ -1249,7 +1249,7 @@ param ([string]$DownLoadUrl,
 $ReturnCode = $True
 if (!(Test-Path $Destination))
     {
-        Try 
+    Try 
         {
         if (!(Test-Path (Split-Path $destination)))
             {
@@ -1257,10 +1257,9 @@ if (!(Test-Path $Destination))
             }
         Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl"
         Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
-                If ($err) {Throw ""} 
-
+        If ($err) {Throw ""} 
         } 
-        Catch 
+    Catch 
         { 
             $ReturnCode = $False 
             Write-Error " - An error occurred  downloading `'$FileName`'" 
@@ -3771,14 +3770,14 @@ param(
         }
         else
         {
-        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files Prereqs"
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files"
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
         $FileName = Split-Path -Leaf -Path $URL
         if (!(test-path  "$Destination\$FileName"))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
                 { 
                 write-warning "Error Downloading file $Url, Please check connectivity"
                 break
@@ -3787,7 +3786,10 @@ param(
         else
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+			$ISO = Join-Path $Destination $FileName
+			Write-Output $ISO
             }
+
     }
 <#
 .DESCRIPTION
