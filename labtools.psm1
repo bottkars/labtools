@@ -2893,14 +2893,15 @@ param(
     <#
 	Available Masters:
 	==================
-	'2016TP5','2016TP5_GER',
-	'2016TP4',
-	'2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
-	'2012_Ger','2012',
-	'OpenSUSE'
+    '2016TP5','2016TP5_GER',
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE',
 	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-	'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
@@ -2908,9 +2909,11 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT',
+    'OpenSUSE',
+	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -3737,6 +3740,59 @@ Switch ($lang)
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
 .LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABlabbuildresxiISO
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABlabbuildresxiISO
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+	<#
+	Versions: VMware-VMvisor-Installer-6.0.0.update01-labbuildr-ks.x86_64
+	'6.0.0.update01','6.0.0.update02'
+	#>
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '6.0.0.update01','6.0.0.update02'
+        )]
+    [string]$labbuildresxi_ver
+)
+	$URL = "https://labbuildrmaster.blob.core.windows.net/iso/VMware-VMvisor-Installer-$($labbuildresxi_ver)-labbuildr-ks.x86_64"
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files Prereqs"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $URL
+        if (!(test-path  "$Destination\$FileName"))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                break
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+            }
+    }
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
    https://github.com/bottkars/labtools/wiki/Test-LABMaster
 .EXAMPLE
 
@@ -3751,15 +3807,29 @@ function Test-LABmaster
 param(
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
     $Masterpath=".\",
+	<#
+	Possible Master for labbuildr:
+	'2016TP5','2016TP5_GER',
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012',
+    'OpenSUSE',
+	'OpenWRT',
+	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
+	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016TP5','2016TP5_GER',
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE','OpenWRT',
+    'OpenSUSE',
+	'OpenWRT',
 	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4'
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+	'esximaster'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
