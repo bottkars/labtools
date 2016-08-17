@@ -3522,6 +3522,90 @@ Write-Output $object
 }
 
 <#
+.Synopsis
+   Short description
+.DESCRIPTION
+   receives Fling, see get-help rEceive-LabFling -online for details
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABFling
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABFling
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    'esxi-embedded-host-client'
+	)]
+    [string]$FLING="esxi-embedded-host-client"
+)
+
+if (Test-Path -Path "$Destination")
+    {
+    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    }
+else
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Fling"
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    }
+Write-Host -ForegroundColor Gray " ==>Checking for latest Fling light"
+
+$Fling_URL = "https://labs.vmware.com/flings/$FLING"
+try
+	{
+	$Req = Invoke-WebRequest  -UseBasicParsing -Uri $Fling_URL
+	}
+catch 
+	{
+	Write-Host "Error getting Fling"
+	$_
+	break
+	}
+try 
+	{
+	Write-Host -ForegroundColor Gray " ==>Trying to Parse Fling Site $Fling_URL"
+	$Parse = $Req.Links | where href -match esxui-signed-
+	} 
+catch
+	{
+	Write-Host -ForegroundColor Yellow "Error Parsing"
+	$_
+	break
+	}
+
+$URL = $Parse.href
+Write-Verbose " ==>got $URL"
+    $FileName = Split-Path -Leaf -Path $Url
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { write-warning "Error Downloading file $Url, Please check connectivity"
+            exit
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+$Version = $FileName -replace "esxui-signed-"
+$Version = $Version -replace ".vib"
+$object = New-Object psobject
+$object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
+$object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
+Write-Output $object 
+}
+
+<#
 .DESCRIPTION
    receives Python for Windows latest / stable
 .LINK
