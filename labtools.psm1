@@ -3871,9 +3871,9 @@ param(
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
 			$ISO = Join-Path $Destination $FileName
-			Write-Output $ISO
+			
             }
-
+	Write-Output $ISO
     }
 <#
 .DESCRIPTION
