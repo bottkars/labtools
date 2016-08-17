@@ -3557,7 +3557,7 @@ else
     Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Fling"
     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
     }
-Write-Host -ForegroundColor Gray " ==>Checking for latest Fling light"
+Write-Host -ForegroundColor Gray " ==>Checking for latest Fling $FLING"
 
 $Fling_URL = "https://labs.vmware.com/flings/$FLING"
 try
