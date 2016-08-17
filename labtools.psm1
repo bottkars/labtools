@@ -3764,7 +3764,7 @@ param(
         )]
     [string]$labbuildresxi_ver
 )
-	$URL = "https://labbuildrmaster.blob.core.windows.net/iso/VMware-VMvisor-Installer-$($labbuildresxi_ver)-labbuildr-ks.x86_64"
+	$URL = "https://labbuildrmaster.blob.core.windows.net/iso/VMware-VMvisor-Installer-$($labbuildresxi_ver)-labbuildr-ks.x86_64.iso"
     if (Test-Path -Path "$Destination")
         {
         Write-Host -ForegroundColor Gray " ==>$Destination Found"
