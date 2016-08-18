@@ -3874,6 +3874,65 @@ param(
 	$ISO = Join-Path $Destination $FileName
 	Write-Output $ISO
 }
+
+<#
+.DESCRIPTION
+   receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABlabbuildresxiISO
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABnestedesxtemplate
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=".\",
+	<#
+	Versions: VMware-VMvisor-Installer-6.0.0.update01-labbuildr-ks.x86_64
+	'6.0.0.update01','6.0.0.update02'
+	#>
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    'Nested_ESXi6','Nested_ESXi5'
+        )]
+    [string]$nestedesx_ver
+)
+write-host "Browsing http://www.virtuallyghetto.com/ for templates"	
+$HREF =	(Invoke-WebRequest http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html -UseBasicParsing).links | where href -match $nestedesx_ver
+$URL = $HREF.href    
+if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for OVA Files"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+    $FileName = Split-Path -Leaf -Path $URL
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            break
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+	$OVA = Join-Path $Destination $FileName
+	Write-Output $OVA
+}
+
 <#
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
