@@ -461,7 +461,7 @@ process
     else
         {
 
-        Write-Host -ForegroundColor Gray " ==>Loading defaults from $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>loading defaults from $Defaultsfile"
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name mdm_ipa -Value $Default.scaleio.sio_mdm_ipa
@@ -495,7 +495,7 @@ process
     else
         {
 
-        Write-Host -ForegroundColor Gray " ==>Loading defaults from $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>loading defaults from $Defaultsfile"
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
@@ -552,7 +552,7 @@ process
     else
         {
 
-        Write-Host -ForegroundColor Gray " ==>Loading SwitchDefaults from $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>loading SwitchDefaults from $SwitchDefaultsfile"
         [xml]$Default = Get-Content -Path $SwitchDefaultsfile
         $object = New-Object psobject
 
