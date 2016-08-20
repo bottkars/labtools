@@ -57,7 +57,7 @@ function Set-LABDefaultGateway
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.DefaultGateway = $DefaultGateway
-    Write-Host -ForegroundColor Gray " ==>Setting Default Gateway $DefaultGateway"
+    Write-Host -ForegroundColor Gray " ==>setting Default Gateway $DefaultGateway"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -76,7 +76,7 @@ function Set-LABDNS1
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.DNS1 = $DNS1
-    Write-Host -ForegroundColor Gray " ==>Setting DNS1 $DNS1"
+    Write-Host -ForegroundColor Gray " ==>setting DNS1 $DNS1"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -103,7 +103,7 @@ function Set-LABDNS
         {
         $Defaults.DNS2 = $DNS2
         }
-    Write-Host -ForegroundColor Gray " ==>Setting DNS"
+    Write-Host -ForegroundColor Gray " ==>setting DNS"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -121,7 +121,7 @@ function Set-LABvmnet
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.vmnet = $VMnet
-    Write-Host -ForegroundColor Gray " ==>Setting LABVMnet $VMnet"
+    Write-Host -ForegroundColor Gray " ==>setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -139,7 +139,7 @@ function Set-LABVlanID
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.vlanID = $vlanID
-    Write-Host -ForegroundColor Gray " ==>Setting LABVMnet $VMnet"
+    Write-Host -ForegroundColor Gray " ==>setting LABVMnet $VMnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 <#
@@ -178,7 +178,7 @@ function Set-LABvmnet2hvswitch
     }
     $SwitchDefaults = Get-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile
     $SwitchDefaults.$($vmnet) = $hvswitch
-    Write-Host -ForegroundColor Gray " ==>Setting $VMnet 2 $hvswitch"
+    Write-Host -ForegroundColor Gray " ==>setting $VMnet 2 $hvswitch"
     Save-LABSwitchdefaults -SwitchDefaultsfile $SwitchDefaultsfile -SwitchDefaults $SwitchDefaults
 }
 
@@ -196,7 +196,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Gateway = $enabled.IsPresent
-    Write-Host -ForegroundColor Gray " ==>Setting $Gateway"
+    Write-Host -ForegroundColor Gray " ==>setting $Gateway"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -214,7 +214,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.NoDomainCheck = $enabled.IsPresent
-    Write-Host -ForegroundColor Gray " ==>Setting $NoDomainCheck"
+    Write-Host -ForegroundColor Gray " ==>setting $NoDomainCheck"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -232,7 +232,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.puppet = $enabled.IsPresent
-    Write-Host -ForegroundColor Gray " ==>Setting $puppet"
+    Write-Host -ForegroundColor Gray " ==>setting $puppet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -250,7 +250,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.puppetmaster = $PuppetMaster
-    Write-Host -ForegroundColor Gray " ==>Setting $puppetMaster"
+    Write-Host -ForegroundColor Gray " ==>setting $puppetMaster"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 function Set-LABLanguageTag
@@ -267,7 +267,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.LanguageTag = $LanguageTag
-    Write-Host -ForegroundColor Gray " ==>Setting $LanguageTag"
+    Write-Host -ForegroundColor Gray " ==>setting $LanguageTag"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -287,7 +287,7 @@ function Set-LABnmm
 
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.NMM = $NMM.IsPresent
-    Write-Host -ForegroundColor Gray " ==>Setting NMM to $($NMM.IsPresent)"
+    Write-Host -ForegroundColor Gray " ==>setting NMM to $($NMM.IsPresent)"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -305,7 +305,7 @@ function Set-LABsubnet
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Mysubnet = $subnet
-    Write-Host -ForegroundColor Gray " ==>Setting subnet $subnet"
+    Write-Host -ForegroundColor Gray " ==>setting subnet $subnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -323,7 +323,7 @@ function Set-LABHostKey
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.HostKey = $HostKey
-    Write-Host -ForegroundColor Gray " ==>Setting HostKey $HostKey"
+    Write-Host -ForegroundColor Gray " ==>setting HostKey $HostKey"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -342,7 +342,7 @@ function Set-LABBuilddomain
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.builddomain = $builddomain.ToLower()
-    Write-Host -ForegroundColor Gray " ==>Setting builddomain $($builddomain.ToLower())"
+    Write-Host -ForegroundColor Gray " ==>setting builddomain $($builddomain.ToLower())"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -363,7 +363,7 @@ function Set-LABCustomDomainSuffix
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Custom_DomainSuffix = $Custom_DomainSuffix.ToLower()
-    Write-Host -ForegroundColor Gray " ==>Setting Custom_DomainSuffix $($Custom_DomainSuffix.ToLower())"
+    Write-Host -ForegroundColor Gray " ==>setting Custom_DomainSuffix $($Custom_DomainSuffix.ToLower())"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 function Set-LABSources
@@ -399,7 +399,7 @@ function Set-LABSources
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.sourcedir = $Sourcedir
-    Write-Host -ForegroundColor Gray " ==>Setting Sourcedir $Sourcedir"
+    Write-Host -ForegroundColor Gray " ==>setting Sourcedir $Sourcedir"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -438,7 +438,7 @@ function Set-LABMasterpath
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.Masterpath = $Masterpath
-    Write-Host -ForegroundColor Gray " ==>Setting Masterpath $Masterpath"
+    Write-Host -ForegroundColor Gray " ==>setting Masterpath $Masterpath"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -584,7 +584,7 @@ function Save-LABdefaults
 begin {
     }
 process {
-        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
@@ -633,7 +633,7 @@ function Save-LABSwitchdefaults
 begin {
     }
 process {
-        Write-Host -ForegroundColor Gray " ==>Saving defaults to $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>saving defaults to $SwitchDefaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<vmnet0>$($SwitchDefaults.VMnet0)</vmnet0>")
@@ -663,7 +663,7 @@ function Set-LABSIOConfig
     [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pool_name,
     [Parameter(ParameterSetName = "1", Mandatory = $true)][string]$pd_name
     )
-        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         #$xmlcontent =@()
         $xmlcontent = "<scaleio>
 <sio_mdm_ipa>$mdm_ipa</sio_mdm_ipa>
@@ -683,7 +683,7 @@ function New-LABdefaults
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile=".\defaults.xml"
     )
-        Write-Host -ForegroundColor Gray " ==>Saving defaults to $Defaultsfile"
+        Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag</LanguageTag>")
@@ -725,7 +725,7 @@ function New-LABSwitchdefaults
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile=".\Switchdefaults.xml"
     )
-        Write-Host -ForegroundColor Gray " ==>Saving defaults to $SwitchDefaultsfile"
+        Write-Host -ForegroundColor Gray " ==>saving defaults to $SwitchDefaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<vmnet0></vmnet0>")
