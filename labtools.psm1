@@ -1136,7 +1136,7 @@ function Receive-LABjava64
 			Write-Warning "Could not retrieve latest java, please download manually"
 			break
 			}
-        Write-Host -ForegroundColor Gray " ==>We found $latest_java8 online"
+        Write-Host -ForegroundColor Gray " ==>we found $latest_java8 online"
         if (!(Test-Path "$DownloadDir\$Latest_java8"))
             {
             Write-Host -ForegroundColor Gray " ==>Downloading $Latest_java8"
@@ -1205,7 +1205,7 @@ param (
             exit
             }
         [datetime]$latest_OnGit = $request.Headers.'Last-Modified'
-                Write-Host -ForegroundColor Gray " ==>We have $repo version $latest_local_Git, $latest_OnGit is online !"
+                Write-Host -ForegroundColor Gray " ==>we have $repo version $latest_local_Git, $latest_OnGit is online !"
                 if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
                     {
                     $Updatepath = "$Builddir\Update"
@@ -1870,7 +1870,7 @@ switch ($SC_Version)
     } # end SCVMM
 if ($Component -match 'SCOM')
     {
-    Write-Host -ForegroundColor Gray "We are now going to Test $Component Prereqs"
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $Component prereqs"
             $DownloadUrls= (
             'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
             'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
@@ -1961,7 +1961,7 @@ if ($Component -match 'SCDPM')
                 }
             else
                 {
-                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
                 $return = $true
                 }
@@ -2042,7 +2042,7 @@ if ($Exchange2016)
     $ex_cu = $e16_cu
     $ex_version = "E2016"
     $Product_Dir = Join-Path $Product_Dir $ex_version
-    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
 		       #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
@@ -2085,7 +2085,7 @@ if ($Exchange2013)
     $ex_cu = $e15_cu
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
-    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
 		        #"http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe",
                 "http://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe",
@@ -2182,7 +2182,7 @@ If ($Exchange2010)
     $LANG_Prereq_Dir = Join-Path $Prereq_Dir $e14_lang
     $ex_version = "E2010"
     $Product_Dir = Join-Path $Product_Dir "$ex_version"
-    Write-Host -ForegroundColor Gray " ==>We are now going to Test $EX_Version Prereqs"
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
                 'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
                 'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
@@ -2309,7 +2309,7 @@ If ($Exchange2010)
             $Downloadfile = Join-Path $UR_Download_Path $FileName
             if (!(test-path  $Downloadfile))
                 {
-                Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>we are now downloading $Product_Dir\$FileName from $url, this may take a while"
                 if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                     {
                     Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
@@ -2356,7 +2356,7 @@ If ($Exchange2010)
                 }
             else
                 {
-                Write-Host -ForegroundColor Gray " ==>We are going to Extract $FileName, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
                 Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
@@ -2437,7 +2437,7 @@ if (!(Test-Path $Destination_path))
         break
         }
     }
-    write-host -ForegroundColor Magenta  "we will check for the latest ScaleIO version from EMC.com"
+    write-host -ForegroundColor Gray " ==>we will check for the latest ScaleIO version from EMC.com"
     $Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
     $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
     foreach ($arch in $MyArch)
@@ -2454,7 +2454,7 @@ if (!(Test-Path $Destination_path))
             {
             if (!$force.IsPresent)
                 {
-                $ok = Get-LAByesnoabort -title "Start Download" -message "Should we Download $FileName from www.emc.com ?"
+                $ok = Get-LAByesnoabort -title "Start Download" -message " ==>should we download $FileName from www.emc.com ?"
                 }
             else
                 {
@@ -2549,7 +2549,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     if (!$force.IsPresent)
         {
-        $ok = Get-LAByesnoabort -title "Start Download" -message "Should we Download $FileName from www.emc.com ?"
+        $ok = Get-LAByesnoabort -title "Start Download" -message " ==>should we download $FileName from www.emc.com ?"
         }
     else
         {
@@ -2644,7 +2644,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     if (!$force.IsPresent)
         {
-        $ok = Get-LAByesnoabort -title "Start Download" -message "Should we Download $FileName from www.emc.com ?"
+        $ok = Get-LAByesnoabort -title "Start Download" -message " ==>should we download $FileName from www.emc.com ?"
         }
     else
         {
@@ -3082,8 +3082,8 @@ function Receive-LABSQL
         }
     }
     $Prereq_Dir = Join-Path $Destination $Prereq
-    Write-Host -ForegroundColor Gray " ==>Prereq = $Prereq_Dir"
-    Write-Host -ForegroundColor Gray " ==>We are now going to Test $SQLVER"
+    Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $SQLVER"
     Switch ($SQLVER)
         {
             "SQL2012"
