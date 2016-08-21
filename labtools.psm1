@@ -2010,7 +2010,7 @@ param
     [switch]$force
 )
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>destination : $Product_Dir"
 if (!(Test-Path $Product_Dir))    
     {
     Try
@@ -2025,7 +2025,7 @@ if (!(Test-Path $Product_Dir))
         }
 }
     $Prereq_Dir = Join-Path $Destination $Prereq
-    Write-Host -ForegroundColor Gray " ==>Prereq = $Prereq_Dir"
+    Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
     if (Test-Path -Path "$Prereq_Dir")
         {
         Write-Host -ForegroundColor Gray " ==>$Prereq_Dir Found"
@@ -3067,7 +3067,7 @@ function Receive-LABSQL
     $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
     $SQL2016_SSMS = "http://download.microsoft.com/download/E/D/3/ED3B06EC-E4B5-40B3-B861-996B710A540C/SSMS-Setup-ENU.exe"
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Host -ForegroundColor Gray " ==>Destination: $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>destination: $Product_Dir"
     if (!(Test-Path $Product_Dir))    
     {
     Try
@@ -3639,7 +3639,7 @@ else
     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
     }
 $Product_Dir = Join-Path $Destination $Product
-Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
+Write-Host -ForegroundColor Gray " ==>destination : $Product_Dir"
 if (!(Test-Path $Product_Dir))    
     {
     Try
@@ -4072,7 +4072,7 @@ param
     [switch]$force
 )
     $Product_Dir = Join-Path $Destination $Product_Dir
-    Write-Host -ForegroundColor Gray " ==>Destination : $Product_Dir"
+    Write-Host -ForegroundColor Gray " ==>destination : $Product_Dir"
 if (!(Test-Path $Product_Dir))    
     {
     Try
