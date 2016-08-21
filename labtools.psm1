@@ -379,12 +379,12 @@ function Set-LABSources
         Get-Item -Path $_ -ErrorAction Stop | Out-Null 
         }
     catch
-        [System.Management.Automation.DriveNotFoundException] 
+        [System.Management.Automation.DriveNotfoundException] 
         {
         Write-Warning "Drive not found, make sure to have your Source Stick connected"
         exit
         }
-    catch #[System.Management.Automation.ItemNotFoundException]
+    catch #[System.Management.Automation.ItemNotfoundException]
         {
         Write-Warning "no sources directory found, trying to create"
         New-Item -ItemType Directory -Path $Sourcedir -Force| Out-Null
@@ -2028,7 +2028,7 @@ if (!(Test-Path $Product_Dir))
     Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
     if (Test-Path -Path "$Prereq_Dir")
         {
-        Write-Host -ForegroundColor Gray " ==>$Prereq_Dir Found"
+        Write-Host -ForegroundColor Gray " ==>$Prereq_Dir found"
         }
     else
         {
@@ -2191,7 +2191,7 @@ If ($Exchange2010)
                 )
     if (Test-Path -Path "$LANG_$Prereq_Dir")
         {
-        Write-Host -ForegroundColor Gray " ==>$LANG_Prereq_Dir Found"
+        Write-Host -ForegroundColor Gray " ==>$LANG_Prereq_Dir found"
         }
         else
         {
@@ -2481,7 +2481,7 @@ if (!(Test-Path $Destination_path))
             }
         Else
             {
-            Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
+            Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
             }
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2576,7 +2576,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
     }
 
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2671,7 +2671,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File, using this one unless -force is specified ! "
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
     }
 
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
@@ -2727,7 +2727,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File"
     }
 Write-Output $Filename
 } #end ECSCLI
@@ -2799,7 +2799,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File"
     }
 Write-Output $Filename
 } #end docker
@@ -2860,7 +2860,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -3009,7 +3009,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     }
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>Found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File"
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
@@ -3414,7 +3414,7 @@ Switch ($Net_Ver)
     }
     if (Test-Path -Path "$Destination")
         {
-        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
         }
         else
         {
@@ -3464,7 +3464,7 @@ param(
 
 if (Test-Path -Path "$Destination")
     {
-    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    Write-Host -ForegroundColor Gray " ==>$Destination found"
     }
 else
     {
@@ -3550,7 +3550,7 @@ param(
 
 if (Test-Path -Path "$Destination")
     {
-    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    Write-Host -ForegroundColor Gray " ==>$Destination found"
     }
 else
     {
@@ -3631,7 +3631,7 @@ param(
 $Product = "Python"
 if (Test-Path -Path "$Destination")
     {
-    Write-Host -ForegroundColor Gray " ==>$Destination Found"
+    Write-Host -ForegroundColor Gray " ==>$Destination found"
     }
 else
     {
@@ -3797,7 +3797,7 @@ Switch ($lang)
     }
     if (Test-Path -Path "$Destination")
         {
-        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
         }
         else
         {
@@ -3850,7 +3850,7 @@ param(
 	$URL = "https://labbuildrmaster.blob.core.windows.net/iso/VMware-VMvisor-Installer-$($labbuildresxi_ver)-labbuildr-ks.x86_64.iso"
     if (Test-Path -Path "$Destination")
         {
-        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
         }
     else
         {
@@ -3908,7 +3908,7 @@ $HREF =	(Invoke-WebRequest http://www.virtuallyghetto.com/2015/12/deploying-nest
 $URL = $HREF.href    
 if (Test-Path -Path "$Destination")
         {
-        Write-Host -ForegroundColor Gray " ==>$Destination Found"
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
         }
     else
         {
@@ -4039,7 +4039,7 @@ switch ($mastertype)
             }
         else 
             {
-            Write-Host -ForegroundColor Magenta " ==>Found Master $Mastervmx"
+            Write-Host -ForegroundColor Magenta " ==>found Master $Mastervmx"
             }
         }
     }
