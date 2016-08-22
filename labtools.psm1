@@ -2929,7 +2929,7 @@ param(
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
-    [ValidateSet('vmware','hyperv')]
+    [ValidateSet('vmware','hyperv','fusion')]
     [string]$mastertype = 'vmware',
     [switch]$unzip
     #[switch]$force
@@ -2959,6 +2959,10 @@ Switch ($mastertype)
     "hyperv"
         {
         $Packer = "zip"
+        }
+	"fusion"
+		{
+		$Packer = "rar"
         }
     }
 
