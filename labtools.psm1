@@ -1262,7 +1262,7 @@ if (!(Test-Path $Destination))
 			}
 		else
 			{
-			Write-Verbose "$global:vmxtoolkit_type, need to use Curl"
+			Write-Host " ==>$global:vmxtoolkit_type, need trying Curl"
 			Start-Process "curl" -ArgumentList "-o $Destination $DownLoadUrl" -Wait
 			}
         If ($err) {Throw ""} 
