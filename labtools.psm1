@@ -826,7 +826,7 @@ function Expand-LABpackage
 			{
 			$extract_Parameter = "-x"
 			$extract_destination = $destination
-			$Extract_cmd = "$Global:VMware_packer $extract_Parameter $($Archivefile.FullName) $destination"
+			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
 		"win_x86_64"
 			{
@@ -839,7 +839,7 @@ function Expand-LABpackage
 				{
 				$extract_destination = "-o"+$destination
 				}
-			$Extract_cmd = "$Global:VMware_packer $extract_Parameter $destination $($Archivefile.FullName)"
+			$Extract_Arguments = "$extract_Parameter $destination $($Archivefile.FullName)"
 			}
 		}
         Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
@@ -847,8 +847,9 @@ function Expand-LABpackage
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
-        Write-Verbose $Extract_cmd
+        Write-Verbose "Using $global:vmware_packer with $Extract_Arguments"
 		pause
+		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow
 		switch ($LASTEXITCODE)
             {
             0
