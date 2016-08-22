@@ -3106,7 +3106,7 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
             Expand-LABZip -zipfilename $Destination_File -destination $Destination
             }
-		"default"
+		default
 			{
 			Expand-LABpackage -Archive $Destination_File -destination $Destination
 			}
