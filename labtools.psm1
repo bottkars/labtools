@@ -1262,7 +1262,7 @@ if (!(Test-Path $Destination))
 			}
 		else
 			{
-			curl -o $Destination_file $DownLoadUrl
+			curl -o $Destination $DownLoadUrl
 			}
         If ($err) {Throw ""} 
         } 
