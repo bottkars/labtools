@@ -1273,8 +1273,10 @@ if (!(Test-Path $Destination ) -or ($Global:vmxtoolkit_type -match  "OSX"))
 			}
 		"OSX"
 			{
-			Write-Host " ==>$global:vmxtoolkit_type, need trying Curl -o $destination $DownLoadUrl -Wait -NoNewWindow"
-			Start-Process "/usr/bin/curl" -ArgumentList "-f -s -S -o $destination $DownLoadUrl" -Wait -NoNewWindow
+			$CurlArgs = "-f -s -S -o"
+			$Curl = '/usr/bin/curl'
+			Write-Host " ==>$global:vmxtoolkit_type, need trying start-process $Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`" -Wait -NoNewWindow"
+			Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs $destination $DownLoadUrl" -Wait -NoNewWindow
 			}			
 		}
     }
