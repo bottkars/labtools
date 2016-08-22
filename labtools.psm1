@@ -824,7 +824,7 @@ function Expand-LABpackage
 		{
 		"OSX"
 			{
-			$extract_Parameter = "x"
+			$extract_Parameter = "x -y"
 			$extract_destination = $destination
 			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
@@ -849,7 +849,7 @@ function Expand-LABpackage
             }
         Write-Verbose "Using $global:vmware_packer with $Extract_Arguments"
 		pause
-		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow
+		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow  2>&1
 		switch ($LASTEXITCODE)
             {
             0
