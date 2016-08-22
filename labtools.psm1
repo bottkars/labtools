@@ -1255,14 +1255,15 @@ if (!(Test-Path $Destination))
             {
             New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
             }
-        Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl"
+        Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl to $destination"
 		if ($global:vmxtoolkit_type -match "win_x86_64")
 			{
 			Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
 			}
 		else
 			{
-			Start-Process "curl" -ArgumentList "-o $Destination $DownLoadUrl" -Wait -NoNewWindow
+			Write-Verbose "$global:vmxtoolkit_type, need to use Curl"
+			Start-Process "curl" -ArgumentList "-o $Destination $DownLoadUrl" -Wait
 			}
         If ($err) {Throw ""} 
         } 
