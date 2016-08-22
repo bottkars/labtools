@@ -1247,33 +1247,36 @@ function Receive-LABBitsFile
 param ([string]$DownLoadUrl,
         [string]$destination )
 $ReturnCode = $True
-if (!(Test-Path $Destination))
+if (!(Test-Path $Destination ) -or ($Global:vmxtoolkit_type -match  "OSX"))
     {
-    Try 
-        {
-        if (!(Test-Path (Split-Path $destination)))
-            {
-            New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
-            }
-        Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl to $destination"
-		if ($global:vmxtoolkit_type -match "win_x86_64")
+	switch ($global:vmxtoolkit_type)
+		{
+		default
 			{
-			Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
+			Try 
+				{
+				if (!(Test-Path (Split-Path $destination)))
+					{
+					New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
+					}
+				Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl to $destination"
+				Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
+				If ($err) {Throw ""} 
+				} 
+			Catch 
+				{ 
+				$ReturnCode = $False 
+				Write-Error " - An error occurred  downloading `'$FileName`'" 
+				#Write-Error $_ 
+				break
+				}
 			}
-		else
+		"OSX"
 			{
 			Write-Host " ==>$global:vmxtoolkit_type, need trying Curl"
 			Start-Process "curl" -ArgumentList "-o $Destination $DownLoadUrl" -Wait -NoNewWindow
-			}
-        If ($err) {Throw ""} 
-        } 
-    Catch 
-        { 
-            $ReturnCode = $False 
-            Write-Error " - An error occurred  downloading `'$FileName`'" 
-            #Write-Error $_ 
-            break
-        }
+			}			
+		}
     }
 else
     {
