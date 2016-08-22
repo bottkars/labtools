@@ -5,6 +5,11 @@ the tools also run outside labbuildr
 ##description
 labtools are mainly focused on management of environment paramaters ( Network, Versions, Directorie aka _labdefaults_ ) and downloads of sources.
 it has a "package management" to retrieve software downloads from various sources like emc, microsoft, openssl, Oracle java etc
+##supported os  
+labtools was designed for windows using powershell 3 or greater  
+with the availabilty of Powershell for OSX, osx is supported with a testing state in branch OSX
+to use labtools in osx, .Net Core libs for OSX are required  
+for details on installation of .NET Core LIBS see [.NET Core on MACOS]https://www.microsoft.com/net/core#macos  
 ##package / sw management commands  
 ```Powershell
 Get-Command -Module labtools -Verb receive
