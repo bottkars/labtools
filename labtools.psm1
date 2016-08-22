@@ -1247,6 +1247,8 @@ function Receive-LABBitsFile
 param ([string]$DownLoadUrl,
         [string]$destination )
 $ReturnCode = $True
+$File = Split-Path -Leaf $DownLoadUrl
+$Destination_file = Join-Path $destination $File
 if (!(Test-Path $Destination))
     {
     Try 
@@ -1256,7 +1258,14 @@ if (!(Test-Path $Destination))
             New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
             }
         Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl"
-        Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
+		if ($global:vmxtoolkit_type -match "win_x86_64")
+			{
+			Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
+			}
+		else
+			{
+			curl -o $Destination_file $DownLoadUrl
+			}
         If ($err) {Throw ""} 
         } 
     Catch 
