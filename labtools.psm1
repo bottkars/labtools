@@ -824,7 +824,7 @@ function Expand-LABpackage
 		{
 		"OSX"
 			{
-			$extract_Parameter = "-x"
+			$extract_Parameter = "x"
 			$extract_destination = $destination
 			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
