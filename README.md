@@ -8,8 +8,9 @@ it has a "package management" to retrieve software downloads from various source
 ##supported os  
 * labtools was designed for windows using powershell 3 or greater  
 * with the availabilty of Powershell for OSX, osx is supported with a testing state in branch OSX
+see [PowerShell for OSX](https://github.com/PowerShell/PowerShell/blob/master/docs/installation/linux.md#os-x-1011) for instructions
 to use labtools in osx, .Net Core libs for OSX are required  
-for details on installation of .NET Core LIBS see [.NET Core on MACOS]https://www.microsoft.com/net/core#macos    
+for details on installation of .NET Core LIBS see [.NET Core on MACOS](https://www.microsoft.com/net/core#macos)    
 
 ##package / sw management commands  
 ```Powershell
