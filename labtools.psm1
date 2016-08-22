@@ -1247,8 +1247,6 @@ function Receive-LABBitsFile
 param ([string]$DownLoadUrl,
         [string]$destination )
 $ReturnCode = $True
-$File = Split-Path -Leaf $DownLoadUrl
-$Destination_file = Join-Path $destination $File
 if (!(Test-Path $Destination))
     {
     Try 
@@ -1276,7 +1274,7 @@ if (!(Test-Path $Destination))
             break
         }
     }
-    else
+else
     {
     Write-Host -ForegroundColor Gray " ==>No download needed, file exists" 
     }
