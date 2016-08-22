@@ -1262,7 +1262,7 @@ if (!(Test-Path $Destination))
 			}
 		else
 			{
-			curl -o $Destination $DownLoadUrl
+			Start-Process "curl" -ArgumentList "-o $Destination $DownLoadUrl"
 			}
         If ($err) {Throw ""} 
         } 
