@@ -806,6 +806,74 @@ function Expand-LAB7Zip
 	}
 }
 
+function Expand-LABpackage
+{
+ [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
+    HelpUri = "https://github.com/bottkars/labtools/wiki/Expand-LABZip")]
+	param (
+        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
+        [string]$Archive,
+        [string]$destination=$vmxdir,
+        [switch]$force
+        )
+	$Origin = $MyInvocation.MyCommand
+	if (test-path($Archive))
+	{
+	$Archivefile = Get-ChildItem $Archive
+	switch ($global:vmxtoolkit_type)
+		{
+		"OSX"
+			{
+			$extract_Parameter = -x
+			$extract_destination = $destination
+			$Extract_cmd = "$Global:VMware_packer $extract_Parameter $($Archivefile.FullName) $destination"
+			}
+		"win_x86_64"
+			{
+			$extract_Parameter = x
+			if ($force.ispresent)
+				{
+				$extract_destination = "-yo"+$destination
+				}
+			else
+				{
+				$extract_destination = "-o"+$destination
+				}
+			$Extract_cmd = "$Global:VMware_packer $extract_Parameter $destination $($Archivefile.FullName)"
+			}
+		}
+        Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
+        if (!(test-path  $destination))
+            {
+            New-Item -ItemType Directory -Force -Path $destination | Out-Null
+            }
+        Write-Verbose $Extract_cmd
+		pause
+		switch ($LASTEXITCODE)
+            {
+            0
+                {
+                Write-Host -ForegroundColor Gray " ==>Sucess expanding $Archive"
+                $object = New-Object psobject
+	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
+                Write-Output $object
+                # return $true
+                }
+            1
+                { 
+                Write-Warning "There was an error $LASTEXITCODE"
+                return $false
+                break
+                }
+            default
+                {
+                Write-Host -ForegroundColor Gray " ==>expand exited with code $LASTEXITCODE"
+                }
+            }
+	}
+}
+
 function Expand-LABZip
 {
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
@@ -3041,6 +3109,10 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
             Expand-LABZip -zipfilename $Destination_File -destination $Destination
             }
+		"fusion"
+			{
+			Expand-LABrar -rarfile $Destination_File -destination $Destination
+			}
         }
     Return $true
     }
