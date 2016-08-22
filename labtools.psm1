@@ -3102,17 +3102,13 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     Write-Host -ForegroundColor White " ==>Extracting Master $Master, this may take a while"
     Switch ($mastertype)
         {
-        "vmware"
-            {
-            Expand-LAB7Zip "$Destination_File" -destination $Destination
-            }
         "hyperv"
             {
             Expand-LABZip -zipfilename $Destination_File -destination $Destination
             }
-		"fusion"
+		"default"
 			{
-			Expand-LABrar -rarfile $Destination_File -destination $Destination
+			Expand-LABpackage -Archive $Destination_File -destination $Destination
 			}
         }
     Return $true
