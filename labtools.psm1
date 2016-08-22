@@ -824,13 +824,13 @@ function Expand-LABpackage
 		{
 		"OSX"
 			{
-			$extract_Parameter = -x
+			$extract_Parameter = "-x"
 			$extract_destination = $destination
 			$Extract_cmd = "$Global:VMware_packer $extract_Parameter $($Archivefile.FullName) $destination"
 			}
 		"win_x86_64"
 			{
-			$extract_Parameter = x
+			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
 				$extract_destination = "-yo"+$destination
