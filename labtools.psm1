@@ -1320,7 +1320,7 @@ if (!(Test-Path $Destination ) -or ($Global:vmxtoolkit_type -match  "OSX"))
     {
 	switch ($global:vmxtoolkit_type)
 		{
-		default
+		"win_x86_64"
 			{
 			Try 
 				{
@@ -1340,7 +1340,7 @@ if (!(Test-Path $Destination ) -or ($Global:vmxtoolkit_type -match  "OSX"))
 				break
 				}
 			}
-		"OSX"
+		default
 			{
 			$CurlArgs = "-o"
 			$Curl = '/usr/bin/curl'
