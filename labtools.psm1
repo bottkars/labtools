@@ -3023,15 +3023,25 @@ Switch ($mastertype)
     {
     "vmware"
         {
-        $Packer = "7z"
+		switch ($global:vmxtoolkit_type)
+			{
+			"LINUX"
+				{
+				$packer = 'rar'
+				}
+			"OSX"
+				{
+				$packer = 'rar'
+				}
+			default
+				{
+				$packer = '7z'
+				}
+			}
         }
     "hyperv"
         {
         $Packer = "zip"
-        }
-	"fusion"
-		{
-		$Packer = "rar"
         }
     }
 
