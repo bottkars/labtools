@@ -839,7 +839,7 @@ function Expand-LABpackage
 				{
 				$extract_destination = "-o"+$destination
 				}
-			$Extract_Arguments = "$extract_Parameter $destination $($Archivefile.FullName)"
+			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archivefile.FullName)"
 			}
 		}
         Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
