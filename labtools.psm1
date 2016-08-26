@@ -828,7 +828,7 @@ function Expand-LABpackage
 			$extract_destination = $destination
 			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
-		"default"
+		default
 			{
 			$extract_Parameter = "x"
 			if ($force.ispresent)
