@@ -4070,12 +4070,10 @@ param(
 switch ($ConfirmPreference)
     {
     "None"
-    
         {
         $Confirm = $False
         }
     }
-
 switch ($mastertype)
     {
     "vmware"
