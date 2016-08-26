@@ -822,19 +822,13 @@ function Expand-LABpackage
 	$Archivefile = Get-ChildItem $Archive
 	switch ($global:vmxtoolkit_type)
 		{
-		"LINUX" #will use gzip ?!
-			{
-			$extract_Parameter = "x -y"
-			$extract_destination = $destination
-			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
-			}
 		"OSX"
 			{
 			$extract_Parameter = "x -y"
 			$extract_destination = $destination
 			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
-		"win_x86_64"
+		"default"
 			{
 			$extract_Parameter = "x"
 			if ($force.ispresent)
@@ -3032,10 +3026,10 @@ Switch ($mastertype)
         {
 		switch ($global:vmxtoolkit_type)
 			{
-			"LINUX"
+<#			"LINUX"
 				{
 				$packer = 'rar'
-				}
+				}#>
 			"OSX"
 				{
 				$packer = 'rar'
