@@ -847,9 +847,9 @@ function Expand-LABpackage
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
-        Write-Verbose "Using $global:vmware_packer with $Extract_Arguments"
+        Write-Host -ForegroundColor Gray " ==>Using $global:vmware_packer with $Extract_Arguments"
 		pause
-		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow  2>&1
+		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow # 2>&1
 		switch ($LASTEXITCODE)
             {
             0
