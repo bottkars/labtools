@@ -822,12 +822,13 @@ function Expand-LABpackage
 	$Archivefile = Get-ChildItem $Archive
 	switch ($global:vmxtoolkit_type)
 		{
-		"OSX"
+<#		"OSX"
 			{
 			$extract_Parameter = "x -y"
 			$extract_destination = $destination
 			$Extract_Arguments= "$extract_Parameter $($Archivefile.FullName) $destination"
 			}
+#>
 		default
 			{
 			$extract_Parameter = "x"
@@ -3029,11 +3030,12 @@ Switch ($mastertype)
 <#			"LINUX"
 				{
 				$packer = 'rar'
-				}#>
+				}
 			"OSX"
 				{
 				$packer = 'rar'
 				}
+				#>
 			default
 				{
 				$packer = '7z'
