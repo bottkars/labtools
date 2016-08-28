@@ -3525,10 +3525,11 @@ Switch ($Net_Ver)
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
         $FileName = Split-Path -Leaf -Path $Url
-        if (!(test-path  "$Destination\$FileName"))
+		$Destination_File = Join-Path $Destination $FileName
+        if (!(test-path  $Destination_File))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Destination_File))
                 { write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
