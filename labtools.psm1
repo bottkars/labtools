@@ -2200,7 +2200,7 @@ if ($Exchange2013)
     if (!(test-path  "$Mapi_CDO"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
-        Start-Process -FilePath "$Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$Prereq_Dir /q" -Wait
+        Expand-LABpackage -Archive $Mapi_CDO -destination $Prereq_Dir
         }
 
 
@@ -2303,7 +2303,8 @@ If ($Exchange2010)
     if (!(test-path  "$LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
-        Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
+        Expand-LABpackage -Archive $Mapi_CDO -destination $Prereq_Dir
+		#Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
         }
 
 #"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
@@ -3199,7 +3200,8 @@ function Receive-LABSQL
                     {
                     $FileName = Split-Path -Leaf -Path $Url
                     Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDir"
-                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+					$SQL_FILE = Join-Path $SQL_BASEDir $FileName
+                    if (!(test-path $SQL_FILE))
                         {
                         Write-Host -ForegroundColor Gray " ==>Trying Download of $FileName"
                         if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
@@ -3207,14 +3209,16 @@ function Receive-LABSQL
                             write-warning "Error Downloading file $Url, Please check connectivity"
                             exit
                             }
-                        Unblock-File "$SQL_BASEDir\$FileName"
+                        Unblock-File $SQL_FILE
                         }
                     }
                 If ($Extract.ispresent)
                     {
                     Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
                     $FileName = Split-Path -Leaf $SQL2012_inst
-                    Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
+                    Expand-LABpackage -Archive $SQL_FILE -destination $SQL_BASEDir
+
+					#Start-Process "$SQL_BASEDir\$FileName" -ArgumentList "/X /q" -Wait
                     }    
                 }
 
@@ -3361,21 +3365,23 @@ function Receive-LABSQL
                 {
                 $FileName = Split-Path -Leaf -Path $Url
                 Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
-                ### Test if the 2014 ENU´s are there
+                $SQL_FILE = Join-Path $SQL_BASEDir $FileName
+				### Test if the 2014 ENU´s are there
                 if (!(test-path  "$SQL_BASEDir\SQLServer2014-x64-ENU.exe"))
                     {
                     ## Test if we already have the ZIP
-                    if (!(test-path  "$SQL_BASEDir\$FileName"))
+                    if (!(test-path  $SQL_FILE))
                         {
                         Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
-                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+                        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $SQL_FILE))
                             { 
                             write-warning "Error Downloading file $Url, Please check connectivity"
                             exit
                             }
-                        Unblock-File "$SQL_BASEDir\$FileName"
+                        Unblock-File $SQL_FILE
                     }
-                 Expand-LABZip -zipfilename $SQL_BASEDir\$FileName -destination $SQL_BASEDir -Folder ENUS
+				Expand-LABpackage -Archive $SQL_FILE -destination $SQL_BASEDir
+				#Expand-LABZip -zipfilename $SQL_BASEDir\$FileName -destination $SQL_BASEDir -Folder ENUS
                  # Remove-Item $SQL_BASEDir\$FileName 
                  # Move-Item $Sourcedir\enus\* $Sourcedir\
                  # Remove-Item $Sourcedir\enus
@@ -3384,7 +3390,11 @@ function Receive-LABSQL
                 if ($extract.IsPresent)
                     {
                     Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
-                    Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
+					$SQL_Treefile = "SQLServer2014-x64-ENU.exe"
+					$SQL_Tree_Base = Join-Path $SQL_BASEDir $SQL_Treefile
+					$SQL_Tree = Join-Path $SQL_BASEDir $SQL_BASEVER
+					Expand-LABpackage -Archive $SQL_Treefile -destination $SQL_Tree
+					#Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                     } 
                 }
             
