@@ -759,7 +759,7 @@ function Expand-LAB7Zip
  #      {
  #     $zipfilename = Join-Path $zipfilename $Folder
  #    }
-    	$7za = "$vmwarepath\7za.exe"
+    	$7za = $Global:vmware_packer
     
         if (!(test-path $7za))
             {
@@ -1890,10 +1890,10 @@ if ($Component -match 'SCVMM')
     {
     $FileName = Split-Path -Leaf -Path $Url
     Write-Host -ForegroundColor Gray " ==>Testing $FileName in $Prereq_Dir"
-    if (!(test-path  "$Prereq_Dir\$FileName"))
+    if (!(test-path  (join-path $Prereq_Dir $FileName)))
         {
         Write-Host -ForegroundColor Gray " ==>Trying Download"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  (join-path $Prereq_Dir $FileName)))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit
@@ -1962,10 +1962,10 @@ if ($Component -match 'SCOM')
     {
     $FileName = Split-Path -Leaf -Path $Url
     Write-Host -ForegroundColor Gray " ==>Testing $FileName in $Prereq_Dir"
-    if (!(test-path  "$Prereq_Dir\$FileName")) 
+    if (!(test-path  (join-path $Prereq_Dir $FileName))) 
         {
         Write-Host -ForegroundColor Gray " ==>Trying Download"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$Prereq_Dir\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  (join-path $Prereq_Dir $FileName)))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             $return = $False
@@ -2133,10 +2133,10 @@ if ($Exchange2016)
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
-        if (!(test-path  "$Prereq_Dir\$FileName"))
+        if (!(test-path  (join-path $Prereq_Dir $FileName)))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination (join-path $Prereq_Dir $FileName)))
                 { write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
@@ -2180,10 +2180,10 @@ if ($Exchange2013)
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
-        if (!(test-path  "$Prereq_Dir\$FileName"))
+        if (!(test-path  (join-path $Prereq_Dir $FileName)))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Prereq_Dir\$FileName"))
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination (join-path $Prereq_Dir $FileName)))
                 { 
                 write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
@@ -2194,9 +2194,10 @@ if ($Exchange2013)
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
             }
         }
-    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
-    Write-Host -ForegroundColor Gray " ==>Testing $Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
-    if (!(test-path  "$Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452  
+	$Mapi_CDO = Join-Path $Prereq_Dir (Join-Path "ExchangeMapiCdo" "ExchangeMapiCdo.msi") 
+    Write-Host -ForegroundColor Gray " ==>Testing $Mapi_CDO"      
+    if (!(test-path  "$Mapi_CDO"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
         Start-Process -FilePath "$Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$Prereq_Dir /q" -Wait
@@ -2432,7 +2433,7 @@ If ($Exchange2010)
             {
             $EX_CU_PATH = Join-Path $Product_Dir "$ex_version$ex_cu"
             Write-Verbose $EX_CU_PATH
-            if ((Test-Path "$EX_CU_PATH\Setup.exe") -and (!$force.IsPresent))
+            if ((Test-Path (join-path "$EX_CU_PATH" "Setup.exe")) -and (!$force.IsPresent))
                 { 
                 Write-Host -ForegroundColor Gray "setup.exe already exists, overwrite with -force"
                 return $true
@@ -2440,7 +2441,7 @@ If ($Exchange2010)
             else
                 {
                 Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-                Start-Process "$Product_Dir\$FileName" -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
+                Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
             }
