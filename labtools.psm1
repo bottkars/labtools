@@ -1030,8 +1030,8 @@ function Start-LABScenario
 	)
 begin
 	{
-    if ((Get-vmx .\DCNODE).state -ne "running")
-        {Get-vmx .\DCNODE | Start-vmx}
+    if ((Get-vmx -path DCNODE).state -ne "running")
+        {Get-vmx -path DCNODE | Start-vmx}
 	}
 process
 	{
@@ -1066,7 +1066,7 @@ process
 	Get-vmx | where { $_.scenario -match $Scenario -and $_.vmxname -notmatch "dcnode" } | sort-object ActivationPreference  -Descending | Stop-vmx
         if ($dcnode)
             {
-            Get-vmx .\DCNODE | Stop-vmx
+            Get-vmx -Path DCNODE | Stop-vmx
             }
 	}
 end { }
