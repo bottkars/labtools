@@ -3404,7 +3404,7 @@ function Receive-LABSQL
 					$SQL_Treefile = "SQLServer2014-x64-ENU.exe"
 					$SQL_Tree_Base = Join-Path $SQL_ENUS $SQL_Treefile
 					$SQL_Tree = Join-Path $SQL_BASEDir $SQL_BASEVER
-					Expand-LABpackage -Archive $SQL_Treefile -destination $SQL_Treefile
+					Expand-LABpackage -Archive $ENU_Package_EXE -destination $SQL_Tree -Verbose
 					#Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                     } 
                 }
