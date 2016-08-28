@@ -3148,7 +3148,10 @@ function Receive-LABSQL
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
     param(
-    [ValidateSet('SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016','SQL2016_ISO')]$SQLVER,
+    [ValidateSet(#'SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016',
+	'SQL2012_ISO',
+	'SQL2014SP2_ISO',
+	'SQL2016_ISO')]$SQLVER,
     [String]$Destination,
     [String]$Product_Dir= "SQL",
     [String]$Prereq = "prereq",
@@ -3167,10 +3170,13 @@ function Receive-LABSQL
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
     $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
-    $SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
+    $SQL2014SP2_ISO = ""
+	$SQL2012_ISO = ""
+	$SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
     $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
     $SQL2016_SSMS = "http://download.microsoft.com/download/E/D/3/ED3B06EC-E4B5-40B3-B861-996B710A540C/SSMS-Setup-ENU.exe"
     $Product_Dir = Join-Path $Destination $Product_Dir
+
     Write-Host -ForegroundColor Gray " ==>destination: $Product_Dir"
     if (!(Test-Path $Product_Dir))    
     {
@@ -3188,7 +3194,7 @@ function Receive-LABSQL
     $Prereq_Dir = Join-Path $Destination $Prereq
     Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
     Write-Host -ForegroundColor Gray " ==>we are now going to test $SQLVER"
-    Switch ($SQLVER)
+<#    Switch ($SQLVER)
         {
             "SQL2012"
             {
@@ -3398,7 +3404,7 @@ function Receive-LABSQL
                  # Remove-Item $Sourcedir\enus
                  }
                 # New-Item -ItemType Directory $Sourcedir\$SQLVER
-                if ($extract.IsPresent)
+                <#if ($extract.IsPresent)
                     {
                     Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
 					$SQL_Treefile = "SQLServer2014-x64-ENU.exe"
@@ -3470,25 +3476,51 @@ function Receive-LABSQL
                 }
             }
 
-            "SQL2016_ISO"
-            {
-            $SQL_BASEVER = "SQL2016"
-            $url = $SQL2016_ISO
-            $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-            $FileName = Split-Path -Leaf $SQL2016_ISO
-            if (!(Test-Path "$SQL_BASEDir\$FileName"))
-                {
-                Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
-                if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
-                    {  
-                    write-warning "Error Downloading file $Url, Please check connectivity"
-                    exit 
-                    }
-                Unblock-File "$SQL_BASEDir\$FileName"
-                }
-            }
+            "SQL2016_ISO"#>
+	switch ($SQLVER)
+		{
+		"SQL2016_ISO"
+			{
+			$SQL_BASEVER = "SQL2016"
+			$url = $SQL2016_ISO
+			}
+		"SQL2014SP2_ISO"
+			{
+			$SQL_BASEVER = "SQL2014SP2"
+			$url = $SQL2016_ISO
+			}
+		"SQL2012_ISO"
+			{
+			$SQL_BASEVER = "SQL2012"
+			$url = $SQL2016_ISO
+			}
+		}
+    $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+    $FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $SQL2016_ISO)
+    if (!(Test-Path $SQL_BASEDir))    
+    {
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $SQL_BASEDir"
+        $NewDirectory = New-Item -ItemType Directory -Path $SQL_BASEDir -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $SQL_BASEDir"
+        break
+        }
+    }
 
-          } #end switch#
+    if (!(Test-Path $FileName))
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+            {  
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            exit 
+            }
+        Unblock-File "$SQL_BASEDir\$FileName"
+        }
     Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
     }
