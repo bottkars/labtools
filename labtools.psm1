@@ -3360,7 +3360,7 @@ function Receive-LABSQL
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
 			$SQL_ENUS = Join-Path $SQL_BASEDir "enus"
 
-			if (Test-Path $SQL_BASEVER)
+			if (Test-Path $SQL_BASEDir)
 				{
 				Write-Host -ForegroundColor Gray " ==> Fond SQL Basedir $SQL_BASEDir for $SQL_BASEVER"
 				}
