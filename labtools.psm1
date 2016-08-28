@@ -3377,7 +3377,7 @@ function Receive-LABSQL
                 Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
                 $SQL_FILE = Join-Path $SQL_BASEDir $FileName
 				### Test if the 2014 ENU´s are there
-				$ENU_Package_EXE = Join-path $ENUS "SQLServer2014-x64-ENU.exe"
+				$ENU_Package_EXE = Join-path $SQL_ENUS "SQLServer2014-x64-ENU.exe"
                 if (!(test-path  $ENU_Package_EXE ))
                     {
                     ## Test if we already have the ZIP
