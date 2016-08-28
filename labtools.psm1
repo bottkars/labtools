@@ -3368,7 +3368,7 @@ function Receive-LABSQL
 				{
 				New-Item -ItemType Directory $SQL_BASEDir
 				}
-			$ENU_Setup =Join-path $ENUS "setup.exe"
+			$ENU_Setup = Join-path $SQL_ENUS "setup.exe"
             if (!(Test-Path $ENU_Setup ))
             {
             foreach ($url in ($SQL2014_ZIP))
@@ -3377,7 +3377,7 @@ function Receive-LABSQL
                 Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
                 $SQL_FILE = Join-Path $SQL_BASEDir $FileName
 				### Test if the 2014 ENU´s are there
-				$ENU_Package_EXE= Join-path $ENUS "SQLServer2014-x64-ENU.exe"
+				$ENU_Package_EXE = Join-path $ENUS "SQLServer2014-x64-ENU.exe"
                 if (!(test-path  $ENU_Package_EXE ))
                     {
                     ## Test if we already have the ZIP
