@@ -3358,7 +3358,14 @@ function Receive-LABSQL
             {
             $SQL_BASEVER = $SQLVER
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-
+			if (Test-Path $SQL_BASEVER)
+				{
+				Write-Host -ForegroundColor Gray " ==> Fond SQL Basedir $SQL_BASEDir for $SQL_BASEVER"
+				}
+			else
+				{
+				New-Item -ItemType Directory $SQL_BASEDir
+				}
             if (!(Test-Path $SQL_BASEDIR\$SQLVER\setup.exe))
             {
             foreach ($url in ($SQL2014_ZIP))
@@ -3393,7 +3400,7 @@ function Receive-LABSQL
 					$SQL_Treefile = "SQLServer2014-x64-ENU.exe"
 					$SQL_Tree_Base = Join-Path $SQL_BASEDir $SQL_Treefile
 					$SQL_Tree = Join-Path $SQL_BASEDir $SQL_BASEVER
-					Expand-LABpackage -Archive $SQL_Treefile -destination $SQL_Tree
+					Expand-LABpackage -Archive $SQL_Treefile -destination $SQL_Treefile
 					#Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
                     } 
                 }
