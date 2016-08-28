@@ -3358,6 +3358,8 @@ function Receive-LABSQL
             {
             $SQL_BASEVER = $SQLVER
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+			$SQL_ENUS = Join-Path $SQL_BASEDir "enus"
+
 			if (Test-Path $SQL_BASEVER)
 				{
 				Write-Host -ForegroundColor Gray " ==> Fond SQL Basedir $SQL_BASEDir for $SQL_BASEVER"
@@ -3366,7 +3368,7 @@ function Receive-LABSQL
 				{
 				New-Item -ItemType Directory $SQL_BASEDir
 				}
-            if (!(Test-Path $SQL_BASEDIR\$SQLVER\setup.exe))
+            if (!(Test-Path (Join-path $ENUS "setup.exe")))
             {
             foreach ($url in ($SQL2014_ZIP))
                 {
@@ -3374,7 +3376,7 @@ function Receive-LABSQL
                 Write-Host -ForegroundColor Gray " ==>Testing $FileName in $SQL_BASEDIR"
                 $SQL_FILE = Join-Path $SQL_BASEDir $FileName
 				### Test if the 2014 ENU´s are there
-                if (!(test-path  "$SQL_BASEDir\SQLServer2014-x64-ENU.exe"))
+                if (!(test-path  (Join-path $ENUS "SQLServer2014-x64-ENU.exe")))
                     {
                     ## Test if we already have the ZIP
                     if (!(test-path  $SQL_FILE))
@@ -3385,7 +3387,7 @@ function Receive-LABSQL
                             write-warning "Error Downloading file $Url, Please check connectivity"
                             exit
                             }
-                        Unblock-File $SQL_FILE
+                        #Unblock-File $SQL_FILE
                     }
 				Expand-LABpackage -Archive $SQL_FILE -destination $SQL_BASEDir
 				#Expand-LABZip -zipfilename $SQL_BASEDir\$FileName -destination $SQL_BASEDir -Folder ENUS
@@ -3398,7 +3400,7 @@ function Receive-LABSQL
                     {
                     Write-Host -ForegroundColor Gray " ==>Creating $SQLVER Installtree, this might take a while"
 					$SQL_Treefile = "SQLServer2014-x64-ENU.exe"
-					$SQL_Tree_Base = Join-Path $SQL_BASEDir $SQL_Treefile
+					$SQL_Tree_Base = Join-Path $SQL_ENUS $SQL_Treefile
 					$SQL_Tree = Join-Path $SQL_BASEDir $SQL_BASEVER
 					Expand-LABpackage -Archive $SQL_Treefile -destination $SQL_Treefile
 					#Start-Process "$SQL_BASEDir\SQLServer2014-x64-ENU.exe" -ArgumentList "/X:$SQL_BASEDir\$SQLVER /q" -Wait
@@ -3411,7 +3413,7 @@ function Receive-LABSQL
             {
             $SQL_BASEVER = "SQL2014"
             $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-
+			$SQL_ENUS = Join-Path $SQL_BASEDir "enus"
             if (!(Test-Path "$SQL_BASEDir\$SQLVER\setup.exe"))
                 {
                 foreach ($url in ($SQL2014SP1SLIP_box,$SQL2014SP1SLIP_INST))
