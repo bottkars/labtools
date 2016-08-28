@@ -3170,8 +3170,8 @@ function Receive-LABSQL
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
     $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
-    $SQL2014SP2_ISO = ""
-	$SQL2012_ISO = ""
+    $SQL2014SP2_ISO = "http://care.dlservice.microsoft.com/dl/download/6/D/9/6D90C751-6FA3-4A78-A78E-D11E1C254700/SQLServer2014SP2-FullSlipstream-x64-ENU.iso"
+	$SQL2012_ISO = "https://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/SQLFULL_ENU.iso"
 	$SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
     $SQL2016_inst = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.exe"
     $SQL2016_SSMS = "http://download.microsoft.com/download/E/D/3/ED3B06EC-E4B5-40B3-B861-996B710A540C/SSMS-Setup-ENU.exe"
@@ -3487,12 +3487,12 @@ function Receive-LABSQL
 		"SQL2014SP2_ISO"
 			{
 			$SQL_BASEVER = "SQL2014SP2"
-			$url = $SQL2016_ISO
+			$url = $SQL2014SP2_ISO
 			}
 		"SQL2012_ISO"
 			{
 			$SQL_BASEVER = "SQL2012"
-			$url = $SQL2016_ISO
+			$url = $SQL2012_ISO
 			}
 		}
     $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
