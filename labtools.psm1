@@ -2416,9 +2416,13 @@ If ($Exchange2010)
     } 
         $FileName = Split-Path -Leaf -Path $Url
         $Downloadfile = Join-Path $Product_Dir $FileName
+		if (!(Test-path $Product_Dir))
+			{
+			New-Item -ItemType Directory -Path $Product_Dir
+			}
         if (!(test-path  $Downloadfile))
             {
-            Write-Host -ForegroundColor Gray " ==>we are now Downloading $Product_Dir\$FileName from $url, this may take a while"
+            Write-Host -ForegroundColor Gray " ==>we are now Downloading $Downloadfile from $url, this may take a while"
             if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                 {
                 Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
