@@ -3514,12 +3514,12 @@ function Receive-LABSQL
     if (!(Test-Path $FileName))
         {
         Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$SQL_BASEDir\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  $FileName))
             {  
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit 
             }
-        Unblock-File "$SQL_BASEDir\$FileName"
+        #Unblock-File "$SQL_BASEDir\$FileName"
         }
     Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
