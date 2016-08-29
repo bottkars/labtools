@@ -3496,7 +3496,7 @@ function Receive-LABSQL
 			}
 		}
     $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-    $FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $SQL2016_ISO)
+    $FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $URL)
     if (!(Test-Path $SQL_BASEDir))    
     {
     Try
