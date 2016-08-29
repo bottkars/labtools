@@ -988,8 +988,13 @@ switch ($Global:vmxtoolkit_type)
 		}
 	default
 	{
-	Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
-	curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
+	$CurlArgs1 = "-# -u $($UserName):$($Password)"
+	$CurlArgs2 = "-C"
+	$Curl = '/usr/bin/curl'
+	Write-Host " ==>$global:vmxtoolkit_type, need trying start-process $Curl -ArgumentList `"$CurlArgs1 $Source $TarGet`" -Wait -NoNewWindow"
+	Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source $TarGet" -Wait -NoNewWindow
+	#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
+	#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
 	}
 }
 
@@ -1354,7 +1359,7 @@ if (!(Test-Path $Destination ) -or ($Global:vmxtoolkit_type -match  "OSX"))
 			}
 		default
 			{
-			$CurlArgs1 = "-o"
+			$CurlArgs1 = "-# -o"
 			$CurlArgs2 = "-C"
 			$Curl = '/usr/bin/curl'
 			Write-Host " ==>$global:vmxtoolkit_type, need trying start-process $Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`" -Wait -NoNewWindow"
