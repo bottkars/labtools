@@ -989,7 +989,7 @@ switch ($Global:vmxtoolkit_type)
 	default
 	{
 	Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
-	curl -u  `"$($UserName):$($Password)`" $Source -o $TarGet
+	curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
 	}
 }
 
