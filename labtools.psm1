@@ -988,7 +988,7 @@ switch ($Global:vmxtoolkit_type)
 		}
 	default
 	{
-	curl $Source --user "$($UserName):$($Password)" -o $TarGet
+	curl $Source --user -o $TarGet
 	}
 }
 
