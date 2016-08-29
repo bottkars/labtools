@@ -3486,7 +3486,7 @@ function Receive-LABSQL
 			}
 		"SQL2014SP2_ISO"
 			{
-			$SQL_BASEVER = "SQL2014SP2"
+			$SQL_BASEVER = "SQL2014"
 			$url = $SQL2014SP2_ISO
 			}
 		"SQL2012_ISO"
