@@ -3483,6 +3483,7 @@ function Receive-LABSQL
 			{
 			$SQL_BASEVER = "SQL2016"
 			$url = $SQL2016_ISO
+			Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
 			}
 		"SQL2014SP2_ISO"
 			{
