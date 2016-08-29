@@ -991,7 +991,7 @@ switch ($Global:vmxtoolkit_type)
 	$CurlArgs1 = "-# -u $($UserName):$($Password)"
 	$CurlArgs2 = "-C"
 	$Curl = '/usr/bin/curl'
-	Write-Host " ==>$global:vmxtoolkit_type, need trying start-process $Curl `"$CurlArgs1 $Source $TarGet`" -Wait -NoNewWindow"
+	Write-Host " ==>$global:vmxtoolkit_type, need trying $Curl `"$CurlArgs1 $Source $TarGet`" -Wait -NoNewWindow"
 	Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source $TarGet" -Wait -NoNewWindow
 	#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
 	#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
@@ -3501,6 +3501,9 @@ function Receive-LABSQL
 			$SQL_BASEVER = "SQL2016"
 			$url = $SQL2016_ISO
 			Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
+		    $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
+			$FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $URL)
+			Receive-LABBitsFile -DownLoadUrl $SQL2016_SSMS -destination $FileName
 			}
 		"SQL2014SP2_ISO"
 			{
