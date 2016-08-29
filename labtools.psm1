@@ -1207,7 +1207,7 @@ function Receive-LABjava64
         break
         }
     Write-Host -ForegroundColor Gray " ==>Analyzing response Stream"
-    $Link = $javaparse.Links | Where-Object outerText -Match "Windows Offline \(64-Bit\)" | Select-Object href
+    $Link = $javaparse.Links | Where-Object outerHTML -Match "Windows Offline \(64-Bit\)" | Select-Object href
     If ($Link)
         {
         $latest_java8uri = $link.href
