@@ -3502,7 +3502,7 @@ function Receive-LABSQL
 			$url = $SQL2016_ISO
 			Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
 		    $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-			$FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $URL)
+			$FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $SQL2016_SSMS)
 			Receive-LABBitsFile -DownLoadUrl $SQL2016_SSMS -destination $FileName
 			}
 		"SQL2014SP2_ISO"
