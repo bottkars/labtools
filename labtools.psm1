@@ -911,8 +911,8 @@ function Get-LABFTPFile
 Param(
     [Parameter(ParameterSetName = "1", Mandatory = $true)]$Source,
     [Parameter(ParameterSetName = "1", Mandatory = $false)]$TarGet,
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]$UserName = "Anonymous",
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]$Password = "Admin@LABbuildr.local",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]$UserName = "anonymous",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]$Password = "anonymous@LABbuildr.local",
     [Parameter(ParameterSetName = "1", Mandatory = $false)][switch]$Defaultcredentials
 ) 
 if (!$TarGet)
@@ -988,7 +988,8 @@ switch ($Global:vmxtoolkit_type)
 		}
 	default
 	{
-	curl $Source --user -o $TarGet
+	Write-Host -ForegroundColor Gray " ==> using 	curl $Source --user $($UserName):$($Password) -o $TarGet"
+	curl $Source --user $($UserName):$($Password) -o $TarGet
 	}
 }
 
