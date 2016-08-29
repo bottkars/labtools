@@ -919,68 +919,79 @@ if (!$TarGet)
     {
     $TarGet = Split-Path -Leaf $Source 
     }
-# Create a FTPWebRequest object to handle the connection to the ftp server 
-try
-    {
-    $ftprequest = [System.Net.FtpWebRequest]::create($Source)
-    }
-catch
-    {
-    Write-Warning "Error Downloading File"
-    break
-    } 
+switch ($Global:vmxtoolkit_type)
+	{
+	"win_x86_64"
+		{
+		# Create a FTPWebRequest object to handle the connection to the ftp server 
+		try
+			{
+			$ftprequest = [System.Net.FtpWebRequest]::create($Source)
+			}
+		catch
+			{
+			Write-Warning "Error Downloading File"
+			break
+			} 
  
-# set the request's network credentials for an authenticated connection 
-if ($Defaultcredentials.Ispresent)
-    {
-    $ftprequest.UseDefaultCredentials 
-    }
-else
-    {
-    $ftprequest.Credentials = New-Object System.Net.NetworkCredential($username,$password)
-    }     
+		# set the request's network credentials for an authenticated connection 
+		if ($Defaultcredentials.Ispresent)
+			{
+			$ftprequest.UseDefaultCredentials 
+			}
+		else
+			{
+			$ftprequest.Credentials = New-Object System.Net.NetworkCredential($username,$password)
+			}     
 
-$ftprequest.Method = [System.Net.WebRequestMethods+Ftp]::DownloadFile 
-$ftprequest.UseBinary = $true 
-$ftprequest.KeepAlive = $false 
+		$ftprequest.Method = [System.Net.WebRequestMethods+Ftp]::DownloadFile 
+		$ftprequest.UseBinary = $true 
+		$ftprequest.KeepAlive = $false 
  
-# send the ftp request to the server 
-try
-    {
-    $ftpresponse = $ftprequest.GetResponse() 
-    }
-catch
-    {
-    Write-Error "Error downlaoding $Source"
-    return
-    }
-Write-Verbose $ftpresponse.WelcomeMessage
-Write-Host -ForegroundColor Gray " ==>Filesize: $($ftpresponse.ContentLength)"
+		# send the ftp request to the server 
+		try
+			{
+			$ftpresponse = $ftprequest.GetResponse() 
+			}
+		catch
+			{
+			Write-Error "Error downlaoding $Source"
+			return
+			}
+		Write-Verbose $ftpresponse.WelcomeMessage
+		Write-Host -ForegroundColor Gray " ==>Filesize: $($ftpresponse.ContentLength)"
  
-# Get a download stream from the server response 
-$responsestream = $ftpresponse.GetResponseStream() 
+		# Get a download stream from the server response 
+		$responsestream = $ftpresponse.GetResponseStream() 
  
-# create the tarGet file on the local system and the download buffer 
-$tarGetfile = New-Object IO.FileStream ($TarGet,[IO.FileMode]::Create) 
-[byte[]]$readbuffer = New-Object byte[] 1024 
-Write-Host -ForegroundColor Gray " ==>Downloading $Source via ftp" 
-# loop through the download stream and send the data to the tarGet file 
-$I = 1
-do{ 
-    $readlength = $responsestream.Read($readbuffer,0,1024) 
-    $tarGetfile.Write($readbuffer,0,$readlength)
-    if ($I -eq 1024)
-        {
-        Write-Host '#' -NoNewline 
-        $I = 0
-        }
-    $I++
-} 
-while ($readlength -ne 0) 
+		# create the tarGet file on the local system and the download buffer 
+		$tarGetfile = New-Object IO.FileStream ($TarGet,[IO.FileMode]::Create) 
+		[byte[]]$readbuffer = New-Object byte[] 1024 
+		Write-Host -ForegroundColor Gray " ==>Downloading $Source via ftp" 
+		# loop through the download stream and send the data to the tarGet file 
+		$I = 1
+		do{ 
+			$readlength = $responsestream.Read($readbuffer,0,1024) 
+			$tarGetfile.Write($readbuffer,0,$readlength)
+			if ($I -eq 1024)
+				{
+				Write-Host '#' -NoNewline 
+				$I = 0
+				}
+			$I++
+		} 
+		while ($readlength -ne 0) 
  
-$tarGetfile.close()
-Write-Host
-return $true
+		$tarGetfile.close()
+		Write-Host
+		return $true		
+		}
+	default
+	{
+	curl $Source --user "$($UserName):$($Password)" -o $TarGet
+	}
+}
+
 }
 <#
 .DESCRIPTION
@@ -4255,7 +4266,7 @@ foreach ($url in $readerfiles)
     {
     $File = Split-Path -Leaf $url
     if (!(Test-Path "$Product_Dir\$File") -or $force.IsPresent)
-        {
+	    {
         Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
         }
     else
