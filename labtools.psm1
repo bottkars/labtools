@@ -2971,7 +2971,7 @@ Else
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
     Expand-LAB7Zip "$Destination_File"
-    Get-vmx "Openwrt_$ver"
+    Get-vmx "OpenWRT_$ver"
     }
 } #end OpenWRT
 
