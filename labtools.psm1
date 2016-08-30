@@ -2970,7 +2970,7 @@ Else
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
-    Expand-LAB7Zip "$Destination_File"
+    Expand-LAB7Zip "$Destination_File" | Out-Null
     Get-vmx "OpenWRT_$ver"
     }
 } #end OpenWRT
