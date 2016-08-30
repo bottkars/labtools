@@ -2955,7 +2955,7 @@ if (!(Test-Path $Destination_path))
         }
     }
 write-host -ForegroundColor Magenta  "we will check for the latest OpenWRT version from bintray"
-$url = "https://bintray.com/artifact/download/bottkars/generic/OpenWRT_$($ver).7z"
+$url = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_$($ver).7z"
 $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
