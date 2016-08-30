@@ -2961,8 +2961,7 @@ $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
-    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
-    $Downloadok = $true
+    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File" | Out-Null
     }
 Else
     {
