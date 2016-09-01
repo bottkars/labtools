@@ -2610,7 +2610,7 @@ if (!(Test-Path $Destination_path))
 				foreach ($tarfile in $tarfiles)
 					{
 					Write-Host -ForegroundColor Gray " ==>Expanding UBUNTU siob tars"
-					Expand-LABpackage -Archive $tarfile -destination $tarfile.Directory
+					Expand-LABpackage -Archive $tarfile -destination $tarfile.Directory -force
 					}
 
 				}
