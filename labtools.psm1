@@ -811,15 +811,15 @@ function Expand-LABpackage
  [CmdletBinding(DefaultParameterSetName='Parameter Set 1',
     HelpUri = "https://github.com/bottkars/labtools/wiki/Expand-LABZip")]
 	param (
-        [Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
-        [string]$Archive,
-        [string]$destination=$vmxdir,
+        [Parameter(Mandatory = $true, Position = 1)]
+        [System.IO.FileInfo]$Archive,
+        [string]$destination,
         [switch]$force
         )
 	$Origin = $MyInvocation.MyCommand
 	if (test-path($Archive))
 	{
-	$Archivefile = Get-ChildItem $Archive
+	#$Archivefile = Get-ChildItem $Archive
 	switch ($global:vmxtoolkit_type)
 		{
 <#		"OSX"
@@ -840,7 +840,7 @@ function Expand-LABpackage
 				{
 				$extract_destination = "-o"+$destination
 				}
-			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archivefile.FullName)"
+			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
 			}
 		}
         Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
@@ -2592,8 +2592,30 @@ if (!(Test-Path $Destination_path))
         }
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
-            Expand-LABZip -zipfilename "$Destination_File" -destination "$Extract_Path"
-            }
+			if ($force.IsPresent)
+				{
+				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
+				}
+			else
+				{
+				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
+				}
+            ## linug deb packages
+			if ($arch -eq "linux")
+				{
+				Write-Verbose "getting latest UBUNTU Directory"
+				$Ubuntu = Get-ChildItem -Path $Extract_Path -Include *UBUNTU* -Recurse -Directory
+				$Ubuntudir = $Ubuntu | Sort-Object -Descending | Select-Object -First 1
+				$tarfiles = Get-ChildItem -Path $Ubuntudir -Filter "*.tar" -Recurse -Include *Ubuntu*
+				foreach ($tarfile in $tarfiles)
+					{
+					Write-Host -ForegroundColor Gray " ==>Expanding UBUNTU debs"
+					Expand-LABpackage -Archive $tarfile -force -destination $tarfile.Directory
+					}
+
+				}
+				
+			}
         }
 } #end ScaleIO
 
