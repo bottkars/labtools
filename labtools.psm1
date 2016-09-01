@@ -2609,8 +2609,8 @@ if (!(Test-Path $Destination_path))
 				$tarfiles = Get-ChildItem -Path $Ubuntudir -Filter "*.tar" -Recurse -Include *Ubuntu*
 				foreach ($tarfile in $tarfiles)
 					{
-					Write-Host -ForegroundColor Gray " ==>Expanding UBUNTU debs"
-					Expand-LABpackage -Archive $tarfile -force -destination $tarfile.Directory
+					Write-Host -ForegroundColor Gray " ==>Expanding UBUNTU dsiob tars"
+					Expand-LABpackage -Archive $tarfile -destination $tarfile.Directory
 					}
 
 				}
