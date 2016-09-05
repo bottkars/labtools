@@ -236,6 +236,29 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABSQLver
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
+	[ValidateSet(#'SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016',
+	'SQL2012_ISO',
+	'SQL2014SP2_ISO',
+	'SQL2016_ISO')]$SQLVER  
+
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SQLVER = $SQLVER
+    Write-Host -ForegroundColor Gray " ==>setting SQL Version to $SQLVER"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 function Set-LABPuppetMaster
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppetMaster")]
