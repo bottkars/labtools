@@ -3654,11 +3654,12 @@ function Receive-LABOpenSSL
 	[OutputType([psobject])]
 param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    $Destination=".\"
-    #[Parameter(ParameterSetName = "1", Mandatory = $false)]
-    #[ValidateSet(
-    #)]
-    #[#string]$_Ver="452"
+    $Destination=".\",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+	'1_0_1','1_1_0'
+    )]
+    [string]$OpenSSL_Ver="1_0_1"
 )
 
 if (Test-Path -Path "$Destination")
@@ -3686,7 +3687,8 @@ catch
 try 
 	{
 	Write-Host -ForegroundColor Gray " ==>Trying to Parse OpenSSL Site $OpenSSL_URL"
-	$Parse = $Req.Links | where {$_ -Match "Win64OpenSSL_Light"}
+	$Parse = $Req.Links | where {$_ -Match "Win64OpenSSL_Light-$OpenSSL_Ver"}
+	#https://slproweb.com/download/Win32OpenSSL_Light-1_0_1t.exe
 	} 
 catch
 	{
