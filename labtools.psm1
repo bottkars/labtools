@@ -861,7 +861,7 @@ function Expand-LAB7Zip
         $command = "x"
         if ($force.ispresent)
             {
-			$7zdestination = "-yo"+$destination
+			$7zdestination = "-y -o"+$destination
             }
         else
             {
@@ -921,7 +921,7 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = "-yo"+$destination
+				$extract_destination = "-y -o"+$destination
 				}
 			else
 				{
@@ -2607,7 +2607,6 @@ param(
     [switch]$force
 
 )
-#requires -version 3.0
 if ($arch -eq 'all')
     {
     $myarch = @('VMware','Windows','Linux')
