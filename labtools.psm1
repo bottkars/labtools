@@ -4376,8 +4376,9 @@ if (!(Test-Path $Product_Dir))
 
 $readerfiles = (
 "ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1500720033/AcroRdrDC1500720033_$lang.msi",
-"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501620045/AcroRdrDCUpd1501620045.msp"
+#"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501620045/AcroRdrDCUpd1501620045.msp"
 #"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501720053/AcroRdrDCUpd1501720053.msp"
+"ftp://ftp.adobe.com/pub/adobe/reader/win/AcrobatDC/1501720050/AcroRdrDCUpd1501720050.msp"
 )
 
 $readerfiles = 
