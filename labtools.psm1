@@ -921,11 +921,11 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = "-y -o "+$destination
+				$extract_destination = "-y -o"+$destination
 				}
 			else
 				{
-				$extract_destination = "-o "+$destination
+				$extract_destination = "-o"+$destination
 				}
 			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
 			}
