@@ -861,7 +861,7 @@ function Expand-LAB7Zip
         $command = "x"
         if ($force.ispresent)
             {
-			$7zdestination = "-y -o"+$destination
+			$7zdestination = "-o"+$destination+" -y"
             }
         else
             {
@@ -921,7 +921,7 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = "-y -o"+$destination
+				$extract_destination = "-o"+$destination
 				}
 			else
 				{
