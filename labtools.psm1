@@ -861,11 +861,11 @@ function Expand-LAB7Zip
         $command = "x"
         if ($force.ispresent)
             {
-			$7zdestination =  "-yo"+$destination
+			$7zdestination =  " -y -o"+$destination
             }
         else
             {
-			$7zdestination = "-o"+$destination
+			$7zdestination = " -o"+$destination
             }
         .$7za $command $7zdestination $Archivefile.FullName
         switch ($LASTEXITCODE)
@@ -921,11 +921,11 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = "-o"+$destination
+				$extract_destination = " -y -o"+$destination
 				}
 			else
 				{
-				$extract_destination = "-o"+$destination
+				$extract_destination = " -o"+$destination
 				}
 			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
 			}
