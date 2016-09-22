@@ -921,11 +921,11 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = "-y -o"+$destination
+				$extract_destination = "-y -o "+$destination
 				}
 			else
 				{
-				$extract_destination = "-o"+$destination
+				$extract_destination = "-o "+$destination
 				}
 			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
 			}
@@ -4395,3 +4395,67 @@ foreach ($url in $readerfiles)
         }
     }
 }
+
+
+
+function Test-LABDC
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	$DCNODE = "DCNode"
+	)
+if ($dcvmx = get-vmx $DCNODE -WarningAction SilentlyContinue)
+{
+	Write-Host -ForegroundColor White  " ==>Domaincontroller already deployed, Comparing Workorder Parameters with Running Environment"
+	Test-LABdcrunning
+	    $dcvmx | Wait-VMXuserloggedIn -username  Administrator
+	    write-verbose "Verifiying Domainsetup"
+        $EnableFolders = get-vmx -path $DCNODE | Set-VMXSharedFolderState -enabled
+	    $Checkdom = $dcvmx | Invoke-VMXPowershell -Guestuser $Adminuser -Guestpassword $Adminpassword -ScriptPath "$IN_Guest_UNC_Scriptroot\$DCNODE" -Script checkdom.ps1 # $CommonParameter
+	    $BuildDomain, $RunningIP, $VMnet, $MyGateway = test-domainsetup
+	    $IPv4Subnet = convert-iptosubnet $RunningIP
+	    $Work_Items +=  " ==>will Use Domain $BuildDomain and Subnet $IPv4Subnet.0 for on $VMnet the Running Workorder"
+        If ($MyGateway)
+            {
+            $Work_Items +=  " ==>we will configure Default Gateway at $MyGateway"
+            $AddGateway  = "-DefaultGateway $MyGateway"
+            Write-Verbose -Message " ==>we will add a Gateway with $AddGateway"
+            }
+    
+
+
+	
+}
+}
+
+function Test-LABdcrunning
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	$DCNODE = "DCNODE"
+	)
+$Origin = $MyInvocation.MyCommand
+if (!$NoDomainCheck.IsPresent)
+	{
+	if ((get-vmx -Path $DCNODE).state -ne "running")
+		{
+		Write-Host -ForegroundColor White  " ==>Domaincontroller not running, we need to start him first"
+		$Started = get-vmx -path $DCNODE | Start-vmx
+		if (!$started)
+			{
+			Write-Warning " ==>Domaincontroller not found, giving up"
+			break
+			}
+		}
+	} 
+} 
+
+
