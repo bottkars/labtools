@@ -900,7 +900,7 @@ function Expand-LABpackage
 	param (
         [Parameter(Mandatory = $true, Position = 1)]
         [System.IO.FileInfo]$Archive,
-        [string]$destination,
+        [string]$destination = "./",
         [switch]$force
         )
 	$Origin = $MyInvocation.MyCommand
@@ -969,7 +969,7 @@ function Expand-LABZip
 	param (
         #[Parameter(Mandatory = $true, Position = 1)][ValidateScript({ Test-Path -Path $_ -ErrorAction SilentlyContinue })]
         [string]$zipfilename,
-        [string]$destination,
+        [string]$destination = "./",
         [String]$Folder)
 	$copyFlag = 16 # overwrite = yes
 	$Origin = $MyInvocation.MyCommand
@@ -3062,7 +3062,7 @@ if (!(Test-Path $Destination_path))
         break
         }
     }
-write-host -ForegroundColor Magenta  "we will check for the latest OpenWRT version from bintray"
+write-host -ForegroundColor Magenta  "we will check for the latest OpenWRT version from Azure Repo"
 $url = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_$($ver).7z"
 $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
@@ -3077,7 +3077,7 @@ Else
     }
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
-    Expand-LAB7Zip "$Destination_File" | Out-Null
+    Expand-LABpackage -Archive "$Destination_File"  -destination $Destination | Out-Null
     Get-vmx "OpenWRT_$ver"
     }
 } #end OpenWRT
