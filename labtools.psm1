@@ -4019,18 +4019,18 @@ param(
     $Destination=".\",
 	<#
 	Versions:
-	'2012R2','2016TP5','2012'
+	'2012R2','2016','2012'
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
     '2012R2','2016','2012'
         )]
     [string]$winserv_ver,
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
     'en_US','de_DE'
         )]
-    [string]$lang
+    [string]$lang = 'en_US'
 )
 Switch ($lang)
     {
@@ -4049,7 +4049,7 @@ Switch ($lang)
                 }
             '2016'
                 {
-                $URL = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/A/0/6/A0696267-C005-4E35-8336-2CB1105D3F07/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_DE-DE.ISO'
                 }
             default
                 {
@@ -4070,9 +4070,9 @@ Switch ($lang)
                 {
                 $URL = "http://care.dlservice.microsoft.com/dl/download/6/D/A/6DAB58BA-F939-451D-9101-7DE07DC09C03/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_EN-US-HRM_SSS_X64FREE_EN-US_DV5.ISO"
                 }
-            '2016TP5'
+            '2016'
                 {
-                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
                 }
             default
                 {
