@@ -1936,7 +1936,7 @@ function Receive-LABSysCtrInstallers
 	[OutputType([psobject])]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('SC2012_R2','SCTP3','SCTP4','SCTP5')]
+    [ValidateSet('SC2012_R2','SC2016')]
     $SC_VERSION = "SC2012_R2",
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
@@ -2014,24 +2014,11 @@ switch ($SC_Version)
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
             }
-        "SCTP5"
+        "SC2016"
             {
-            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
-            $url = "http://care.dlservice.microsoft.com/dl/download/F/E/6/FE60EBEB-EE0F-4457-951D-E89A4175F229/SCTP5_SCVMM_EN.exe"
-            $WAIK_VER = "WAIK_10"
-            }
-
-        "SCTP4"
-            {
-            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
-            $URL = "http://care.dlservice.microsoft.com/dl/download/7/0/A/70A7A007-ABCA-42E5-9C82-79CB98B7855E/SCTP4_SCVMM_EN.exe"
-            $WAIK_VER = "WAIK_10"
-            }
-        "SCTP3"
-            {
-            $adkurl = "http://download.microsoft.com/download/8/1/9/8197FEB9-FABE-48FD-A537-7D8709586715/adk/adksetup.exe" #ADKsetup 10
-            $URL = "http://care.dlservice.microsoft.com/dl/download/F/A/A/FAA14AC2-720A-4B17-8250-75EEEA13B259/SCTP3_SCVMM_EN.exe"
-            $WAIK_VER = "WAIK_10"
+            $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
+            $URL = "http://care.dlservice.microsoft.com/dl/download/2/B/8/2B8C6E4F-7918-40A6-9785-986D4D1175A5/SC2016_SCVMM.EXE"
+            $WAIK_VER = "WAIK_10_1607"
             }
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
@@ -2085,20 +2072,10 @@ if ($Component -match 'SCOM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
             }
         
-        "SCTP3"
+        "SC2016"
             {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/B/0/7/B07BF90E-2CC8-4538-A7D2-83BB074C49F5/SCTP3_SCOM_EN.exe"
-            }
-
-        "SCTP4"
-            {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/3/3/3/333022FC-3BB1-4406-8572-ED07950151D4/SCTP4_SCOM_EN.exe"
-            }
-        "SCTP5"
-            {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/2/A/F/2AF219F5-37CB-4901-80D1-EED797ABDF6A/SCTP5_SCOM_EN.exe"
-            }
-
+            $URL = "http://care.dlservice.microsoft.com/dl/download/6/4/F/64F31A3C-D4FD-41B9-8EF5-74B1A87721E2/SC2016_SCOM_EN.EXE"
+			}
         }    
 }#end scom
 if ($Component -match 'SCDPM')
@@ -2111,19 +2088,10 @@ if ($Component -match 'SCDPM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCDPM_EVAL.zip"
             }
         
-        "SCTP3"
+        "SC2016"
             {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/B/B/3/BB3A1E87-28F2-4362-9B1E-24CC3992EF3B/SCTP3_SCSM_EN.exe"
+            $URL = "http://care.dlservice.microsoft.com/dl/download/1/6/6/166A63BF-E3CE-49EF-8E8D-D599995C6E75/SC2016_SCDPM.EXE"
             }
-
-        "SCTP4"
-            {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/A/D/E/ADECA4CB-2E75-48AF-8FE8-A892531C7AD7/SCTP4_SCDPM_EN.exe"
-            }
-        "SCTP5"
-            {
-            $URL = "http://care.dlservice.microsoft.com/dl/download/8/B/7/8B75A31B-48E9-463C-9E1E-53FD5BFAD0F1/SCTP5_SCDPM_EN.exe"
-            }        
         }    
 }#end scdpm
     $FileName = Split-Path -Leaf -Path $Url
@@ -2265,6 +2233,10 @@ if ($Exchange2016)
             {
             $URL = "https://download.microsoft.com/download/C/6/C/C6C10C1B-EFD8-4AE7-AEE1-C04F45869F5D/ExchangeServer2016-x64-CU2.iso"
             }
+        'CU3'
+            {
+            $URL = "https://download.microsoft.com/download/4/C/E/4CE65F66-CE89-4F4D-96C0-A97E08FA1693/ExchangeServer2016-x64-cu3.iso"
+            }
         }
     }
 if ($Exchange2013)
@@ -2362,7 +2334,11 @@ if ($Exchange2013)
             {
             $url = "https://download.microsoft.com/download/7/4/9/74981C3B-0D3C-4068-8272-22358F78305F/Exchange2013-x64-cu13.exe"
             }
-        }
+		"CU14"
+            {
+            $url = "https://download.microsoft.com/download/0/C/E/0CE142F1-E61D-4DBF-9436-334A4045A91F/Exchange2013-x64-cu14.exe"
+			}
+		}
     } 
 If ($Exchange2010)
     {
