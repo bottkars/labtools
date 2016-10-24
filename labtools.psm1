@@ -4023,7 +4023,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    '2012R2','2016TP5','2012'
+    '2012R2','2016','2012'
         )]
     [string]$winserv_ver,
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
@@ -4047,9 +4047,9 @@ Switch ($lang)
                 {
                 $URL = 'http://care.dlservice.microsoft.com/dl/download/7/C/6/7C6A5A9A-321B-4EF8-95FD-0A483C1EBDC2/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_DE-DE-HRM_SSS_X64FREE_DE-DE_DV5.ISO'
                 }
-            '2016TP5'
+            '2016'
                 {
-                $URL = 'http://care.dlservice.microsoft.com/dl/download/8/9/2/89284B3B-BA51-49C8-90F8-59C0A58D0E70/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_EN-US.ISO'
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
                 }
             default
                 {
@@ -4457,5 +4457,81 @@ if (!$NoDomainCheck.IsPresent)
 		}
 	} 
 } 
+
+function New-LabVMX
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	$Masterpath = "d:\sharedmaster",
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
+	[switch]$Ubuntu,
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[ValidateSet('Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4')]
+	$Ubuntu_ver = 'Ubuntu14_4',
+	[Parameter(Mandatory=$true)]
+	$VMXname,
+	[switch]$start = $false,
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[ValidateRange(0,3)]
+	[int]$SCSI_Controller = 1,
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[ValidateRange(0,7)]
+	[int]$SCSI_DISK_COUNT = 0,
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[Uint64]$SCSI_DISK_SIZE = 100GB,
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[ValidateSet('pvscsi','lsisas1068')]
+	$SCSI_Controller_Type = "pvscsi"
+	)
+if ($Ubuntu.IsPresent)
+	{
+	$Required_Master = $Ubuntu_ver
+	}
+try
+    {
+    $MasterVMX = test-labmaster -Masterpath $MasterPath -Master $Required_Master  -erroraction stop
+    }
+catch
+    {
+    Write-Warning "Required Master $Required_Master not found
+    please download and extraxt $Required_Master to .\$Required_Master
+    see: 
+    ------------------------------------------------
+    get-help $($MyInvocation.MyCommand.Name) -online
+    ------------------------------------------------"
+    exit
+    }
+Write-Host -ForegroundColor Gray " ==>found Master $($Mastervmx.VMXName)"
+$NodeClone = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base" | New-VMXLinkedClone -CloneName $VMXname
+If ($SCSI_DISK_COUNT -gt 0)
+	{
+	If ($SCSI_Controller -ne 0)
+		{
+		$controller = $NodeClone | Set-VMXScsiController -SCSIController $SCSI_Controller -Type $SCSI_Controller_Type
+		$startlun = 0
+		$endlun = $SCSI_DISK_COUNT -1
+		}
+	else
+		{
+		$startLun = 1
+		$endlun = $SCSI_DISK_COUNT
+		}
+	foreach ($LUN in ($startlun..$endlun))
+			{
+			$Diskname =  "SCSI$SCSI"+"_LUN$LUN.vmdk"
+			$Newdisk = New-VMXScsiDisk -NewDiskSize $SCSI_DISK_SIZE -NewDiskname $Diskname -Verbose -VMXName $NodeClone.VMXname -Path $NodeClone.Path 
+			$AddDisk = $NodeClone | Add-VMXScsiDisk -Diskname $Newdisk.Diskname -LUN $LUN -Controller $SCSI_Controller
+			}
+	}
+if ($start.IsPresent)
+	{
+	$Started = $NodeClone | Start-VMX
+	}
+Write-Output $NodeClone
+}
 
 
