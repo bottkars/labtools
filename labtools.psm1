@@ -4752,5 +4752,46 @@ end
 {}
 }
 
+function Set-LabAPTCacheClient
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$true)]
+	[ipaddress]$cache_ip,
+	$Guestuser = 'root',
+	$Guestpassword = 'Password123!'
+	)
 
+begin
+{
+$Scriptblock = "cat > /etc/apt/apt.conf.d/01proxy <<EOF
+Acquire::http { Proxy \`"http://$($cache_ip):3142\`"; };`
+Acquire::https { Proxy \`"https://$($cache_ip):3142\`"; };`
+"
+}
+process
+{
+
+if ( (Get-VMX -VMXName $VMXName).state -ne "running")
+	{
+	Write-Warning "VM must be in a running state"
+	}
+else
+	{
+	Invoke-VMXBash -VMXName $VMXName -config $config -Scriptblock $Scriptblock -Guestuser $Guestuser -Guestpassword $Guestpassword | Out-Null
+	}
+
+}
+end
+{
+}
+}
 
