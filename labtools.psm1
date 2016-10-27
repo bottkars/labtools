@@ -4449,7 +4449,7 @@ param
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateSet('14_4','15_4','15_10','16_4')]
 	$Ubuntu_ver = '14_4',
-	[Parameter(Mandatory=$true)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	$VMXname,
 	[switch]$start = $false,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
@@ -4462,8 +4462,37 @@ param
 	[Uint64]$SCSI_DISK_SIZE = 100GB,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateSet('pvscsi','lsisas1068')]
-	$SCSI_Controller_Type = "pvscsi"
-	)
+	$SCSI_Controller_Type = "pvscsi",
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[ValidateSet('vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet9','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19')]
+	$vmnet = 'vmnet2',
+	<#
+    Size for general nodes
+    'XS'  = 1vCPU, 512MB
+    'S'   = 1vCPU, 768MB
+    'M'   = 1vCPU, 1024MB
+    'L'   = 2vCPU, 2048MB
+    'XL'  = 2vCPU, 4096MB 
+    'TXL' = 4vCPU, 6144MB
+    'XXL' = 4vCPU, 8192MB
+    #>
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true)]
+[ValidateSet('XS', 'S', 'M', 'L', 'XL','TXL','XXL')]
+$Size = "XL",
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+[ValidateSet('nat', 'bridged','custom','hostonly')]
+$ConnectionType,
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+[ValidateSet('e1000e','vmxnet3','e1000')]$AdapterType,
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+[ValidateRange(0,99)][alias ('apr')][int]$activationpreference,
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $false)]
+[ValidateRange(1,9)][int]$Scenario,
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $False)]
+[Validatelength(1, 10)][string]$Scenarioname,
+[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $False)]
+[Validatelength(1, 50)][string]$Displayname
+)
 if ($Ubuntu.IsPresent)
 	{
 	$Required_Master = "Ubuntu$Ubuntu_ver"
@@ -4504,11 +4533,224 @@ If ($SCSI_DISK_COUNT -gt 0)
 			$AddDisk = $NodeClone | Add-VMXScsiDisk -Diskname $Newdisk.Diskname -LUN $LUN -Controller $SCSI_Controller
 			}
 	}
+        $Nodeclone | Set-VMXNetworkAdapter -Adapter 0 -ConnectionType $ConnectionType -AdapterType $AdapterType -WarningAction SilentlyContinue | Out-Null
+        $Nodeclone | Set-VMXVnet -Adapter 0 -vnet $vmnet| Out-Null
+        Set-VMXDisplayName -DisplayName $Displayname -config $NodeClone.config |Out-Null
+        $NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
+        Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
+		$NodeClone |Set-VMXSize -Size $Size | Out-Null
+		if ($vtbit.ispresent)
+			{		
+			$NodeClone | Set-VMXVTBit -VTBit | Out-Null
+			$ActivationPrefrence = $NodeClone | Set-VMXActivationPreference -config -activationpreference $activationpreference
+			}
 if ($start.IsPresent)
 	{
 	$Started = $NodeClone | Start-VMX
 	}
 Write-Output $NodeClone
 }
+
+function Set-LabUbuntuVMX
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$false)]
+	[ValidateSet('14_4','15_4','15_10','16_4')]
+	$Ubuntu_ver = '14_4',
+	[Parameter(Mandatory=$true)]
+	$Scriptdir,
+	[Parameter(Mandatory=$true)]
+	$Sourcedir,
+	[Parameter(Mandatory=$true)]
+	$DefaultGateway,
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$Rootuser = 'root',
+	$Hostkey,
+	$Default_Guestuser = 'labbuildr',
+	[Parameter(Mandatory=$true)]
+	$ip,
+	[Parameter(Mandatory=$true)]
+	$subnet,
+	[Parameter(Mandatory=$true)]
+	$DNS1,
+	[Parameter(Mandatory=$true)]
+	$DNS2,
+	[Parameter(Mandatory=$true)]
+	$Host_Name,
+	[Parameter(Mandatory=$true)]
+	$DNS_DOMAIN_NAME
+	)
+
+begin
+{
+switch ($ubuntu_ver)
+    {
+    "16_4"
+        {
+        $netdev = "ens160"
+        }
+    "15_10"
+        {
+        $netdev= "eno16777984"
+        }
+    default
+        {
+        $netdev= "eth0"
+        }
+    }
+}
+process
+{
+try
+	{
+	$nodeclone = Get-VMX -VMXName $VMXName -ErrorAction stop
+	}
+catch
+	{
+	break
+	}
+if ($nodeclone.status -ne "started")
+	{
+	$nodeclone | start-vmx | Out-Null
+	do {
+		$ToolState = Get-VMXToolsState -config $NodeClone.config
+		Write-Verbose "VMware tools are in $($ToolState.State) state"
+		sleep 5
+    }
+    until ($ToolState.state -match "running")
+	$installmessage += "Node $($nodeclone.vmxname) is reachable via ssh $ip with root:$($guestpassword)  or $($Default_Guestuser):$($Guestpassword)`n"
+    $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
+    If ($ubuntu_ver -match "15")
+        {
+        $Scriptblock = "systemctl disable iptables.service"
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        }
+
+    $Scriptblock = "sed -i '/PermitRootLogin without-password/ c\PermitRootLogin yes' /etc/ssh/sshd_config"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
+        
+    $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa -force"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
+    
+    $Scriptblock = "/usr/bin/ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
+
+    $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
+
+    if ($Hostkey)
+        {
+        $Scriptblock = "echo '$Hostkey' >> /root/.ssh/authorized_keys"
+        Write-Verbose $Scriptblock
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        $Scriptblock = "mkdir /home/$Default_Guestuser/.ssh/;echo '$Hostkey' >> /home/$Default_Guestuser/.ssh/authorized_keys;chmod 0600 /home/$Default_Guestuser/.ssh/authorized_keys"
+        Write-Verbose $Scriptblock
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        }
+
+    $Scriptblock = "cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys;chmod 0600 /root/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+	Write-Verbose "setting sudoers"
+	$Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+	Write-Verbose $Scriptblock
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile  
+
+ 	$Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
+	Write-Verbose $Scriptblock
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  
+
+    $Scriptblock = "echo 'auto lo' > /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'iface lo inet loopback' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'auto $netdev' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'iface $netdev inet static' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'address $ip' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'gateway $DefaultGateway' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'netmask 255.255.255.0' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'network $subnet.0' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'broadcast $subnet.255' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+    $Scriptblock = "echo 'dns-nameservers $DNS1 $DNS2' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    $Scriptblock = "echo 'dns-search $DNS_DOMAIN_NAME' >> /etc/network/interfaces"
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+    $Scriptblock = "echo '127.0.0.1       localhost' > /etc/hosts; echo '$ip $Host_Name $Host_Name.$DNS_DOMAIN_NAME' >> /etc/hosts; hostname $Node"
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+    $Scriptblock = "hostnamectl set-hostname $Host_Name.$DNS_DOMAIN_NAME"
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    switch ($ubuntu_ver)
+        {
+        "14_4"
+            {
+            $Scriptblock = "/sbin/ifdown eth0 && /sbin/ifup eth0"
+            }
+        default
+            {
+            $Scriptblock = "/etc/init.d/networking restart"
+            }
+        }         
+    Write-Verbose $Scriptblock
+    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+
+    Write-Host -ForegroundColor Cyan " ==>Testing default Route, make sure that Gateway is reachable ( eg. install and start OpenWRT )
+    if failures occur, you might want to open a 2nd labbuildr windows and run start-vmx OpenWRT "
+    $Scriptblock = "DEFAULT_ROUTE=`$(ip route show default | awk '/default/ {print `$3}');ping -c 1 `$DEFAULT_ROUTE"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword     
+
+	}
+}
+end
+{}
+}
+
 
 
