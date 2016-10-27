@@ -4447,8 +4447,8 @@ param
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	[switch]$Ubuntu,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
-	[ValidateSet('Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4')]
-	$Ubuntu_ver = 'Ubuntu14_4',
+	[ValidateSet('14_4','15_4','15_10','16_4')]
+	$Ubuntu_ver = '14_4',
 	[Parameter(Mandatory=$true)]
 	$VMXname,
 	[switch]$start = $false,
@@ -4466,7 +4466,7 @@ param
 	)
 if ($Ubuntu.IsPresent)
 	{
-	$Required_Master = $Ubuntu_ver
+	$Required_Master = "Ubuntu$Ubuntu_ver"
 	}
 try
     {
