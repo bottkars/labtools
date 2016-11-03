@@ -2013,9 +2013,11 @@ switch ($SC_Version)
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147191_adminconsole_amd64_44c4ccfe8d85f44ba4a64404a9b2700eb2008fb8.cab"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147167_vmmserver_amd64_9683b2eb7ac71cfddc08f9a02123071114f76c47.cab"
-            $UR = $true
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147191_adminconsole_amd64_44c4ccfe8d85f44ba4a64404a9b2700eb2008fb8.cab"
+			$Latest_UR_ADMINCONSOLE = "http://download.microsoft.com/download/B/E/7/BE757BC7-8B8F-4FB8-8AE8-83F02F3F4988/kb3199246_AdminConsole_amd64.msp"
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147167_vmmserver_amd64_9683b2eb7ac71cfddc08f9a02123071114f76c47.cab"
+            $Latest_UR_SERVER = "http://download.microsoft.com/download/B/E/7/BE757BC7-8B8F-4FB8-8AE8-83F02F3F4988/kb3199246_vmmserver_amd64.msp"
+			$UR = $true
 			}
         "SC2016"
             {
@@ -2144,7 +2146,7 @@ if ($Component -match 'SCDPM')
 					write-warning "Error Downloading file $Url, Please check connectivity"
 					}
 				}
-			if ($unzip.IsPresent) 
+			if ($unzip.IsPresent -and $Update_File -match ".cab") 
 				{
 					Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
 					#Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
