@@ -2026,6 +2026,7 @@ switch ($SC_Version)
             $WAIK_VER = "WAIK_10_1607"
 			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
 			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
+			$UR = $true
             }
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
@@ -2079,6 +2080,7 @@ if ($Component -match 'SCOM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
 			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/08/kb3183990-amd64-server_7cb9b71b43dfd1d021e9763587b99aa63d519924.cab"
 			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/08/kb3183990-amd64-enu-console_53f29af4b869596567a8d3af67c92f738016124d.cab"
+			$UR = $true
             }
         
         "SC2016"
@@ -2086,6 +2088,7 @@ if ($Component -match 'SCOM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/6/4/F/64F31A3C-D4FD-41B9-8EF5-74B1A87721E2/SC2016_SCOM_EN.EXE"
 			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-server_98ce5e30a75646f68eb65351b10e2fea1384b83b.cab"
 			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-enu-console_dc7df4d8fc15f24ee7331c423b98c22cf6c9c6ab.cab"
+			$UR = $true
 			}
         }    
 }#end scom
