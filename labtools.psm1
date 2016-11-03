@@ -2013,7 +2013,10 @@ switch ($SC_Version)
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
-            }
+			$Latest_CU_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147191_adminconsole_amd64_44c4ccfe8d85f44ba4a64404a9b2700eb2008fb8.cab"
+			$Latest_CU_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/05/kb3147167_vmmserver_amd64_9683b2eb7ac71cfddc08f9a02123071114f76c47.cab"
+            $cu = $true
+			}
         "SC2016"
             {
             $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
@@ -2094,6 +2097,7 @@ if ($Component -match 'SCDPM')
             }
         }    
 }#end scdpm
+
     $FileName = Split-Path -Leaf -Path $Url
     Write-Host -ForegroundColor Gray " ==>Testing $SC_Version"
     if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
@@ -2107,21 +2111,49 @@ if ($Component -match 'SCDPM')
             }
         Unblock-File -Path "$Product_Dir\$FileName"
         }
-        if ($unzip.IsPresent) 
-            {
-            if ((Test-Path "$Product_Dir\$Component\Setup.exe") -and !$force.IsPresent)
-                { 
-                Write-Warning "setup.exe already exists, overwrite with -force"
-                return $true
-                }
-            else
-                {
-                Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-                Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
-                $return = $true
-                }
+    if ($unzip.IsPresent) 
+        {
+        if ((Test-Path "$Product_Dir\$Component\Setup.exe") -and !$force.IsPresent)
+            { 
+            Write-Warning "setup.exe already exists, overwrite with -force"
+            $returnvalue =  $true
             }
-return $return
+        else
+            {
+            Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
+            Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+            $returnvalue = $true
+            }
+        }
+	if ($cu)
+	{
+		Write-Host "Downloading CUs"
+		foreach ($URL in ($Latest_CU_ADMINCONSOLE,$Latest_CU_SERVER))
+		{
+			$Component_Dir = Join-Path $Product_Dir $Component
+			$Update_Dir = Join-Path $Component_Dir "$($Component)Update"
+			$FileName = Split-Path -Leaf -Path $Url
+			$Update_File = Join-Path $Update_Dir $FileName
+			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Update"
+			if (!(test-path  "$Update_File") -or $force.IsPresent) 
+				{
+				Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
+
+				if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Update_File"))
+					{ 
+					write-warning "Error Downloading file $Url, Please check connectivity"
+					}
+				}
+			if ($unzip.IsPresent) 
+				{
+					Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
+					#Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
+					#Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+					#$return = $true
+				}
+			}	
+		}
+return $returnvalue
 }
 <#
 .DESCRIPTION
