@@ -900,6 +900,7 @@ function Expand-LABpackage
 	param (
         [Parameter(Mandatory = $true, Position = 1)]
         [System.IO.FileInfo]$Archive,
+		[string]$filepattern,
         [string]$destination = "./",
         [switch]$force
         )
@@ -927,7 +928,14 @@ function Expand-LABpackage
 				{
 				$extract_destination = " -o"+$destination
 				}
-			$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
+			if ($filepattern)
+				{
+				$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName) $filepattern"
+				}
+			else
+				{
+				$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
+				}
 			}
 		}
         Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
