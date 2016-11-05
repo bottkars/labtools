@@ -2142,10 +2142,10 @@ if ($Component -match 'SCDPM')
 		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER))
 		{
 			$Component_Dir = Join-Path $Product_Dir $Component
-			$Update_Dir = Join-Path $Component_Dir "$($Component)Update"
+			$Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
 			$FileName = Split-Path -Leaf -Path $Url
 			$Update_File = Join-Path $Update_Dir $FileName
-			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Update"
+			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
 			if (!(test-path  "$Update_File") -or $force.IsPresent) 
 				{
 				Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
