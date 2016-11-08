@@ -359,6 +359,26 @@ if (!(Test-Path $Defaultsfile))
 }
 
 
+function Set-LABMainMemUseFile
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABnmm")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile=".\defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$UseFile
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.MainMemUseFile = $UseFile.IsPresent
+    Write-Host -ForegroundColor Gray " ==>setting  MainMemUseFile to $($UseFile.IsPresent)"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+
 function Set-LABnmm
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABnmm")]
@@ -614,7 +634,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name Puppet -Value $Default.config.Puppet
         $object | Add-Member -MemberType NoteProperty -Name PuppetMaster -Value $Default.config.PuppetMaster
         $object | Add-Member -MemberType NoteProperty -Name HostKey -Value $Default.config.Hostkey
-
+		$object | Add-Member -MemberType NoteProperty -Name MainMemUseFile -Value $Default.config.MainMemUseFile
         Write-Output $object
         }
     }
@@ -703,6 +723,7 @@ process {
         $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
         $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
         $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")
+		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
         $xmlcontent | Set-Content $defaultsfile
         }
@@ -802,6 +823,7 @@ function New-LABdefaults
         $xmlcontent += ("<Puppet></Puppet>")
         $xmlcontent += ("<PuppetMaster></PuppetMaster>")
         $xmlcontent += ("<HostKey></HostKey>")
+        $xmlcontent += ("<MainMemUseFile></MainMemUseFile>")
         $xmlcontent += ("</config>")
         $xmlcontent | Set-Content $defaultsfile
      }
