@@ -3100,7 +3100,7 @@ param(
 
 )
 $Product = 'OpenWRT'
-$Destination_path = $Destination 
+$Destination_path = (get-item $Destination).fullname 
 If ($start.IsPresent)
 	{
 	$unzip = $true
