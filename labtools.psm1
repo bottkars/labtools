@@ -3088,7 +3088,7 @@ param(
     $Destination="./",
 	[switch]$start,
    <#
-	Version of openwrt for labbuilde
+	Version of openwrt for labbuildr
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
@@ -3121,6 +3121,7 @@ write-host -ForegroundColor Magenta  "we will check for the latest OpenWRT versi
 $url = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_$($ver).7z"
 $Filename = Split-Path -Leaf $url
 $Destination_File = Join-Path $Destination_path $FileName
+Write-Verbose " Destination file: $Destination_File"
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
