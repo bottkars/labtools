@@ -944,11 +944,11 @@ function Expand-LABpackage
 			$extract_Parameter = "x"
 			if ($force.ispresent)
 				{
-				$extract_destination = " -y -o"+$destination
+				$extract_destination = " -y -o -bd"+$destination
 				}
 			else
 				{
-				$extract_destination = " -o"+$destination
+				$extract_destination = " -o -bd"+$destination
 				}
 			if ($filepattern)
 				{
