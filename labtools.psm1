@@ -4186,7 +4186,7 @@ Switch ($lang)
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
             }
-		Write-Output [System.IO.FileInfo]$Destination_File
+		Write-Output ([System.IO.FileInfo]$Destination_File)
 
     }
 <#
