@@ -4172,10 +4172,11 @@ Switch ($lang)
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
         $FileName = Split-Path -Leaf -Path $URL
-        if (!(test-path  "$Destination\$FileName"))
+		$Destination_File = Join-Path $Destination $FileName
+        if (!(test-path  $Destination_File))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Destination_File))
                 { 
                 write-warning "Error Downloading file $Url, Please check connectivity"
                 break
@@ -4185,6 +4186,8 @@ Switch ($lang)
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
             }
+		Write-Output [System.IO.FileInfo]$Destination_File
+
     }
 <#
 .DESCRIPTION
