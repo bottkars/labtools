@@ -3013,30 +3013,28 @@ function Receive-LABDocker
 	[OutputType([psobject])]
 param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    $Destination="./",
-    <#
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
-    [ValidateSet('')]
-    $sio_ver,
-    #>
+    [Parameter(ParameterSetName = "install", Mandatory = $false)]
+    [System.IO.DirectoryInfo]$Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    [ValidateSet(
-    '1.12'
-    )]
-    [string]$ver="1.12",
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [Parameter(ParameterSetName = "install", Mandatory = $false)]
     [ValidateSet(
     'win'
     )]
     [string]$arch="win",
+    [Parameter(ParameterSetName = "install", Mandatory = $false)]
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
     'beta','stable'
     )]
     [string]$branch="beta",
-	[switch]$force
+	[switch]$force,
+    [Parameter(ParameterSetName = "install", Mandatory = $true)]
+	[switch]$install,
+    [Parameter(ParameterSetName = "install", Mandatory = $true)]
+	[System.IO.DirectoryInfo]$Install_Dir
 )
 $Product = 'docker'
+#$Product_Download = '$'
 $Destination_path = Join-Path $Destination $Product 
 if (!(Test-Path $Destination_path))
     {
@@ -3055,17 +3053,37 @@ $url = "https://download.docker.com/win/$($branch)/InstallDocker.msi"
 
 write-host -ForegroundColor Gray  " ==>we will download $Product $ver"
 $Filename = Split-Path -Leaf $url
-$Destination_File = Join-Path $Destination_path $FileName
+[System.IO.FileInfo]$Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
     $DownloadOK = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
-    }
+    if (!$DownloadOK)
+		{
+		break
+		}
+	}
 Else
     {
-    Write-Host -ForegroundColor Gray  " ==>found $Destination_File"
+    Write-Host -ForegroundColor Gray  " ==>found $($Destination_File.fullname)"
     }
-Write-Output $Filename
+# Write-Output $Filename
+
+if ($install.IsPresent)
+	{
+	$target_dir = Join-Path $Install_Dir $Product
+	write-host " ==>installing $($Destination_File.fullname) in $target_dir"
+	Start-Process "msiexec.exe" -ArgumentList "/a $($Destination_File.fullname) /qb TARGETDIR=$target_dir" -Wait -NoNewWindow
+	$Files = ('docker.exe','docker-machine.exe','docker-compose.exe','docker-credential-wincred.exe','notary.exe')
+	foreach ($file in $files)
+		{
+		Write-Host " ==>Copying $File to $target_dir"
+		Get-ChildItem -Path "$Install_Dir/PFiles" -Recurse -Filter $file | Copy-Item -Destination $target_dir -Force} 
+		Write-Host " ==>getting DockerMachineDriver for VMware"
+		$Download_URL = "https://github.com/pecigonzalo/docker-machine-vmwareworkstation/releases/download/v1.0.10/docker-machine-driver-vmwareworkstation.exe"
+		$Destination_File = Join-Path $target_dir ( Split-Path -Leaf $Download_URL) 
+		Invoke-WebRequest -Uri $Download_URL -OutFile $Destination_File
+		}
 } #end docker
 
 <#
