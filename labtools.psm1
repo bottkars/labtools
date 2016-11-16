@@ -3078,7 +3078,7 @@ if ($install.IsPresent)
 	foreach ($file in $files)
 		{
 		Write-Host " ==>Copying $File to $target_dir"
-		Get-ChildItem -Path "$Install_Dir/PFiles" -Recurse -Filter $file | Copy-Item -Destination $target_dir -Force} 
+		Get-ChildItem -Path "$target_dir\PFiles" -Recurse -Filter $file | Copy-Item -Destination $target_dir -Force -PassThru} 
 		Write-Host " ==>getting DockerMachineDriver for VMware"
 		$Download_URL = "https://github.com/pecigonzalo/docker-machine-vmwareworkstation/releases/download/v1.0.10/docker-machine-driver-vmwareworkstation.exe"
 		$Destination_File = Join-Path $target_dir ( Split-Path -Leaf $Download_URL) 
