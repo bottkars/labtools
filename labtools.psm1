@@ -971,11 +971,11 @@ function Expand-LABpackage
 				}
 			if ($filepattern)
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_Options -o$destination $($Archive.FullName) $filepattern"
+				$Extract_Arguments = "$extract_Parameter $extract_Options -o'$destination' $($Archive.FullName) $filepattern"
 				}
 			else
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_Options -o$destination $($Archive.FullName)"
+				$Extract_Arguments = "$extract_Parameter $extract_Options -o'$destination' $($Archive.FullName)"
 				}
 			}
 		}
