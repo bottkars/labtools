@@ -942,21 +942,40 @@ function Expand-LABpackage
 		default
 			{
 			$extract_Parameter = "x"
-			if ($force.ispresent)
-				{
-				$extract_destination = " -y -bb0 -bso0 -bsp0 -o"+$destination
-				}
-			else
-				{
-				$extract_destination = " -bb0 -bso0 -bsp0 -o"+$destination
+			
+				switch ($global:vmxtoolkit_type)
+					{
+						'win_x86_64'
+						{
+						if ($force.ispresent)
+							{
+							$extract_Options = "-y -bb0 -bso0 -bsp0"
+							}
+						else
+							{
+							$extract_Options = "-bb0 -bso0 -bsp0"
+							}
+					}
+						default
+						{
+						if ($force.ispresent)
+							{
+							$extract_Options = "-y"
+							}
+						else
+							{
+							$extract_Options
+							}
+					}
+				
 				}
 			if ($filepattern)
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName) $filepattern"
+				$Extract_Arguments = "$extract_Parameter $extract_Options -o$($extract_destination) $($Archive.FullName) $filepattern"
 				}
 			else
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_destination $($Archive.FullName)"
+				$Extract_Arguments = "$extract_Parameter $extract_Options -o$($extract_destination) $($Archive.FullName)"
 				}
 			}
 		}
