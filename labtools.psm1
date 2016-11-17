@@ -949,33 +949,33 @@ function Expand-LABpackage
 						{
 						if ($force.ispresent)
 							{
-							$extract_Options = "-y -bb0 -bso0 -bsp0 -o"
+							$extract_Options = "-y -bb0 -bso0 -bsp0 -o" #+$destination
 							}
 						else
 							{
-							$extract_Options = "-bb0 -bso0 -bsp0 -o"
+							$extract_Options = "-bb0 -bso0 -bsp0 -o" #+$destination
 							}
 					}
 						default
 						{
 						if ($force.ispresent)
 							{
-							$extract_Options = "-y -o"
+							$extract_Options = "-y -o" #+$destination
 							}
 						else
 							{
-							$extract_Options  = "-o"
+							$extract_Options  = "-o" #+$destination
 							}
 					}
 				
 				}
 			if ($filepattern)
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_Options$extract_destination $($Archive.FullName) $filepattern"
+				$Extract_Arguments = "$extract_Parameter $extract_Options$destination $($Archive.FullName) $filepattern"
 				}
 			else
 				{
-				$Extract_Arguments = "$extract_Parameter $extract_Options$extract_destination $($Archive.FullName)"
+				$Extract_Arguments = "$extract_Parameter $extract_Options$destination $($Archive.FullName)"
 				}
 			}
 		}
