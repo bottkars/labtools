@@ -4399,21 +4399,21 @@ switch ($mastertype)
     {
     "vmware"
         {
-        $MasterVMX = Get-vmx -path "$Masterpath\$Master\" -WarningAction SilentlyContinue
+        $MasterVMX = Get-vmx -path (join-path $Masterpath $Master) -WarningAction SilentlyContinue
         if (!$Mastervmx)
             {
-            Write-Host -ForegroundColor Yellow " ==>Could not find $Masterpath\$Master"
+            Write-Host -ForegroundColor Yellow " ==>Could not find "(join-path $Masterpath $Master)
             Write-Host -ForegroundColor Gray " ==>Trying to load $Master from labbuildr Master Repo"
             if ($recvok = Receive-LABMaster -Master $Master -Destination $Masterpath -mastertype vmware -unzip -Confirm:$Confirm)
                 {
-                $MasterVMX = Get-vmx -path "$Masterpath\$Master\" -ErrorAction SilentlyContinue
+                $MasterVMX = Get-vmx -path (join-path $Masterpath $Master) -ErrorAction SilentlyContinue
                 }
             else
                 {
                 Write-Warning "No valid master found /downloaded"
                 break
                 }
-            $MasterVMX = Get-vmx -path "$Masterpath\$Master" -WarningAction SilentlyContinue
+            $MasterVMX = Get-vmx -path (join-path $Masterpath $Master) -WarningAction SilentlyContinue
             }
         if (!$MasterVMX.Template) 
             {
