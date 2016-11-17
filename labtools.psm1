@@ -979,13 +979,13 @@ function Expand-LABpackage
 				}
 			}
 		}
-        Write-Host -ForegroundColor Gray " ==>extracting $Archive to $destination"
+        Write-Host -ForegroundColor Gray " ==>extracting $($Archive.fullname) to $destination"
         if (!(test-path  $destination))
             {
             New-Item -ItemType Directory -Force -Path $destination | Out-Null
             }
         Write-Host -ForegroundColor Gray " ==>Using $global:vmware_packer with $Extract_Arguments"
-		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow # 2>&1
+		Start-Process "$global:VMware_Packer" -ArgumentList $Extract_Arguments -Wait -NoNewWindow -PassThru # 2>&1
 		switch ($LASTEXITCODE)
             {
             0
