@@ -1997,7 +1997,7 @@ param(
 )
     Try
         {
-        $Product_Dir = Join-Path $Destination "$Product_Dir\$SC_Version"
+        $Product_Dir = Join-path (Join-Path $Destination $Product_Dir) $SC_Version
         }
     catch
         {
@@ -2007,8 +2007,8 @@ param(
     
     
     Write-Host -ForegroundColor Gray " ==>SCDIR : $Product_Dir"
-if (!(Test-Path $Product_Dir)
-)    {
+if (!(Test-Path $Product_Dir))    
+	{
     Try
         {
         Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
@@ -2022,12 +2022,25 @@ if (!(Test-Path $Product_Dir)
     }
 try 
      {
-     $Prereq_Dir = Join-Path $Destination $Prereq -ErrorAction stop
+     $Prereq_Dir = Join-Path (join-path $Destination $Prereq) $SC_VERSION -ErrorAction stop
      }
 catch
      {
      Write-Warning "error finding Destination Directory !"
      }
+if (!(Test-Path $Prereq_Dir))    
+	{
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Prereq_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Prereq_Dir"
+        break
+        }
+    }
 Write-Host -ForegroundColor Gray " ==>Entering $SC_Version Prereq Section for $Component in $Prereq_Dir"
 #$SCVMM_DIR = "SC$($SC_Version)_$($Component)"
 #############
@@ -2086,7 +2099,7 @@ switch ($SC_Version)
         New-Item -ItemType Directory $WAIK_DIR -Force | Out-Null
         }
     $FileName = Split-Path -Leaf -Path $adkurl
-    if (!(test-path  "$WAIK_DIR\Installers"))
+    if (!(test-path  (join-path $WAIK_DIR 'Installers')))
         {
         # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
         Write-Host -ForegroundColor Gray " ==>Trying Download of $WAIK_VER"
@@ -2097,16 +2110,35 @@ switch ($SC_Version)
             }
         Write-Host -ForegroundColor Gray " ==>Getting WAIK, Could take a While, please do not kill process adksetup !"
         Write-Host -ForegroundColor Gray "Install Tree will be in $WAIK_DIR"
-        Start-Process -FilePath "$WAIK_DIR\$FileName" -ArgumentList "/quiet /layout $WAIK_DIR" -Wait -WindowStyle Normal -PassThru
+        Start-Process -FilePath (join-path $WAIK_DIR $FileName) -ArgumentList "/quiet /layout $WAIK_DIR" -Wait -WindowStyle Normal -PassThru
         }
     } # end SCVMM
 if ($Component -match 'SCOM')
     {
     Write-Host -ForegroundColor Gray " ==>we are now going to test $Component prereqs"
-            $DownloadUrls= (
-            'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
-            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
-            )
+		        
+			Switch ($SC_VERSION)
+				{
+				'SC_2016'
+					{
+					$DownloadUrls= (
+					'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi',
+					#'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+					'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+					)
+
+					}
+				default
+					{
+					$DownloadUrls= (
+					#https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi
+					'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+					'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+					)
+					}
+
+				}
+
     Foreach ($URL in $DownloadUrls)
     {
     $FileName = Split-Path -Leaf -Path $Url
@@ -4114,6 +4146,105 @@ $Version = $Version -replace ".amd64.msi"
 $object = New-Object psobject
 $object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
 $object | Add-Member -MemberType NoteProperty -Name Version -Value $Version
+Write-Output $object 
+}
+function Receive-LABPhotonOS
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=$Sourcedir,
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet('1.0'
+    )]
+    [string]$Photon_Release="1.o"
+)
+$Product = "Photon"
+if (Test-Path -Path "$Destination")
+    {
+    Write-Host -ForegroundColor Gray " ==>$Destination found"
+    }
+else
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Python"
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    }
+$Product_Dir = Join-Path $Destination $Product
+Write-Host -ForegroundColor Gray " ==>destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+}
+
+Write-Host -ForegroundColor Gray " ==>Checking for latests Photon URL"
+<#
+$Python_URL = "https://www.python.org/downloads/windows/"
+try
+	{
+	$Req = Invoke-WebRequest  -UseBasicParsing -Uri $Python_URL
+	}
+catch 
+	{
+	Write-Host "Error getting Python"
+	$_
+	break
+	}
+try 
+	{
+	Write-Host -ForegroundColor Gray " ==>Trying to Parse Python on $Python_URL"
+	switch ($Py_Release)
+		{
+		"2.7"
+			{
+			$Parse = $Req.Links | where {$_ -match "python-$($Py_Release).*.amd64.msi"} # | Sort-Object -Descending |Select-Object -First 1
+			}
+		"3.5"
+			{
+			$Parse = $Req.Links | where {$_ -match "python-$($Py_Release).*-amd64.exe"} # | Sort-Object -Descending |Select-Object -First 1
+			}
+		}
+	} 
+catch
+	{
+	Write-Host -ForegroundColor Yellow "Error Parsing"
+	$_
+	break
+	}
+
+$URL= ($Parse | Select-Object -First 1).href
+$FileName = Split-Path -Leaf $URL
+#>
+$URL = "https://bintray.com/vmware/photon/download_file?file_path=photon-custom-hw11-1.0-13c08b6.ova"
+Write-Verbose " ==>got $URL"
+    $FileName = ($URL -split "=")[-1]
+    if (!(test-path  (join-path $Product_Dir $FileName )))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+        if (!(Invoke-WebRequest $URL -UseBasicParsing -OutFile (join-path $Product_Dir $FileName)))
+            { 
+			write-warning "Error Downloading file $Url, Please check connectivity"
+            break
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Product_Dir"
+        }
+$object = New-Object psobject
+$object | Add-Member -MemberType NoteProperty -Name Filename -Value $FileName
+$object | Add-Member -MemberType NoteProperty -Name Version -Value $Photon_Release
 Write-Output $object 
 }
 <#
