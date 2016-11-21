@@ -5363,7 +5363,7 @@ process
         Write-Verbose $Scriptblock
         $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
         }
-    $Scriptblock = "yum install bind-utils -y"
+    $Scriptblock = "yum install bind-utils ntp -y;systemctl enable ntpd;systemctl start ntpd"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 	if ($Additional_Epel_Packages)
@@ -5390,7 +5390,7 @@ process
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		
 		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos'
-		
+		$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		
 		}
     if ($Additional_Epel_Packages -contains 'docker')
