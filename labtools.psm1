@@ -80,6 +80,27 @@ function Set-LABDNS1
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+
+function Set-LABAPT_Cache_IP
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABAPT_Cache_IP")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$APT_Cache_IP
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.APT_Cache_IP = $APT_Cache_IP
+    Write-Host -ForegroundColor Gray " ==>setting APT_Cache_IP $APT_Cache_IP"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+
 function Set-LABDNS
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDNS1")]
@@ -416,6 +437,27 @@ function Set-LABsubnet
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+
+##Set-LABAnsiblePublicKey
+function Set-LABAnsiblePublicKey
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABAnsiblePublicKey")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$AnsiblePublicKey
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.AnsiblePublicKey = $AnsiblePublicKey
+    Write-Host -ForegroundColor Gray " ==>setting AnsiblePublicKey $AnsiblePublicKey"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+
 function Set-LABHostKey
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABHostKey")]
@@ -614,6 +656,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name vmnet -Value $Default.config.vmnet
         $object | Add-Member -MemberType NoteProperty -Name vlanID -Value $Default.config.vlanID
         $object | Add-Member -MemberType NoteProperty -Name DefaultGateway -Value $Default.config.DefaultGateway
+        $object | Add-Member -MemberType NoteProperty -Name APT_Cache_IP -Value $Default.config.APT_Cache_IP
         $object | Add-Member -MemberType NoteProperty -Name DNS1 -Value $Default.config.DNS1
         $object | Add-Member -MemberType NoteProperty -Name DNS2 -Value $Default.config.DNS2
         $object | Add-Member -MemberType NoteProperty -Name Gateway -Value $Default.config.Gateway
@@ -634,6 +677,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name Puppet -Value $Default.config.Puppet
         $object | Add-Member -MemberType NoteProperty -Name PuppetMaster -Value $Default.config.PuppetMaster
         $object | Add-Member -MemberType NoteProperty -Name HostKey -Value $Default.config.Hostkey
+        $object | Add-Member -MemberType NoteProperty -Name AnsiblePublicKey -Value $Default.config.AnsiblePublicKey
 		$object | Add-Member -MemberType NoteProperty -Name MainMemUseFile -Value $Default.config.MainMemUseFile
         Write-Output $object
         }
@@ -685,13 +729,13 @@ function Save-LABdefaults
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Save-LABDefaults")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaults_jsonfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true)]$Defaults
 
     )
 begin {
     }
 process {
-        Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent =@()
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
@@ -714,6 +758,7 @@ process {
         $xmlcontent += ("<IPv6PrefixLength>$($Defaults.IPv6PrefixLength)</IPv6PrefixLength>")
         $xmlcontent += ("<Gateway>$($Defaults.Gateway)</Gateway>")
         $xmlcontent += ("<DefaultGateway>$($Defaults.DefaultGateway)</DefaultGateway>")
+        $xmlcontent += ("<APT_Cache_IP>$($Defaults.APT_Cache_IP)</APT_Cache_IP>")
         $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
         $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
         $xmlcontent += ("<Sourcedir>$($Defaults.Sourcedir)</Sourcedir>")
@@ -723,11 +768,17 @@ process {
         $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
         $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
         $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")
+        $xmlcontent += ("<AnsiblePublicKey>$($Defaults.AnsiblePublicKey)</AnsiblePublicKey>")
 		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
+		Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent | Set-Content $defaultsfile
         }
-end {}
+end {
+	$Global:labdefaults = Get-LABDefaults
+	Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaults_jsonfile"
+	$Global:labdefaults | ConvertTo-Json | Out-File $Defaults_jsonfile
+	}
 }
 
 function Save-LABSwitchdefaults
@@ -814,6 +865,7 @@ function New-LABdefaults
         $xmlcontent += ("<IPv6PrefixLength></IPv6PrefixLength>")
         $xmlcontent += ("<Gateway></Gateway>")
         $xmlcontent += ("<DefaultGateway></DefaultGateway>")
+        $xmlcontent += ("<APT_Cache_IP></APT_Cache_IP>")
         $xmlcontent += ("<DNS1></DNS1>")
         $xmlcontent += ("<DNS2></DNS2>")
         $xmlcontent += ("<Sourcedir></Sourcedir>")
@@ -823,6 +875,7 @@ function New-LABdefaults
         $xmlcontent += ("<Puppet></Puppet>")
         $xmlcontent += ("<PuppetMaster></PuppetMaster>")
         $xmlcontent += ("<HostKey></HostKey>")
+		$xmlcontent += ("<AnsiblePublicKey></AnsiblePublicKey>")
         $xmlcontent += ("<MainMemUseFile></MainMemUseFile>")
         $xmlcontent += ("</config>")
         $xmlcontent | Set-Content $defaultsfile
@@ -2276,7 +2329,7 @@ param
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -2581,7 +2634,17 @@ If ($Exchange2010)
             $de_DE_URL = "https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
             $en_US_URL = 'https://download.microsoft.com/download/D/C/2/DC2AE92F-80DA-45B0-8046-5E4110324509/Exchange2010-KB3141339-x64-en.msp'
             }
-        }
+        'ur14'
+            {
+            $de_DE_URL = 'https://download.microsoft.com/download/7/C/C/7CC9FCBA-7AFE-4A9E-A728-18C90C79D846/Exchange2010-KB3151097-x64-de.msp'
+            $en_US_URL = 'https://download.microsoft.com/download/6/0/C/60C7CA35-8725-4FC3-BD7F-186D1695CE1F/Exchange2010-KB3151097-x64-en.msp'
+            }
+        'ur15'
+            {
+            $de_DE_URL = 'https://download.microsoft.com/download/E/5/3/E53BD2CD-BBF2-4B5F-AF5F-E8A098CEB9FB/Exchange2010-KB3184728-x64-de.msp'
+            $en_US_URL = 'https://download.microsoft.com/download/7/B/C/7BC68310-0D80-4853-9663-A26E333C1F95/Exchange2010-KB3184728-x64-en.msp'
+            }
+       }
     Switch ($e14_lang)
         {
         "de_DE"
@@ -3209,6 +3272,7 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
 if ($start.IsPresent)
 	{
 	Get-vmx "OpenWRT_$ver" | start-vmx
+	Set-LABDefaultGateway -DefaultGateway ($global:labdefaults.MySubnet -replace ".$","4")
 	}
 } #end OpenWRT
 
@@ -4718,29 +4782,39 @@ function New-LabVMX
 	[OutputType([psobject])]
 param
     (
-	$Masterpath = "./",
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	[switch]$Ubuntu,
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$true)]
+	[switch]$CentOS,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateSet('14_4','15_4','15_10','16_4')]
 	$Ubuntu_ver = '14_4',
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
+	[ValidateSet('Centos7_1_1511','Centos7_1_1503')]
+	$CentOS_ver = 'Centos7_1_1511',	
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$true)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	$VMXname,
 	[switch]$start = $false,
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateRange(0,3)]
 	[int]$SCSI_Controller = 1,
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateRange(0,7)]
 	[int]$SCSI_DISK_COUNT = 0,
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[Uint64]$SCSI_DISK_SIZE = 100GB,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[ValidateSet('pvscsi','lsisas1068')]
 	$SCSI_Controller_Type = "pvscsi",
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateSet('vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet9','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19')]
-	$vmnet = 'vmnet2',
+	$vmnet = $Global:labdefaults.vmnet,
 	<#
     Size for general nodes
     'XS'  = 1vCPU, 512MB
@@ -4751,30 +4825,43 @@ param
     'TXL' = 4vCPU, 6144MB
     'XXL' = 4vCPU, 8192MB
     #>
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true)]
-[ValidateSet('XS', 'S', 'M', 'L', 'XL','TXL','XXL')]
-$Size = "XL",
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
-[ValidateSet('nat', 'bridged','custom','hostonly')]
-$ConnectionType,
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
-[ValidateSet('e1000e','vmxnet3','e1000')]$AdapterType,
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
-[ValidateRange(0,99)][alias ('apr')][int]$activationpreference,
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $false)]
-[ValidateRange(1,9)][int]$Scenario,
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $False)]
-[Validatelength(1, 10)][string]$Scenarioname,
-[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true, ValueFromPipelineByPropertyName = $False)]
-[Validatelength(1, 50)][string]$Displayname
+	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true)]
+	[ValidateSet('XS', 'S', 'M', 'L', 'XL','TXL','XXL')]
+	$Size = "XL",
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[ValidateSet('nat', 'bridged','custom','hostonly')]
+	$ConnectionType = 'hostonly',
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[ValidateSet('e1000e','vmxnet3','e1000')]$AdapterType = 'vmxnet3',
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[ValidateRange(0,99)][alias ('apr')][int]$activationpreference,
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[ValidateRange(1,9)][int]$Scenario = 9,
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
+	[Validatelength(1, 10)][string]$Scenarioname = 'default',
+	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
+	[Validatelength(1, 50)][string]$Displayname = $VMXname,
+	$Masterpath = $Global:labdefaults.Masterpath
+
 )
 if ($Ubuntu.IsPresent)
 	{
 	$Required_Master = "Ubuntu$Ubuntu_ver"
 	}
+if ($CentOS.IsPresent)
+	{
+	$Required_Master = "$CentOS_ver"
+	}
 try
     {
-    $MasterVMX = test-labmaster -Masterpath $MasterPath -Master $Required_Master  -erroraction stop
+    $MasterVMX = test-labmaster -Masterpath $MasterPath -Master $Required_Master -erroraction stop
     }
 catch
     {
@@ -4814,6 +4901,7 @@ If ($SCSI_DISK_COUNT -gt 0)
         $NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
         Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
 		$NodeClone |Set-VMXSize -Size $Size | Out-Null
+
 		if ($vtbit.ispresent)
 			{		
 			$NodeClone | Set-VMXVTBit -VTBit | Out-Null
@@ -4841,35 +4929,39 @@ param
 	[Parameter(Mandatory=$false)]
 	[ValidateSet('14_4','15_4','15_10','16_4')]
 	$Ubuntu_ver = '14_4',
-	[Parameter(Mandatory=$true)]
-	$Scriptdir,
-	[Parameter(Mandatory=$true)]
-	$Sourcedir,
-	[Parameter(Mandatory=$true)]
-	$DefaultGateway,
+	####
+	[Parameter(Mandatory=$false)]
+	$Scriptdir = (join-path (Get-Location) "labbuildr-scripts"),
+	[Parameter(Mandatory=$false)]
+	$Sourcedir = $Global:labdefaults.Sourcedir,
+	[Parameter(Mandatory=$false)]
+	$DefaultGateway = $Global:labdefaults.DefaultGateway,
 	[Parameter(Mandatory=$false)]
 	$guestpassword = "Password123!",
 	$Rootuser = 'root',
-	$Hostkey,
+	$Hostkey = $Global:labdefaults.HostKey,
 	$Default_Guestuser = 'labbuildr',
 	[Parameter(Mandatory=$true)]
 	$ip,
-	[Parameter(Mandatory=$true)]
-	$subnet,
-	[Parameter(Mandatory=$true)]
-	$DNS1,
-	[Parameter(Mandatory=$true)]
-	$DNS2,
-	[Parameter(Mandatory=$true)]
-	$Host_Name,
-	[Parameter(Mandatory=$true)]
-	$DNS_DOMAIN_NAME
+	[Parameter(Mandatory=$false)]
+	$Subnet = $Global:labdefaults.MySubnet,
+	[Parameter(Mandatory=$false)]
+	$DNS1 = $Global:labdefaults.DNS1,
+	[Parameter(Mandatory=$false)]
+	$DNS2 = $Global:labdefaults.DNS2,
+	[Parameter(Mandatory=$false)]
+	$Host_Name = $VMXName,
+	[Parameter(Mandatory=$false)]
+	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
+	[switch]$use_aptcache = $true,
+
+	$net_dev = 'eth0' #future use
 	)
 
 begin
 {
-switch ($ubuntu_ver)
-    {
+	switch ($ubuntu_ver)
+		{
     "16_4"
         {
         $netdev = "ens160"
@@ -4883,6 +4975,8 @@ switch ($ubuntu_ver)
         $netdev= "eth0"
         }
     }
+	$required_packages = ('python','git')	
+	$required_packages = $required_packages -join " "
 }
 process
 {
@@ -4893,6 +4987,10 @@ try
 catch
 	{
 	break
+	}
+If (!$DefaultGateway)
+	{
+	$DefaultGateway = $ip
 	}
 if ($nodeclone.status -ne "started")
 	{
@@ -4928,6 +5026,13 @@ if ($nodeclone.status -ne "started")
     $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
     Write-Verbose $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
+
+    if ($labdefaults.AnsiblePublicKey)
+            {
+            $Scriptblock = "echo '$($labdefaults.AnsiblePublicKey)' >> /root/.ssh/authorized_keys"
+            Write-Verbose $Scriptblock
+            $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
 
     if ($Hostkey)
         {
@@ -5022,11 +5127,290 @@ if ($nodeclone.status -ne "started")
 	Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Possible_Error_Fix $Possible_Error_Fix -Guestuser $Rootuser -Guestpassword $Guestpassword     
 
+	if ($use_aptcache)
+		{
+		$NodeClone | Set-LabAPTCacheClient -cache_ip $global:labdefaults.APT_Cache_IP
+		}
+	$Scriptblock="apt-get install $required_packages -y"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+
 	}
 }
 end
 {}
 }
+
+function Set-LabCentosVMX
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$false)]
+	[ValidateSet('Centos7_1_1511','Centos7_1_1503')]
+	$CentOS_ver = 'Centos7_1_1511',	
+	[Parameter(Mandatory=$false)]
+	$Scriptdir = (join-path (Get-Location) "labbuildr-scripts"),
+	[Parameter(Mandatory=$false)]
+	$Sourcedir = $Global:labdefaults.Sourcedir,
+	[Parameter(Mandatory=$false)]
+	$DefaultGateway = $Global:labdefaults.DefaultGateway,
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$Rootuser = 'root',
+	$Hostkey = $Global:labdefaults.HostKey,
+	$Default_Guestuser = 'labbuildr',
+	[Parameter(Mandatory=$true)]
+	$ip,
+	[Parameter(Mandatory=$false)]
+	$Subnet = $Global:labdefaults.MySubnet,
+	[Parameter(Mandatory=$false)]
+	$DNS1 = $Global:labdefaults.DNS1,
+	[Parameter(Mandatory=$false)]
+	$DNS2 = $Global:labdefaults.DNS2,
+	[Parameter(Mandatory=$false)]
+	$Host_Name = $VMXName,
+	[ValidateSet('ansible','docker')]
+	[string[]]$Additional_Epel_Packages,	
+	[Parameter(Mandatory=$false)]
+	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
+	$netdev= "eno16777984"
+	)
+
+begin
+{
+
+	$OS ='Centos'
+	$OS_Sourcedir = Join-Path $Sourcedir $OS
+	$OS_CahcheDir = Join-Path $OS_Sourcedir "cache"
+    $yumcachedir = Join-path -Path $OS_CahcheDir "yum"  -ErrorAction stop
+	$epel = "http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+	If (!$DefaultGateway)
+		{
+		$DefaultGateway = $ip
+		}
+	Write-Verbose "yumcachedir $yumcachedir"
+}
+
+process
+	{
+	try
+		{
+		$nodeclone = Get-VMX -VMXName $VMXName -ErrorAction stop
+		}
+	catch
+		{
+		break
+		}
+	if ($nodeclone.status -ne "started")
+		{
+		$nodeclone | start-vmx | Out-Null
+		}
+	do {
+			$ToolState = Get-VMXToolsState -config $NodeClone.config
+			Write-Verbose "VMware tools are in $($ToolState.State) state"
+			sleep 5
+		}
+    until ($ToolState.state -match "running")
+	$installmessage += "Node $($nodeclone.vmxname) is reachable via ssh $ip with root:$($guestpassword)  or $($Default_Guestuser):$($Guestpassword)`n"
+    $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
+
+	$NodeClone | Set-VMXLinuxNetwork -ipaddress $ip -network "$subnet" -netmask "255.255.255.0" -gateway $DefaultGateway -device $netdev -Peerdns -DNS1 $DNS1 -DNS2 $DNS2 -DNSDOMAIN "$DNS_DOMAIN_NAME" -Hostname $Host_name  -rootuser $Rootuser -rootpassword $Guestpassword | Out-Null
+    $Logfile = "/tmp/labbuildr.log"
+    $Scriptblock =  "systemctl start NetworkManager"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	$Scriptblock =  "chmod 777 $Logfile"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	write-verbose "Setting Hostname"
+	$Scriptblock = "nmcli general hostname $Host_name.$DNS_DOMAIN_NAME;systemctl restart systemd-hostnamed"
+	Write-Verbose $Scriptblock
+	$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  | Out-Null
+
+    $Scriptblock =  "/etc/init.d/network restart"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
+
+    $Scriptblock =  "systemctl stop NetworkManager"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
+
+    Write-Host -ForegroundColor Gray " ==>you can now use ssh into $ip with root:Password123! and Monitor $Logfile"
+
+    write-verbose "Disabling IPv&"
+    $Scriptblock = "echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf;sysctl -p"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
+    $Scriptblock =  "echo '$ip $($Host_name) $($Host_name).$DNS_DOMAIN_NAME'  >> /etc/hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
+    $Scriptblock = "echo 'kernel.pid_max=655360' >> /etc/sysctl.conf;sysctl -w kernel.pid_max=655360"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    if ($EMC_ca.IsPresent)
+        {
+        $files = Get-ChildItem -Path "$Sourcedir\EMC_ca"
+        foreach ($File in $files)
+            {
+            $NodeClone | copy-VMXfile2guest -Sourcefile $File.FullName -targetfile "/etc/pki/ca-trust/source/anchors/$($File.Name)" -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+        $Scriptblock = "update-ca-trust"
+        Write-Verbose $Scriptblock
+        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+        }
+
+	Write-Verbose "setting sudoers"
+    $Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
+
+    $Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	Write-Verbose "Changing Password for $Default_Guestuser to $Guestpassword"
+    $Scriptblock = "echo $Guestpassword | passwd $Default_Guestuser --stdin"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	### generate user ssh keys
+    $Scriptblock ="/usr/bin/ssh-keygen -t rsa -N '' -f /home/$Default_Guestuser/.ssh/id_rsa"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
+
+    $Scriptblock = "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys;chmod 0600 ~/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
+    #### Start ssh for pwless  root local login
+    $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    $Scriptblock = "cat /home/$Default_Guestuser/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
+
+    if ($labdefaults.AnsiblePublicKey)
+            {
+            $Scriptblock = "echo '$($labdefaults.AnsiblePublicKey)' >> /root/.ssh/authorized_keys"
+            Write-Verbose $Scriptblock
+            $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+    if ($Hostkey)
+            {
+            $Scriptblock = "echo '$($Hostkey)' >> /root/.ssh/authorized_keys"
+            Write-Verbose $Scriptblock
+            $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+    $Scriptblock = "cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys;chmod 0600 /root/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    
+	$Scriptblock = "{ echo -n '$($NodeClone.vmxname) '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
+    $Scriptblock = "{ echo -n 'localhost '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
+	#### end ssh
+	### testing default route
+    Write-Host -ForegroundColor Cyan " ==>Testing default Route, make sure that Gateway is reachable ( install and start OpenWRT )
+    if failures occur, open a 2nd labbuildr window and run start-vmx OpenWRT "
+
+    $Scriptblock = "DEFAULT_ROUTE=`$(ip route show default | awk '/default/ {print `$3}');ping -c 1 `$DEFAULT_ROUTE"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+    ### preparing yum
+    $file = "/etc/yum.conf"
+    $Property = "cachedir"
+    $Scriptblock = "grep -q '^$Property' $file && sed -i 's\^$Property=/var*.\$Property=/mnt/hgfs/Sources/$OS/\' $file || echo '$Property=/mnt/hgfs/Sources/$OS/yum/`$basearch/`$releasever/' >> $file"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
+    $file = "/etc/yum.conf"
+    $Property = "keepcache"
+    $Scriptblock = "grep -q '^$Property' $file && sed -i 's\$Property=0\$Property=1\' $file || echo '$Property=1' >> $file"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
+    $Scriptblock="yum makecache"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+    $Scriptblock="yum install yum-plugin-versionlock -y"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+    $Scriptblock="yum versionlock open-vm-tools"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+    if ($update.IsPresent)
+        {
+        Write-Verbose "Performing yum update, this may take a while"
+        $Scriptblock = "yum update -y"
+        Write-Verbose $Scriptblock
+        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+        }
+    $Scriptblock = "yum install bind-utils -y"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+    <#foreach ($remotehost in ('emccodevmstore001.blob.core.windows.net','registry-1.docker.io','index.docker.io'))
+        {
+        $Scriptblock = "nslookup $remotehost"
+        Write-Verbose $Scriptblock
+        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+        }#>
+	if ($Additional_Epel_Packages)
+		{
+		Write-Host -ForegroundColor Gray " ==>adding EPEL Repo"
+        $Scriptblock = "rpm -i $epel"
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+		}
+	if ($Additional_Epel_Packages -contains 'ansible')
+		{
+		Write-Host -ForegroundColor Gray " ==>installing ansible"
+        $Scriptblock = "yum install ansible -y"
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+		}
+    if ($Additional_Epel_Packages -contains 'docker')
+		{
+		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+		$Packages = "git tar wget python-setuptools ntp"
+		Write-Verbose "Checking for $Packages"
+		$Scriptblock = "yum install $Packages -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		$Scriptblock = "yum install $Packages -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	
+		$Scriptblock = "systemctl enable ntpd;systemctl start ntpd"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		$Scriptblock = "systemctl start docker.service"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+		}
+	}
+end
+	{}
+}
+
 
 function Set-LabAPTCacheClient
 {
@@ -5049,8 +5433,8 @@ param
 begin
 {
 $Scriptblock = "cat > /etc/apt/apt.conf.d/01proxy <<EOF
-Acquire::http { Proxy \`"http://$($cache_ip):3142\`"; };`
-Acquire::https { Proxy \`"https://$($cache_ip):3142\`"; };`
+Acquire::http { Proxy `"http://$($cache_ip):3142`"; };`
+Acquire::https { Proxy `"https://$($cache_ip):3142`"; };`
 "
 }
 process
@@ -5069,5 +5453,18 @@ else
 end
 {
 }
+}
+
+
+function Deny-LabDefaults
+{
+Write-Host -ForegroundColor Magenta -NoNewline "
+                ///////"
+Write-Host -ForegroundColor Gray "
+                ( o  o )
+            --ooO-(_)-Ooo--"
+Write-Host -ForegroundColor Yellow "
+Keep Calm, '-defaults' Parameter has been deprecated for this Scenario !
+All your defaults are passed from the environment"
 }
 
