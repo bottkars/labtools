@@ -5366,12 +5366,6 @@ process
     $Scriptblock = "yum install bind-utils -y"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-    <#foreach ($remotehost in ('emccodevmstore001.blob.core.windows.net','registry-1.docker.io','index.docker.io'))
-        {
-        $Scriptblock = "nslookup $remotehost"
-        Write-Verbose $Scriptblock
-        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-        }#>
 	if ($Additional_Epel_Packages)
 		{
 		Write-Host -ForegroundColor Gray " ==>adding EPEL Repo"
@@ -5382,6 +5376,17 @@ process
 		{
 		Write-Host -ForegroundColor Gray " ==>installing ansible"
         $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip -y"
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+		
+		$Scriptblock = ("cat > /etc/krb5.conf <<EOF
+[realms]`
+ $($DNS_DOMAIN_NAME.ToUpper()) = {`
+    kdc = $($Global:labdefaults.BuildDomain)dc.$DNS_DOMAIN_NAME`
+ }`
+`
+[domain_realm]`
+    .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
+")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		}
     if ($Additional_Epel_Packages -contains 'docker')
