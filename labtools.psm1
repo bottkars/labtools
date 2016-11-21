@@ -5388,6 +5388,10 @@ process
     .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
 ")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+		
+		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos'
+		
+		
 		}
     if ($Additional_Epel_Packages -contains 'docker')
 		{
