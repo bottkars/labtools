@@ -5180,6 +5180,7 @@ param
 	$Host_Name = $VMXName,
 	[ValidateSet('ansible','docker')]
 	[string[]]$Additional_Epel_Packages,	
+	[string[]]$Additional_Packages,
 	[Parameter(Mandatory=$false)]
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
 	$netdev= "eno16777984"
@@ -5380,7 +5381,7 @@ process
 	if ($Additional_Epel_Packages -contains 'ansible')
 		{
 		Write-Host -ForegroundColor Gray " ==>installing ansible"
-        $Scriptblock = "yum install ansible -y"
+        $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation -y"
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		}
     if ($Additional_Epel_Packages -contains 'docker')
@@ -5393,11 +5394,7 @@ process
 		$Scriptblock = "yum install $Packages -y"
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-
-		$Scriptblock = "yum install $Packages -y"
-		Write-Verbose $Scriptblock
-		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-	
+		
 		$Scriptblock = "systemctl enable ntpd;systemctl start ntpd"
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
