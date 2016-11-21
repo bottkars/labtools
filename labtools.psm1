@@ -5378,7 +5378,7 @@ process
         $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip -y"
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		
-		$Scriptblock = ("cat > /etc/krb5.conf <<EOF
+		$Scriptblock = ("cat >> /etc/krb5.conf <<EOF
 [realms]`
  $($DNS_DOMAIN_NAME.ToUpper()) = {`
     kdc = $($Global:labdefaults.BuildDomain)dc.$DNS_DOMAIN_NAME`
