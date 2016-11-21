@@ -5388,11 +5388,10 @@ process
     .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
 ")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-		
-		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos'
+		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient'
 		$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-		
-		}
+#
+fgtv		}
     if ($Additional_Epel_Packages -contains 'docker')
 		{
 		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
