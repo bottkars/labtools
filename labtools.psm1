@@ -5211,7 +5211,10 @@ begin
 		}
 	Write-Verbose "yumcachedir $yumcachedir"
 }
-
+if (!$DNS2)
+	{
+	$DNS2 = $Global:labdefaults.DNS1
+	}
 process
 	{
 	try
