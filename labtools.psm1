@@ -5386,7 +5386,7 @@ process
 	if ($Additional_Epel_Packages -contains 'ansible')
 		{
 		Write-Host -ForegroundColor Gray " ==>installing ansible"
-        $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip build-essential libssl-dev libffi-dev python-dev -y"
+        $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip build-essential libssl-dev libffi-dev python-dev python-cffi -y"
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		
 		$Scriptblock = ("cat >> /etc/krb5.conf <<EOF
@@ -5399,7 +5399,7 @@ process
     .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
 ")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient cryptography shade'
+		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient shade'
 		$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 #
 fgtv		}
