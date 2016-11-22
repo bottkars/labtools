@@ -4502,12 +4502,23 @@ param(
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    'Nested_ESXi6','Nested_ESXi5'
+    'Nested_ESXi6','Nested_ESXi5','Nested_ESXi6.5'
         )]
     [string]$nestedesx_ver
 )
 write-host "Browsing http://www.virtuallyghetto.com/ for templates"	
-$HREF =	(Invoke-WebRequest http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html -UseBasicParsing).links | where href -match $nestedesx_ver
+switch ($nestedesx_ver)
+	{
+	'Nested_ESXi6.5'
+		{
+		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2016/11/esxi-6-5-virtual-appliance-is-now-available.html'
+		}
+	default
+		{
+		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html'
+		}
+	}
+$HREF =	(Invoke-WebRequest $ESXI_BASEURL -UseBasicParsing).links | where href -match $nestedesx_ver
 $URL = $HREF.href    
 if (Test-Path -Path "$Destination")
         {
@@ -5375,7 +5386,7 @@ process
 	if ($Additional_Epel_Packages -contains 'ansible')
 		{
 		Write-Host -ForegroundColor Gray " ==>installing ansible"
-        $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip -y"
+        $Scriptblock = "yum install ansible python-devel krb5-devel krb5-libs krb5-workstation python-pip build-essential libssl-dev libffi-dev python-dev -y"
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		
 		$Scriptblock = ("cat >> /etc/krb5.conf <<EOF
@@ -5388,7 +5399,7 @@ process
     .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
 ")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient'
+		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient cryptography shade'
 		$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 #
 fgtv		}
