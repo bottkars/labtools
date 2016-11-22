@@ -5239,7 +5239,7 @@ process
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
-
+	
 	$NodeClone | Set-VMXLinuxNetwork -ipaddress $ip -network "$subnet" -netmask "255.255.255.0" -gateway $DefaultGateway -device $netdev -Peerdns -DNS1 $DNS1 -DNS2 $DNS2 -DNSDOMAIN "$DNS_DOMAIN_NAME" -Hostname $Host_name  -rootuser $Rootuser -rootpassword $Guestpassword | Out-Null
     $Logfile = "/tmp/labbuildr.log"
     $Scriptblock =  "systemctl start NetworkManager"
@@ -5402,10 +5402,9 @@ process
     .$($DNS_DOMAIN_NAME.tolower()) = $($DNS_DOMAIN_NAME.toupper())`
 ")
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient shade'
+		$Scriptblock = 'pip install "pywinrm>=0.1.1" kerberos requests_kerberos python-openstackclient'
 		$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-#
-fgtv		}
+	}
     if ($Additional_Epel_Packages -contains 'docker')
 		{
 		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
