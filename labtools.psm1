@@ -5199,7 +5199,10 @@ param
 
 begin
 {
-
+	if (!$DNS2)
+		{
+		$DNS2 = $DNS1
+		}
 	$OS ='Centos'
 	$OS_Sourcedir = Join-Path $Sourcedir $OS
 	$OS_CahcheDir = Join-Path $OS_Sourcedir "cache"
@@ -5211,10 +5214,7 @@ begin
 		}
 	Write-Verbose "yumcachedir $yumcachedir"
 }
-if (!$DNS2)
-	{
-	$DNS2 = $Global:labdefaults.DNS1
-	}
+
 process
 	{
 	try
