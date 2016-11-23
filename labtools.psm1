@@ -4859,7 +4859,8 @@ param
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
 	[Validatelength(1, 50)][string]$Displayname = $VMXname,
-	$Masterpath = $Global:labdefaults.Masterpath
+	$Masterpath = $Global:labdefaults.Masterpath,
+	[switch]$vtbit
 
 )
 if ($Ubuntu.IsPresent)
@@ -4885,44 +4886,50 @@ catch
     exit
     }
 Write-Host -ForegroundColor Gray " ==>found Master $($Mastervmx.VMXName)"
-$NodeClone = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base" | New-VMXLinkedClone -CloneName $VMXname
-If ($SCSI_DISK_COUNT -gt 0)
+if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyContinue))
 	{
-	If ($SCSI_Controller -ne 0)
+	$NodeClone = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base" | New-VMXLinkedClone -CloneName $VMXname
+	If ($SCSI_DISK_COUNT -gt 0)
 		{
-		$controller = $NodeClone | Set-VMXScsiController -SCSIController $SCSI_Controller -Type $SCSI_Controller_Type
-		$startlun = 0
-		$endlun = $SCSI_DISK_COUNT -1
-		}
-	else
-		{
-		$startLun = 1
-		$endlun = $SCSI_DISK_COUNT
-		}
-	foreach ($LUN in ($startlun..$endlun))
+		If ($SCSI_Controller -ne 0)
 			{
-			$Diskname =  "SCSI$SCSI"+"_LUN$LUN.vmdk"
-			$Newdisk = New-VMXScsiDisk -NewDiskSize $SCSI_DISK_SIZE -NewDiskname $Diskname -Verbose -VMXName $NodeClone.VMXname -Path $NodeClone.Path 
-			$AddDisk = $NodeClone | Add-VMXScsiDisk -Diskname $Newdisk.Diskname -LUN $LUN -Controller $SCSI_Controller
+			$controller = $NodeClone | Set-VMXScsiController -SCSIController $SCSI_Controller -Type $SCSI_Controller_Type
+			$startlun = 0
+			$endlun = $SCSI_DISK_COUNT -1
 			}
-	}
-        $Nodeclone | Set-VMXNetworkAdapter -Adapter 0 -ConnectionType $ConnectionType -AdapterType $AdapterType -WarningAction SilentlyContinue | Out-Null
-        $Nodeclone | Set-VMXVnet -Adapter 0 -vnet $vmnet| Out-Null
-        Set-VMXDisplayName -DisplayName $Displayname -config $NodeClone.config |Out-Null
-        $NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
-        Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
-		$NodeClone |Set-VMXSize -Size $Size | Out-Null
+		else
+			{
+			$startLun = 1
+			$endlun = $SCSI_DISK_COUNT
+			}
+		foreach ($LUN in ($startlun..$endlun))
+				{
+				$Diskname =  "SCSI$SCSI"+"_LUN$LUN.vmdk"
+				$Newdisk = New-VMXScsiDisk -NewDiskSize $SCSI_DISK_SIZE -NewDiskname $Diskname -Verbose -VMXName $NodeClone.VMXname -Path $NodeClone.Path 
+				$AddDisk = $NodeClone | Add-VMXScsiDisk -Diskname $Newdisk.Diskname -LUN $LUN -Controller $SCSI_Controller
+				}
+		}
+	$Nodeclone | Set-VMXNetworkAdapter -Adapter 0 -ConnectionType $ConnectionType -AdapterType $AdapterType -WarningAction SilentlyContinue | Out-Null
+	$Nodeclone | Set-VMXVnet -Adapter 0 -vnet $vmnet| Out-Null
+	Set-VMXDisplayName -DisplayName $Displayname -config $NodeClone.config |Out-Null
+	$NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
+	Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
+	$NodeClone |Set-VMXSize -Size $Size | Out-Null
 
-		if ($vtbit.ispresent)
-			{		
-			$NodeClone | Set-VMXVTBit -VTBit | Out-Null
-			$ActivationPrefrence = $NodeClone | Set-VMXActivationPreference -config -activationpreference $activationpreference
-			}
-if ($start.IsPresent)
-	{
-	$Started = $NodeClone | Start-VMX
+	if ($vtbit.ispresent)
+		{		
+		$NodeClone | Set-VMXVTBit -VTBit  | Out-Null
+		}
+	if ($start.IsPresent)
+		{
+		$Started = $NodeClone | Start-VMX -nowait
+		}
+	Write-Output $NodeClone
 	}
-Write-Output $NodeClone
+else
+	{
+	#Write-Warning "Machine $VMXname already exists"
+	}
 }
 
 function Set-LabUbuntuVMX
@@ -5189,8 +5196,13 @@ param
 	$DNS2 = $Global:labdefaults.DNS2,
 	[Parameter(Mandatory=$false)]
 	$Host_Name = $VMXName,
-	[ValidateSet('ansible','docker')]
+	[Parameter(Mandatory = $False)]
+	[AllowNull()] 
+    [AllowEmptyString()]
+	[ValidateSet('ansible','docker','generic','')]
 	[string[]]$Additional_Epel_Packages,	
+	[AllowNull()] 
+    [AllowEmptyCollection()]
 	[string[]]$Additional_Packages,
 	[Parameter(Mandatory=$false)]
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
@@ -5204,6 +5216,7 @@ begin
 		$DNS2 = $DNS1
 		}
 	$OS ='Centos'
+    $Logfile = "/tmp/labbuildr.log"
 	$OS_Sourcedir = Join-Path $Sourcedir $OS
 	$OS_CahcheDir = Join-Path $OS_Sourcedir "cache"
     $yumcachedir = Join-path -Path $OS_CahcheDir "yum"  -ErrorAction stop
@@ -5213,6 +5226,11 @@ begin
 		$DefaultGateway = $ip
 		}
 	Write-Verbose "yumcachedir $yumcachedir"
+	$System_Packages = ('bind-utils',
+						'ntp',
+						'curl',
+						'git')
+	$System_Packages = $System_Packages -join " "
 }
 
 process
@@ -5239,9 +5257,26 @@ process
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
+	##### evaluating net device
+	Write-Host -ForegroundColor Magenta " ==>Evaluating nic´s in $($nodeclone.vmxname)"
+	$Scriptblock = 'vmtoolsd --cmd="info-set guestinfo.IF0 $(ls /sys/class/net)"'
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	$Interfaces = $nodeclone | Get-VMXVariable -GuestVariable IF0 | Select-Object IF0
+	Write-Host -ForegroundColor Gray " ==>Found interfaces $($Interfaces.IF0 -join ",")"
+	$eth0 = $Interfaces.IF0 | where {$_ -ne "lo"} | Select-Object -First 1
+	if ($eth0)
+		{
+		$netdev = $eth0
+		Write-Host -ForegroundColor Gray  " ==>setting netdev to evaluated $netdev"
+		}
+	else
+		{
+		Write-Host -ForegroundColor Gray  " ==>using default netdev $netdev"
+		}
 	
+	####
 	$NodeClone | Set-VMXLinuxNetwork -ipaddress $ip -network "$subnet" -netmask "255.255.255.0" -gateway $DefaultGateway -device $netdev -Peerdns -DNS1 $DNS1 -DNS2 $DNS2 -DNSDOMAIN "$DNS_DOMAIN_NAME" -Hostname $Host_name  -rootuser $Rootuser -rootpassword $Guestpassword | Out-Null
-    $Logfile = "/tmp/labbuildr.log"
+
     $Scriptblock =  "systemctl start NetworkManager"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
@@ -5377,7 +5412,7 @@ process
         Write-Verbose $Scriptblock
         $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
         }
-    $Scriptblock = "yum install bind-utils ntp -y;systemctl enable ntpd;systemctl start ntpd"
+    $Scriptblock = "yum install $System_Packages -y;systemctl enable ntpd;systemctl start ntpd"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 	if ($Additional_Epel_Packages)
@@ -5391,13 +5426,9 @@ process
 		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
-		$Packages = "git tar wget python-setuptools ntp"
+		$Packages = "tar wget python-setuptools"
 		Write-Verbose "Checking for $Packages"
 		$Scriptblock = "yum install $Packages -y"
-		Write-Verbose $Scriptblock
-		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-		
-		$Scriptblock = "systemctl enable ntpd;systemctl start ntpd"
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
