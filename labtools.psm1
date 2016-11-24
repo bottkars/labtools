@@ -287,10 +287,11 @@ function Set-LABNMMver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9100',#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-    'nmm8231','nmm8232',  
-    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
+	'nmm8240',
+    'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
     )]
     $nmm_ver
@@ -313,9 +314,10 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9010','nw9011','nw9012','nw9013','nw9100',#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-    'nw8232','nw8231',
+	'nw8240',
+    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
@@ -1584,9 +1586,10 @@ param
     (
 	<#
 	Version Of Networker Server / Client to be installed
-    'nw9010','nw9011','nw9012','nw9013','nw9100',#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-    'nw8232','nw8231',
+	'nw824'
+    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
@@ -1602,10 +1605,13 @@ param
     'nwunknown'
 #>
 
-    [Parameter(ParameterSetName = "installer",Mandatory = $true)][ValidateSet(
-    'nw9010','nw9011','nw9012','nw9013','nw9100',#
+    [Parameter(ParameterSetName = "installer",Mandatory = $true)]
+	[ValidateSet(
+	'nw9100',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-    'nw8232','nw8231',
+	'nw8240',
+    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
     'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
@@ -1790,6 +1796,11 @@ switch ($PsCmdlet.ParameterSetName)
             $nwzip = "nw$($nwzip)_$arch.$Extension"
             switch ($nw_ver)
                 {
+                "nw8240"
+                    {
+                    $nwzip = "nw824_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2016Q4/$nwzip"
+                    }
                 "nw9010"
                     {
                     $nwzip = "nw901_$arch.$Extension"
@@ -1889,17 +1900,20 @@ function Receive-LABnmm
 param
     (
 	<#
-	'nmm9010','nmm9011','nmm9100',#
-    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-    'nmm8231','nmm8232',  
-    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
+	'nmm9010','nmm9011','nmm9100',#-#
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008','nmm8240'
+    'nmm8240',
+	'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
 	#>
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9100',#
+	'nmm9100',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-    'nmm8231','nmm8232',  
-    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225',
+	'nmm8240',
+	'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
     )]
     $nmm_ver,
@@ -1939,6 +1953,23 @@ if ($nmm_ver -gt 'nmm_82')
     $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
     switch ($nmm_family)
         {
+        "824"
+            {
+			if ($nmm_ver -eq "nmm8240")
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/eval/2016Q4/$nmm_zip",
+					"ftp://ftp.legato.com/pub/eval/2016Q4/$scvmm_zip")
+				}
+			else
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+					"ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+				}
+			}
         "901"
             {
 			if ($nmm_ver -eq "nmm9010")
