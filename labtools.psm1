@@ -739,6 +739,9 @@ begin {
     }
 process {
         $xmlcontent =@()
+		$xmlcontent += ("<!--
+      Warning ! DO not edit this fill. this may break labbuildr functionality
+-->")
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
@@ -846,6 +849,9 @@ function New-LABdefaults
     )
         Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent =@()
+		$xmlcontent += ("<!--
+      Warning ! DO not edit this fill. this may break labbuildr functionality
+-->")
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag</LanguageTag>")
         $xmlcontent += ("<nmm_ver></nmm_ver>")
