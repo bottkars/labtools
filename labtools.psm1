@@ -3351,9 +3351,9 @@ param(
     #>
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '15_5'
+    '15_5','15_5_1'
     )]
-    [string]$ver="15_5",
+    [string]$ver='15_5_1',
     [switch]$unzip
     #[switch]$force
 
