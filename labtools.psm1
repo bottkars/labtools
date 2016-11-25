@@ -290,9 +290,9 @@ function Set-LABNMMver
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
-    'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+    'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
     )]
     $nmm_ver
     )
@@ -317,19 +317,19 @@ function Set-LABNWver
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
-    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
+    'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
-    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
-    'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
-    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
-    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw8200',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw8130',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw8120',
     'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
-    'nw8105','nw8104','nw8103','nw8102','nw81',
+    'nw8105','nw8104','nw8103','nw8102','nw8100',
     'nw8044','nw8043','nw8042','nw8041',
     'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
-    'nw8016','nw8015','nw81014','nw8013','nw8012',
-    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
+    'nw8016','nw8015','nw81014','nw8013','nw8012','nw8010',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw8000',
     'nwunknown'
     )]
     $nw_ver
@@ -1597,19 +1597,19 @@ param
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw824'
-    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
+    'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
-    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
-    'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
-    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
-    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw8200',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw8130',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw8120',
     'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
-    'nw8105','nw8104','nw8103','nw8102','nw81',
+    'nw8105','nw8104','nw8103','nw8102','nw8100',
     'nw8044','nw8043','nw8042','nw8041',
     'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
-    'nw8016','nw8015','nw81014','nw8013','nw8012',
-    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
+    'nw8016','nw8015','nw81014','nw8013','nw8012','nw8010',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw8000',
     'nwunknown'
 #>
 
@@ -1619,19 +1619,19 @@ param
     'nw9010','nw9011','nw9012','nw9013','nw9014',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
-    'nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
+    'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
-    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw821',
-    'nw8206','nw8205','nw8204','nw8203','nw8202','nw82',
-    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw813',
-    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw812',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw8200',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw8130',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw8120',
     'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
-    'nw8105','nw8104','nw8103','nw8102','nw81',
+    'nw8105','nw8104','nw8103','nw8102','nw8100',
     'nw8044','nw8043','nw8042','nw8041',
     'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
     'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
-    'nw8016','nw8015','nw81014','nw8013','nw8012',
-    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw80',
+    'nw8016','nw8015','nw81014','nw8013','nw8012','nw8010',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw8000',
     'nwunknown'
     )]
     $nw_ver,
@@ -1804,12 +1804,64 @@ switch ($PsCmdlet.ParameterSetName)
             $nwzip = "nw$($nwzip)_$arch.$Extension"
             switch ($nw_ver)
                 {
+				#ftp://ftp.legato.com/pub/eval/2012Q3/
+                "nw8000"
+                    {
+                    $nwzip = "nw80_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2012Q3/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2013Q1/
+                "nw8010"
+                    {
+                    $nwzip = "nw80sp1_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2013Q1/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2013Q3/
+                "nw8100"
+                    {
+                    $nwzip = "nw81_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2013Q3/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2014Q3/
+                "nw8120"
+                    {
+                    $nwzip = "nw812_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2014Q3/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2015Q2/
+				"nw8130"
+                    {
+                    $nwzip = "nw81sp3_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2015Q2/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2014Q3/
+                "nw8200"
+                    {
+                    $nwzip = "nw82_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2014Q3/$nwzip"
+                    }
+                "nw8210"
+                    {
+                    $nwzip = "nw821_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2015Q1/$nwzip"
+                    }
+				#ftp://ftp.legato.com/pub/eval/2016Q1/
+                "nw8230"
+                    {
+                    $nwzip = "nw823_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2016Q1/$nwzip"
+                    }
                 "nw8240"
                     {
                     $nwzip = "nw824_$arch.$Extension"
                     $url = "ftp://ftp.legato.com/pub/eval/2016Q4/$nwzip"
                     }
-                "nw9010"
+                "nw9000"
+                    {
+                    $nwzip = "nw900_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2015Q4/$nwzip"
+                    }                
+				"nw9010"
                     {
                     $nwzip = "nw901_$arch.$Extension"
                     $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
@@ -1911,18 +1963,18 @@ param
 	'nmm9010','nmm9011','nmm9100',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008','nmm8240'
     'nmm8240',
-	'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
 	'nmm9100',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
-	'nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
+	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm821'
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
     )]
     $nmm_ver,
     [String]$Destination,
@@ -1961,6 +2013,41 @@ if ($nmm_ver -gt 'nmm_82')
     $nmm_family = "$($nmmversion.Major)$($nmmversion.Minor)$($nmmversion.Build)"
     switch ($nmm_family)
         {
+        "821"
+            {
+			if ($nmm_ver -eq "nmm8210")
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/eval/2015Q1/$nmm_zip",
+					"ftp://ftp.legato.com/pub/eval/2015Q1/$scvmm_zip")
+				}
+			else
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+					"ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+				}
+			}
+
+        "823"
+            {
+			if ($nmm_ver -eq "nmm8230")
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/eval/2016Q1/$nmm_zip",
+					"ftp://ftp.legato.com/pub/eval/2016Q1/$scvmm_zip")
+				}
+			else
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+					"ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+				}
+			}
         "824"
             {
 			if ($nmm_ver -eq "nmm8240")
