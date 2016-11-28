@@ -3034,8 +3034,9 @@ if (!(Test-Path $Destination_path))
 write-host -ForegroundColor Magenta  "we will check for the latest $Product version from EMC.com"
 $Uri = "http://www.emc.com/products-solutions/trial-software-download/isilon.htm"
 $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
-$Link = $request.Links | where OuterHTML -Match Onefs_simulator
+$Link = $request.Links | where OuterHTML -Match Onefs_simulator | Select-Object -First 1
 $Url = $link.href
+Write-Verbose $Url
 try
     {
     $FileName = Split-Path -Leaf -Path $Url
@@ -5325,7 +5326,7 @@ param
 	[Parameter(Mandatory = $False)]
 	[AllowNull()] 
     [AllowEmptyString()]
-	[ValidateSet('ansible','docker','generic','')]
+	[ValidateSet('ansible','docker','generic','influxdb','grafana','')]
 	[string[]]$Additional_Epel_Packages,	
 	[AllowNull()] 
     [AllowEmptyCollection()]
@@ -5562,6 +5563,29 @@ process
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 		}
+	if ($Additional_Epel_Packages -contains 'influxdb')
+		{
+		$Scriptblock ="cat > /etc/yum.repos.d/influxdb.repo  <<EOF
+[influxdb]
+name = InfluxDB Repository - RHEL `$releasever
+baseurl = https://repos.influxdata.com/rhel/\`$releasever/\`$basearch/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+EOF
+"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+		}
+	if ($Additional_Epel_Packages -contains 'grafana')
+		{
+		$Scriptblock ="yum install https://grafanarel.s3.amazonaws.com/builds/grafana-3.1.1-1470047149.x86_64.rpm -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+		}
+#>
+
+
 	}
 end
 	{}
