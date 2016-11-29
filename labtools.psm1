@@ -2652,12 +2652,30 @@ If ($Exchange2010)
     $ex_version = "E2010"
     $Product_Dir = Join-Path $Product_Dir "$ex_version"
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
-    $DownloadUrls = (
-                'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
-                'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
-                'https://download.microsoft.com/download/0/1/3/0131A8C8-001B-4448-9DD8-62C98D862560/filterpack2010sp1-kb2460041-x64-fullfile-de-de.exe',
-                'https://download.microsoft.com/download/D/1/2/D12F3512-6BED-4D5B-919A-DDD42C41F839/FilterPack64bit.exe'
-                )
+	switch ($e14_lang)
+		{
+		"de_DE"
+			{
+			$DownloadUrls = (
+						'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
+						'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
+						'https://download.microsoft.com/download/0/1/3/0131A8C8-001B-4448-9DD8-62C98D862560/filterpack2010sp1-kb2460041-x64-fullfile-de-de.exe',
+						'https://download.microsoft.com/download/D/1/2/D12F3512-6BED-4D5B-919A-DDD42C41F839/FilterPack64bit.exe'
+						)
+			}
+		"en_US"
+			{
+			$DownloadUrls = (
+						'http://download.microsoft.com/download/6/2/D/62DFA722-A628-4CF7-A789-D93E17653111/ExchangeMapiCdo.EXE',
+						'https://download.microsoft.com/download/D/F/F/DFFB3570-3264-4E01-BB9B-0EFDA4F9354F/UcmaRuntimeSetup.exe',
+						'https://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe',
+						#'https://download.microsoft.com/download/0/1/3/0131A8C8-001B-4448-9DD8-62C98D862560/filterpack2010sp1-kb2460041-x64-fullfile-de-de.exe',
+						'https://download.microsoft.com/download/D/1/2/D12F3512-6BED-4D5B-919A-DDD42C41F839/FilterPack64bit.exe'
+						)
+			}
+
+
+			}
     if (Test-Path -Path "$LANG_$Prereq_Dir")
         {
         Write-Host -ForegroundColor Gray " ==>$LANG_Prereq_Dir found"
