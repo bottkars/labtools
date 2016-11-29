@@ -2461,7 +2461,7 @@ param
     [ValidateSet('sp3')]
     $e14_sp="sp3",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('de_DE')]
+    [ValidateSet('de_DE','en_US')]
     $e14_lang = "de_DE",
     [Parameter(Mandatory = $true)][String]$Destination,
     [String]$Product_Dir= "Exchange",
@@ -2581,7 +2581,7 @@ if ($Exchange2013)
     if (!(test-path  "$Mapi_CDO"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
-        Expand-LABpackage -Archive $Mapi_CDO -destination $Prereq_Dir
+        Expand-LABpackage -Archive (Join-Path $Prereq_Dir 'ExchangeMapiCdo.EXE') -destination $Prereq_Dir
         }
 
 
@@ -2670,7 +2670,7 @@ If ($Exchange2010)
     foreach ($URL in $DownloadUrls)
         {
         $FileName = Split-Path -Leaf -Path $Url
-        if (!(test-path  "$LANG_Prereq_Dir\$FileName"))
+        if (!(test-path  (join-path $LANG_Prereq_Dir $FileName)))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$LANG_Prereq_Dir\$FileName"))
@@ -2685,10 +2685,10 @@ If ($Exchange2010)
             }
         }
     Write-Host -ForegroundColor Gray " ==>Testing $LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
-    if (!(test-path  "$LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"))
+    if (!(test-path  "$LANG_Prereq_Dir/ExchangeMapiCdo/ExchangeMapiCdo.msi"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
-        Expand-LABpackage -Archive $Mapi_CDO -destination $Prereq_Dir
+        Expand-LABpackage -Archive (Join-Path $LANG_Prereq_Dir 'ExchangeMapiCdo.EXE')-destination $LANG_Prereq_Dir
 		#Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
         }
 
