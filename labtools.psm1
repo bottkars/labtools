@@ -5567,7 +5567,7 @@ process
 		{
 		$Scriptblock ="cat > /etc/yum.repos.d/influxdb.repo  <<EOF
 [influxdb]
-name = InfluxDB Repository - RHEL `$releasever
+name = InfluxDB Repository - RHEL \`$releasever
 baseurl = https://repos.influxdata.com/rhel/\`$releasever/\`$basearch/stable
 enabled = 1
 gpgcheck = 1
@@ -5576,6 +5576,11 @@ EOF
 "
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		$Scriptblock ="yum install influxdb -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
 		}
 	if ($Additional_Epel_Packages -contains 'grafana')
 		{
