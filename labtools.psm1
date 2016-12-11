@@ -221,6 +221,23 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABOpenWRT
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABOpenWRT")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$enabled
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.OpenWRT = $enabled.IsPresent
+    Write-Host -ForegroundColor Gray " ==>setting $OpenWRT"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 function Set-LABNoDomainCheck
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABNoDomainCheck")]
@@ -676,6 +693,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name NMM -Value $Default.config.nmm
         $object | Add-Member -MemberType NoteProperty -Name Masterpath -Value $Default.config.Masterpath
         $object | Add-Member -MemberType NoteProperty -Name NoDomainCheck -Value $Default.config.NoDomainCheck
+		$object | Add-Member -MemberType NoteProperty -Name OpenWRT -Value $Default.config.OpenWRT
         $object | Add-Member -MemberType NoteProperty -Name Puppet -Value $Default.config.Puppet
         $object | Add-Member -MemberType NoteProperty -Name PuppetMaster -Value $Default.config.PuppetMaster
         $object | Add-Member -MemberType NoteProperty -Name HostKey -Value $Default.config.Hostkey
@@ -771,6 +789,7 @@ process {
         $xmlcontent += ("<ScaleIOVer>$($Defaults.ScaleIOVer)</ScaleIOVer>")
         $xmlcontent += ("<Masterpath>$($Defaults.Masterpath)</Masterpath>")
         $xmlcontent += ("<NoDomainCheck>$($Defaults.NoDomainCheck)</NoDomainCheck>")
+        $xmlcontent += ("<OpenWRT>$($Defaults.OpenWRT)</OpenWRT>")
         $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
         $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
         $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")
@@ -882,6 +901,7 @@ function New-LABdefaults
         $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
         $xmlcontent += ("<Masterpath></Masterpath>")
         $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
+        $xmlcontent += ("<OpenWRT></OpenWRT>")
         $xmlcontent += ("<Puppet></Puppet>")
         $xmlcontent += ("<PuppetMaster></PuppetMaster>")
         $xmlcontent += ("<HostKey></HostKey>")
@@ -3416,7 +3436,8 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 if ($start.IsPresent)
 	{
-	Get-vmx "OpenWRT_$ver" | start-vmx
+	Get-vmx "OpenWRT_$ver" | start-vmx -nowait | Out-Null
+	Set-LABOpenWRT -enabled
 	Set-LABDefaultGateway -DefaultGateway ($global:labdefaults.MySubnet -replace ".$","4")
 	}
 } #end OpenWRT
