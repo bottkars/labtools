@@ -1657,7 +1657,7 @@ param
     $nw_ver,
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
-    '9.0.1-72')]$nve_ver,
+    '9.0.1-72','9.1.0.91')]$nve_ver,
 	<#
 	architecture to be downloaded, valid values are
 	'aixpower',
@@ -1724,23 +1724,28 @@ switch ($PsCmdlet.ParameterSetName)
             "9.0.1-72"
                 {
                 $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NVE-9.0.1.72.ova"
-                $FileName = Split-Path -Leaf $url
-                $Destination_Filename = Join-Path $Destination $FileName
-                if (!(test-path $Destination_Filename ) -or $force.IsPresent)
-                    {
-                    Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
-                    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                        {
-                        Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                        pause
-                        }
+                }
 
-                    if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
-                        { 
-                        write-warning "Error Downloading $file from $Url, 
-                        $url might not exist."
-                        }
-                    }
+			"9.1.0.91"
+				{
+				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NVE-9.1.0.91.ova"
+				}
+            }
+        $FileName = Split-Path -Leaf $url
+        $Destination_Filename = Join-Path $Destination $FileName
+        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                pause
+                }
+
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+                { 
+                write-warning "Error Downloading $file from $Url, 
+                $url might not exist."
                 }
             }
         }
@@ -1885,6 +1890,11 @@ switch ($PsCmdlet.ParameterSetName)
                     {
                     $nwzip = "nw901_$arch.$Extension"
                     $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
+                    }
+				"nw9100"
+                    {
+                    $nwzip = "nw91_$arch.$Extension"
+                    $url = "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/$nwzip"
                     }
                 default
                     {
@@ -2109,6 +2119,24 @@ if ($nmm_ver -gt 'nmm_82')
             $urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
                 "ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
             }
+        "910"
+            {
+			$nmm_family = "91"
+			if ($nmm_ver -eq "nmm9100")
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/eval/2016Q4/nw91/$nmm_zip",
+					"ftp://ftp.legato.com/pub/eval/2016Q4/nw91/$scvmm_zip")
+				}
+			else
+				{
+				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
+				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
+				$urls = ("ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$nmm_zip",
+					"ftp://ftp.legato.com/pub/NetWorker/NMM/Cumulative_Hotfixes/$($nmmdotver.Substring(0,5))/$nmmdotver/$scvmm_zip")
+				}
+			}
         default
             {
             $nmm_zip = "nmm$($nmm_family)_win_x64.zip"
@@ -2448,6 +2476,218 @@ if ($Component -match 'SCDPM')
 		}
 return $returnvalue
 }
+
+<#
+.DESCRIPTION
+   receives latest Sharepoint Versions from Microsoft by Give CU / SP
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABSharepoint
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABSharepoint
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+    [Parameter(ParameterSetName = "sp16",Mandatory = $true)][switch][alias('sp16')]$Sharepoint2016,
+    #[Parameter(ParameterSetName = "sp16", Mandatory = $false)]
+    #[ValidateSet('final','cu1','cu2','cu3')]
+    #$sp16_cu,
+	[Parameter(ParameterSetName = "sp13",Mandatory = $true)][switch][alias('sp3')]$Sharepoint2013,
+    #[Parameter(ParameterSetName = "sp13", Mandatory = $false)]
+    #[ValidateSet('cu1')]
+    #$sp13_cu,
+    #[Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Sharepoint2010,
+    #[Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    #[ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15')]
+    #$e14_ur = "ur13",
+   # [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+   # [ValidateSet('de_DE','en_US')]
+    #$e14_lang = "de_DE",
+    [Parameter(Mandatory = $true)][String]$Destination,
+    [String]$Product_Dir= "Sharepoint",
+    [String]$Prereq = "prereq",
+    [switch]$unzip,
+    [switch]$force
+)
+    $Product_Dir = Join-Path $Destination $Product_Dir
+    Write-Host -ForegroundColor Gray " ==>destination : $Product_Dir"
+if (!(Test-Path $Product_Dir))    
+    {
+    Try
+        {
+        Write-Host -ForegroundColor Gray " ==>Trying to create $Product_Dir"
+        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory $Product_Dir"
+        break
+        }
+}
+
+#############
+if ($Sharepoint2016)
+    {
+    $sp_version = "SP2016"
+    $Prereq_Dir = Join-Path $Product_Dir "$sp_version$Prereq"
+    Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
+	if (Test-Path -Path "$Prereq_Dir")
+		{
+		Write-Host -ForegroundColor Gray " ==>$Prereq_Dir found"
+		}
+	else
+		{
+		Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for $sp_version Prereqs"
+		New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+		}
+    $Product_Dir = Join-Path $Product_Dir $sp_version
+    #$ex_cu = $sp16_cu
+
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $sp_version prereqs"
+    $DownloadUrls = (
+					"https://download.microsoft.com/download/4/B/1/4B1E9B0E-A4F3-4715-B417-31C82302A70A/ENU/x64/sqlncli.msi",#Microsoft SQL Server 2012 SP1 Native Client
+					"https://download.microsoft.com/download/5/7/2/57249A3A-19D6-4901-ACCE-80924ABEB267/1033/amd64/msodbcsql.msi",#Microsoft ODBC Driver 11 for SQL Server
+					"http://download.microsoft.com/download/E/0/0/E0060D8F-2354-4871-9596-DC78538799CC/Synchronization.msi",#Microsoft Sync Framework Runtime v1.0 SP1 (x64)
+					"https://download.microsoft.com/download/A/6/7/A678AB47-496B-4907-B3D4-0A2D280A13C0/WindowsServerAppFabricSetup_x64.exe",#Windows Server AppFabric 1.1
+					"http://download.microsoft.com/download/0/1/D/01D06854-CA0C-46F1-ADBA-EBF86010DCC6/rtm/MicrosoftIdentityExtensions-64.msi",#Windows Identity Foundation (KB974405)
+					"http://download.microsoft.com/download/3/C/F/3CF781F5-7D29-4035-9265-C34FF2369FA2/setup_msipc_x64.exe",#Microsoft Information Protection and Control Client 2.1
+					"http://download.microsoft.com/download/1/C/A/1CAA41C7-88B9-42D6-9E11-3C655656DAB1/WcfDataServices.exe",#Microsoft WCF Data Services 5.6
+					"https://download.microsoft.com/download/F/1/0/F1093AF6-E797-4CA8-A9F6-FC50024B385C/AppFabric-KB3092423-x64-ENU.exe",#Cumulative Update Package 7 for Microsoft AppFabric 1.1 for Windows Server (KB 3092423)
+					"https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe",#Visual C++ Redistributable Package for Visual Studio 2012
+					"https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe",#Visual C++ Redistributable Package for Visual Studio 2015
+					"http://download.microsoft.com/download/0/3/E/03EB1393-4F4E-4191-8364-C641FAB20344/50901.00/Silverlight_x64.exe" #Exchange Managed WEB API
+                     )
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  (join-path $Prereq_Dir $FileName)))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination (join-path $Prereq_Dir $FileName)))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
+            }
+        }
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 46   
+    switch ($sp16_cu)
+        {
+        default
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/0/0/4/004EE264-7043-45BF-99E3-3F74ECAE13E5/officeserver.img"
+			}
+        }
+    }
+if ($Sharepoint2013)
+    {
+    $sp_version = "SP2013"
+	$Prereq_Dir = Join-Path $Product_Dir "$sp_version$Prereq"
+    Write-Host -ForegroundColor Gray " ==>prereq = $Prereq_Dir"
+	if (Test-Path -Path "$Prereq_Dir")
+		{
+		Write-Host -ForegroundColor Gray " ==>$Prereq_Dir found"
+		}
+	else
+		{
+		Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for $sp_version Prereqs"
+		New-Item -ItemType Directory -Path $Prereq_Dir -Force | Out-Null
+		}
+    $Product_Dir = Join-Path $Product_Dir $sp_version  
+
+    Write-Host -ForegroundColor Gray " ==>we are now going to test $sp_version prereqs"
+    $DownloadUrls = (
+					"http://download.microsoft.com/download/9/1/3/9138773A-505D-43E2-AC08-9A77E1E0490B/1033/x64/sqlncli.msi", # Microsoft SQL Server 2008 R2 SP1 Native Client
+					"http://download.microsoft.com/download/E/0/0/E0060D8F-2354-4871-9596-DC78538799CC/Synchronization.msi", # Microsoft Sync Framework Runtime v1.0 SP1 (x64)
+					"http://download.microsoft.com/download/A/6/7/A678AB47-496B-4907-B3D4-0A2D280A13C0/WindowsServerAppFabricSetup_x64.exe", # Windows Server App Fabric
+					"http://download.microsoft.com/download/7/B/5/7B51D8D1-20FD-4BF0-87C7-4714F5A1C313/AppFabric1.1-RTM-KB2671763-x64-ENU.exe", # Cumulative Update Package 1 for Microsoft AppFabric 1.1 for Windows Server (KB2671763)
+					"http://download.microsoft.com/download/D/7/2/D72FD747-69B6-40B7-875B-C2B40A6B2BDD/Windows6.1-KB974405-x64.msu", #Windows Identity Foundation (KB974405)
+					"http://download.microsoft.com/download/0/1/D/01D06854-CA0C-46F1-ADBA-EBF86010DCC6/rtm/MicrosoftIdentityExtensions-64.msi", # Microsoft Identity Extensions
+					"http://download.microsoft.com/download/9/1/D/91DA8796-BE1D-46AF-8489-663AB7811517/setup_msipc_x64.msi", # Microsoft Information Protection and Control Client
+					"http://download.microsoft.com/download/8/F/9/8F93DBBD-896B-4760-AC81-646F61363A6D/WcfDataServices.exe" # Microsoft WCF Data Services 5.0
+                )
+
+    foreach ($URL in $DownloadUrls)
+        {
+        $FileName = Split-Path -Leaf -Path $Url
+        if (!(test-path  (join-path $Prereq_Dir $FileName)))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination (join-path $Prereq_Dir $FileName)))
+                { 
+                write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
+            }
+        }
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452  
+    Switch ($sp13_cu)
+        {
+        default
+            {
+            $URL = "http://care.dlservice.microsoft.com/dl/download/3/D/7/3D713F30-C316-49B8-9CC0-E1BFC34B63A0/SharePointServer_x64_en-us.img"
+			}
+		}
+    } 
+$FileName = Split-Path -Leaf -Path $Url
+$Downloadfile = Join-Path $Product_Dir $FileName
+if (!(Test-path $Product_Dir))
+	{
+	New-Item -ItemType Directory -Path $Product_Dir
+	}
+if (!(test-path  $Downloadfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>we are now Downloading $Downloadfile from $url, this may take a while"
+    if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+        {
+        Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
+        pause
+        }
+    if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Downloadfile))
+        { write-warning "Error Downloading file $Url, Please check connectivity"
+        exit
+    }
+}
+if ($unzip.IsPresent -and $Filename.Contains(".exe")) 
+    {
+    $SP_CU_PATH = Join-Path $Product_Dir "$sp_version$ex_cu"
+    Write-Verbose $SP_CU_PATH
+    if ((Test-Path (join-path "$SP_CU_PATH" "Setup.exe")) -and (!$force.IsPresent))
+        { 
+        Write-Host -ForegroundColor Gray "setup.exe already exists, overwrite with -force"
+        return $true
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
+        Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir\$SP_version$sp_cu /passive" -Wait
+        $return = $true
+        }
+    }
+elseif (($Filename.Contains(".iso")) -or ($Filename.Contains(".img")))
+    { 
+    Write-Host -ForegroundColor Gray " ==>no unzip required, CU delivered as ISO"
+    $return = $true
+    }
+return $return
+} 
+
+
+
+
 <#
 .DESCRIPTION
    receives latest Exchange Versions from Microsoft by Give CU / SP
