@@ -2496,7 +2496,7 @@ param
     (
     [Parameter(ParameterSetName = "sp16",Mandatory = $true)][switch][alias('sp16')]$Sharepoint2016,
     #[Parameter(ParameterSetName = "sp16", Mandatory = $false)]
-    #[ValidateSet('final','cu1','cu2','cu3')]
+    #[ValidateSet('final','cu1','cu2','cu3','cu4')]
     #$sp16_cu,
 	[Parameter(ParameterSetName = "sp13",Mandatory = $true)][switch][alias('sp3')]$Sharepoint2013,
     #[Parameter(ParameterSetName = "sp13", Mandatory = $false)]
@@ -2707,7 +2707,7 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final','cu1','cu2','cu3')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
@@ -2761,6 +2761,14 @@ if ($Exchange2016)
     {    
     $ex_cu = $e16_cu
     $ex_version = "E2016"
+	if ($ex_cu -lt "cu3")
+		{
+		$NET_VER = "452"
+		}
+	else
+		{
+		$NET_VER = "462"
+		}
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
@@ -2774,7 +2782,8 @@ if ($Exchange2016)
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
             if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination (join-path $Prereq_Dir $FileName)))
-                { write-warning "Error Downloading file $Url, Please check connectivity"
+                { 
+				write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
                 }
             }
@@ -2783,7 +2792,7 @@ if ($Exchange2016)
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
             }
         }
-    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
+	Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver $NET_VER   
     switch ($e16_cu)
         {
         'final'
@@ -2802,6 +2811,10 @@ if ($Exchange2016)
             {
             $URL = "https://download.microsoft.com/download/4/C/E/4CE65F66-CE89-4F4D-96C0-A97E08FA1693/ExchangeServer2016-x64-cu3.iso"
             }
+		'CU4'
+			{
+			$URL = 'https://download.microsoft.com/download/B/9/F/B9F59CF4-7C60-49EF-8A5B-8C2B7991FA86/ExchangeServer2016-x64-cu4.iso'
+			}
         }
     }
 if ($Exchange2013)
@@ -4272,6 +4285,69 @@ function Receive-LABSQL
     Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
     }
+
+
+#http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu
+<#
+.DESCRIPTION
+   receives latest .Net Versions from Microsoft
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABNetFramework
+.EXAMPLE
+
+#>
+#requires -version 3
+function Receive-LABWindows2016Update
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination="./",
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    [ValidateSet(
+    'KB3206632'
+    )]
+    [string]$KB="KB3206632"
+)
+
+Switch ($KB)
+    {
+    'KB3206632'
+        {
+        $Url = "http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu"
+        }
+
+    }
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
+        }
+        else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Server 2016 Updates"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        $FileName = Split-Path -Leaf -Path $Url
+		$Destination_File = Join-Path $Destination $FileName
+        if (!(test-path  $Destination_File))
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Destination_File))
+                { write-warning "Error Downloading file $Url, Please check connectivity"
+                exit
+                }
+            }
+        else
+            {
+            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+            }
+        
+    }
+
+
 <#
 .DESCRIPTION
    receives latest .Net Versions from Microsoft
@@ -4292,7 +4368,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451','452','46','461'
+    '451','452','46','461','462'
     )]
     [string]$Net_Ver="452"
 )
@@ -4315,6 +4391,10 @@ Switch ($Net_Ver)
         {
         $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
         }
+	'462'
+		{
+		$Url = "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+		}
     }
     if (Test-Path -Path "$Destination")
         {
