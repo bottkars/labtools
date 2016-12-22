@@ -5139,25 +5139,27 @@ switch ($mastertype)
         }
     "hyperv"
         {
-        Write-Host -ForegroundColor Magenta " ==>Testing for Hyper-V Master $Masterpath\$Master.vhdx "
+        Write-Host -ForegroundColor Magenta " ==>Testing for Hyper-V Master $Masterpath\$Master.vhdx"
         if (!($MasterVMX = (Get-ChildItem -Path $Masterpath -Filter "$Master.vhdx" -Recurse).FullName))
             {
-            try
+            Write-Host -ForegroundColor Yellow " ==>Could not find "(join-path $Masterpath "$Master.vhdx")
+            Write-Host -ForegroundColor Gray " ==>Trying to load $Master from labbuildr Master Repo"
+            if ($recvok = Receive-LABMaster -Destination $Masterpath -Master $Master -mastertype hyperv -unzip -Confirm:$false -ErrorAction Stop)
                 {
-                Receive-LABMaster -Destination $Masterpath -Master $Master -mastertype hyperv -unzip -Confirm:$false -ErrorAction Stop
+                $MasterVMX = (Get-ChildItem -Path $Masterpath -Filter "$Master.vhdx" -Recurse).FullName
                 }
-            catch
+            else
                 {
-                Write-Error "Error Downloading Master"
-                Return $false
+                Write-Warning "No valid master found /downloaded"
+                break
                 }
-            }
         else 
             {
             Write-Host -ForegroundColor Magenta " ==>found Master $Mastervmx"
             }
         }
-    }
+		}
+	}
 Write-Output $MasterVMX
 }
 
