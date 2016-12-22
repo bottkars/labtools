@@ -3077,7 +3077,6 @@ If ($Exchange2010)
 			{
 			$de_DE_URL = "https://download.microsoft.com/download/E/4/B/E4BC16FF-DD7F-49EC-9460-178F8DA2890E/Exchange2010-KB3184730-x64-de.msp"
 			$en_US_URL = "https://download.microsoft.com/download/8/A/4/8A4D8150-3757-4EC5-8CFB-8E28124EF390/Exchange2010-KB3184730-x64-en.msp"
-			"
 			}
        }
     Switch ($e14_lang)
