@@ -5153,11 +5153,7 @@ switch ($mastertype)
                 Write-Warning "No valid master found /downloaded"
                 break
                 }
-        else 
-            {
-            Write-Host -ForegroundColor Magenta " ==>found Master $Mastervmx"
-            }
-        }
+			}
 		}
 	}
 Write-Output $MasterVMX
