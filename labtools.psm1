@@ -2820,7 +2820,7 @@ if ($Exchange2016)
 if ($Exchange2013)
     {
     $ex_cu = $e15_cu
-	if ($ex_cu -lt "cu15")
+	if ($ex_cu -lt "cu99")
 		{
 		$NET_VER = "452"
 		}
