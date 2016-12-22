@@ -2504,7 +2504,7 @@ param
     #$sp13_cu,
     #[Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Sharepoint2010,
     #[Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    #[ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15')]
+    #[ValidateSet(ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16')]
     #$e14_ur = "ur13",
    # [Parameter(ParameterSetName = "E14", Mandatory = $false)]
    # [ValidateSet('de_DE','en_US')]
@@ -2711,11 +2711,11 @@ param
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -2820,6 +2820,15 @@ if ($Exchange2016)
 if ($Exchange2013)
     {
     $ex_cu = $e15_cu
+	if ($ex_cu -lt "cu15")
+		{
+		$NET_VER = "452"
+		}
+	else
+		{
+		$NET_VER = "462"
+		}
+
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
@@ -2848,7 +2857,7 @@ if ($Exchange2013)
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Prereq_Dir"
             }
         }
-    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452  
+    Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver $NET_VER 
 	$Mapi_CDO = Join-Path $Prereq_Dir (Join-Path "ExchangeMapiCdo" "ExchangeMapiCdo.msi") 
     Write-Host -ForegroundColor Gray " ==>Testing $Mapi_CDO"      
     if (!(test-path  "$Mapi_CDO"))
@@ -2856,7 +2865,6 @@ if ($Exchange2013)
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
         Expand-LABpackage -Archive (Join-Path $Prereq_Dir 'ExchangeMapiCdo.EXE') -destination $Prereq_Dir
         }
-
 
     Switch ($ex_cu)
         {
@@ -2915,6 +2923,10 @@ if ($Exchange2013)
 		"CU14"
             {
             $url = "https://download.microsoft.com/download/0/C/E/0CE142F1-E61D-4DBF-9436-334A4045A91F/Exchange2013-x64-cu14.exe"
+			}
+		"CU15"
+			{
+			$URL = "https://download.microsoft.com/download/3/A/5/3A5CE1A3-FEAA-4185-9A27-32EA90831867/Exchange2013-x64-cu15.exe"
 			}
 		}
     } 
@@ -3061,6 +3073,12 @@ If ($Exchange2010)
             $de_DE_URL = 'https://download.microsoft.com/download/E/5/3/E53BD2CD-BBF2-4B5F-AF5F-E8A098CEB9FB/Exchange2010-KB3184728-x64-de.msp'
             $en_US_URL = 'https://download.microsoft.com/download/7/B/C/7BC68310-0D80-4853-9663-A26E333C1F95/Exchange2010-KB3184728-x64-en.msp'
             }
+		'ur16'
+			{
+			$de_DE_URL = "https://download.microsoft.com/download/E/4/B/E4BC16FF-DD7F-49EC-9460-178F8DA2890E/Exchange2010-KB3184730-x64-de.msp"
+			$en_US_URL = "https://download.microsoft.com/download/8/A/4/8A4D8150-3757-4EC5-8CFB-8E28124EF390/Exchange2010-KB3184730-x64-en.msp"
+			"
+			}
        }
     Switch ($e14_lang)
         {
