@@ -304,7 +304,7 @@ function Set-LABNMMver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100','nmm9102',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
     'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
@@ -331,7 +331,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100','nw9102',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1614,7 +1614,8 @@ param
     (
 	<#
 	Version Of Networker Server / Client to be installed
-    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100',#-#
+	'nw9100','nw9102',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100','nw9102',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw824'
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1635,7 +1636,7 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
-	'nw9100',#-#
+	'nw9100','nw9102',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
@@ -1891,7 +1892,7 @@ switch ($PsCmdlet.ParameterSetName)
                     $nwzip = "nw901_$arch.$Extension"
                     $url = "ftp://ftp.legato.com/pub/eval/2016Q2/$nwzip"
                     }
-				"nw9100"
+				"nw9102"
                     {
                     $nwzip = "nw91_$arch.$Extension"
                     $url = "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/$nwzip"
@@ -1990,7 +1991,8 @@ function Receive-LABnmm
 param
     (
 	<#
-	'nmm9010','nmm9011','nmm9100',#-#
+	'nmm9100','nmm9102',#-#
+	'nmm9010','nmm9011','nmm9100','nmm9102',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008','nmm8240'
     'nmm8240',
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
@@ -1998,7 +2000,7 @@ param
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
-	'nmm9100',#-#
+	'nmm9100','nmm9102',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
@@ -2122,7 +2124,7 @@ if ($nmm_ver -gt 'nmm_82')
         "910"
             {
 			$nmm_family = "91"
-			if ($nmm_ver -eq "nmm9100")
+			if ($nmm_ver -eq "nmm9102")
 				{
 				$nmm_zip = "nmm$($nmm_family)_win_x64.zip"
 				$SCVMM_zip = "scvmm$($nmm_family)_win_x64.zip"
