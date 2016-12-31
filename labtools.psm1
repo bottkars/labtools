@@ -1656,7 +1656,9 @@ param
     'nwunknown'
     )]
     $nw_ver,
+    [Parameter(ParameterSetName = "nve_update",Mandatory = $true)][switch]$nveupdate,
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
+	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
     '9.0.1-72','9.1.0.91')]$nve_ver,
 	<#
@@ -1695,6 +1697,7 @@ param
     )]
     [string]$arch="win_x64",
     [Parameter(ParameterSetName = "nve",Mandatory = $true)]
+	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
     [String]$Destination,
     [Parameter(ParameterSetName = "installer",Mandatory = $false)]
@@ -1730,6 +1733,38 @@ switch ($PsCmdlet.ParameterSetName)
 			"9.1.0.91"
 				{
 				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NVE-9.1.0.91.ova"
+				}
+            }
+        $FileName = Split-Path -Leaf $url
+        $Destination_Filename = Join-Path $Destination $FileName
+        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+            {
+            Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
+            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+                {
+                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+                pause
+                }
+
+            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+                { 
+                write-warning "Error Downloading $file from $Url, 
+                $url might not exist."
+                }
+            }
+        }
+    "nve_update"
+        {
+        switch ($nve_ver)
+            {
+            "9.0.1-72"
+                {
+                $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NveUpgrade-9.0.1.72.avp"
+                }
+
+			"9.1.0.91"
+				{
+				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NveUpgrade-9.1.0-91.avp"
 				}
             }
         $FileName = Split-Path -Leaf $url
