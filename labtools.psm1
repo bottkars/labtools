@@ -1030,15 +1030,29 @@ function Expand-LABpackage
 					{
 						'win_x86_64'
 						{
-						if ($force.ispresent)
-							{
-							$extract_Options = "-y -bb0 -bso0 -bsp0"# -o" #+$destination
-							}
-						else
-							{
-							$extract_Options = "-bb0 -bso0 -bsp0"# -o" #+$destination
-							}
-					}
+                        if ($global:vmwareversion -lt 12.5)
+                            {
+                            if ($force.ispresent)
+							    {
+							    $extract_Options = "-y" # -o" #+$destination
+							    }
+						    else
+							    {
+							    $extract_Options  = "" #"-o" #+$destination
+							    }
+                             }
+                        else
+                            {     
+						    if ($force.ispresent)
+							    {
+                                $extract_Options = "-y -bb0 -bso0 -bsp0"# -o" #+$destination
+							    }
+						    else
+							    {
+							    $extract_Options = "-bb0 -bso0 -bsp0"# -o" #+$destination
+							    }
+                            }
+					    }
 						default
 						{
 						if ($force.ispresent)
