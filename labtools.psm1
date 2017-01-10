@@ -3293,8 +3293,8 @@ if (!(Test-Path $Destination_path))
                 "0"
                     {
                     Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
-                    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
-                    $Downloadok = $true
+                    $Downloadok = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+                    # $Downloadok = $true
                     }
                 "1"
                     {
@@ -3312,15 +3312,23 @@ if (!(Test-Path $Destination_path))
             Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
             }
         }
+		Write-Host " ==>Reading Package Content"
+		$Package_Content = .$VMware_Packer l $Destination_File
+		$Package_Content = $Package_Content -match "EMC-ScaleIO-lia" | Select-Object -First 1
+		$LIA_File = Split-Path -Leaf $Package_Content
+		Write-host "Got $LIA_File"
+		$ver = $linefile -replace "EMC-scaleio-lia-"
+		$ver = $ver -replace ".{4}$"
+		Write-Output $ver 
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
 			if ($force.IsPresent)
 				{
-				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
+				$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
 				}
 			else
 				{
-				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
+				$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
 				}
             ## linug deb packages
 			if ($arch -eq "linux")
