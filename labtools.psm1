@@ -494,7 +494,40 @@ function Set-LABHostKey
     Write-Host -ForegroundColor Gray " ==>setting HostKey $HostKey"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
+function Set-LABSMBPassword
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBPassword")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBPassword
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBPassword = $SMBPassword
+    Write-Host -ForegroundColor Gray " ==>setting SMBPassword $SMBPassword"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+function Set-LABSMBUsername
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBUsername")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBUsername
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBUsername = $SMBUsername
+    Write-Host -ForegroundColor Gray " ==>setting SMBUsername $SMBUsername"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 function Set-LABBuilddomain
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABBuilddomain")]
@@ -541,10 +574,67 @@ function Set-LABSources
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
     [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
-    )   
+    )
+	if ($Sourcedir -match "\\\\")
+		{
+		write-host "got UNC Sourcedir, will check permissions"
+		$SOURCES_ON_UNC = $true
+		if ($labdefaults.SMBusername -and $LabDefaults.SMBPassword)
+			{
+		<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
+		#	{
+				try
+					{
+									New-SmbMapping -RemotePath $Sourcedir -UserName $LabDefaults.SMBUsername -Password $LabDefaults.SMBPassword
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				$SecurePassword = $labdefaults.SMBPassword | ConvertTo-SecureString -AsPlainText -Force
+				$Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $labdefaults.SMBUsername, $SecurePassword
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root $Sourcedir -Credential $Credential -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			}
+		else
+			{
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root “$Sources” -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
+				{
+				try
+					{
+					New-SmbMapping -RemotePath $Sourcedir 
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			}
+		}	   
     try
         {
-        Get-Item -Path $_ -ErrorAction Stop | Out-Null 
+        Get-Item -Path $Sourcedir -ErrorAction Stop | Out-Null 
         }
     catch
         [System.Management.Automation.DriveNotfoundException] 
@@ -558,7 +648,7 @@ function Set-LABSources
         New-Item -ItemType Directory -Path $Sourcedir -Force| Out-Null
         }
 
-    if (!(Test-Path $Sourcedir)){exit} 
+    if (!(Test-Path $Sourcedir)){break} 
 
     if (!(Test-Path $Defaultsfile))
     {
@@ -697,6 +787,8 @@ process
         $object | Add-Member -MemberType NoteProperty -Name Puppet -Value $Default.config.Puppet
         $object | Add-Member -MemberType NoteProperty -Name PuppetMaster -Value $Default.config.PuppetMaster
         $object | Add-Member -MemberType NoteProperty -Name HostKey -Value $Default.config.Hostkey
+        $object | Add-Member -MemberType NoteProperty -Name SMBPassword -Value $Default.config.SMBPassword
+        $object | Add-Member -MemberType NoteProperty -Name SMBUsername -Value $Default.config.SMBUsername
         $object | Add-Member -MemberType NoteProperty -Name AnsiblePublicKey -Value $Default.config.AnsiblePublicKey
 		$object | Add-Member -MemberType NoteProperty -Name MainMemUseFile -Value $Default.config.MainMemUseFile
         Write-Output $object
@@ -792,7 +884,9 @@ process {
         $xmlcontent += ("<OpenWRT>$($Defaults.OpenWRT)</OpenWRT>")
         $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
         $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
-        $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")
+        $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")        
+		$xmlcontent += ("<SMBPassword>$($Defaults.SMBPassword)</SMBPassword>")
+		$xmlcontent += ("<SMBUsername>$($Defaults.SMBUsername)</SMBUsername>")
         $xmlcontent += ("<AnsiblePublicKey>$($Defaults.AnsiblePublicKey)</AnsiblePublicKey>")
 		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
@@ -905,6 +999,8 @@ function New-LABdefaults
         $xmlcontent += ("<Puppet></Puppet>")
         $xmlcontent += ("<PuppetMaster></PuppetMaster>")
         $xmlcontent += ("<HostKey></HostKey>")
+        $xmlcontent += ("<SMBUsername></SMBUsername>")
+        $xmlcontent += ("<SMBPassword></SMBPassword>")
 		$xmlcontent += ("<AnsiblePublicKey></AnsiblePublicKey>")
         $xmlcontent += ("<MainMemUseFile></MainMemUseFile>")
         $xmlcontent += ("</config>")
@@ -3331,19 +3427,20 @@ if (!(Test-Path $Destination_path))
 		$Package_Content = $Package_Content -match "EMC-ScaleIO-lia" | Select-Object -First 1
 		$LIA_File = Split-Path -Leaf $Package_Content
 		Write-host "Got $LIA_File"
-		$ver = $linefile -replace "EMC-scaleio-lia-"
+		$ver = $LIA_File -replace "EMC-scaleio-lia-"
 		$ver = $ver -replace ".{4}$"
+		Write-Host " ==>Got Version $ver"
 		Write-Output $ver 
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
-			if ($force.IsPresent)
-				{
+			#if ($force.IsPresent)
+			#	{
 				$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
-				}
-			else
-				{
-				$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
-				}
+			#	}
+			#else
+			#	{
+			#	$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
+			#	}
             ## linug deb packages
 			if ($arch -eq "linux")
 				{
