@@ -575,63 +575,7 @@ function Set-LABSources
     [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
     )
-	if ($Sourcedir -match "\\\\")
-		{
-		write-host "got UNC Sourcedir, will check permissions"
-		$SOURCES_ON_UNC = $true
-		if ($labdefaults.SMBusername -and $LabDefaults.SMBPassword)
-			{
-		<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
-		#	{
-				try
-					{
-									New-SmbMapping -RemotePath $Sourcedir -UserName $LabDefaults.SMBUsername -Password $LabDefaults.SMBPassword
-					}
-				catch
-					{
-					Write-Host "Could not connect to SMB Share"
-					exit
-					}
-				}#>
-			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
-			try
-				{
-				$SecurePassword = $labdefaults.SMBPassword | ConvertTo-SecureString -AsPlainText -Force
-				$Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $labdefaults.SMBUsername, $SecurePassword
-				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root $Sourcedir -Credential $Credential -Scope Global -ErrorAction Stop
-				}
-			catch
-				{
-				Write-Warning $_
-				break
-				}
-			}
-		else
-			{
-			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
-			try
-				{
-				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root “$Sources” -Scope Global -ErrorAction Stop
-				}
-			catch
-				{
-				Write-Warning $_
-				break
-				}
-			<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
-				{
-				try
-					{
-					New-SmbMapping -RemotePath $Sourcedir 
-					}
-				catch
-					{
-					Write-Host "Could not connect to SMB Share"
-					exit
-					}
-				}#>
-			}
-		}	   
+ 
     try
         {
         Get-Item -Path $Sourcedir -ErrorAction Stop | Out-Null 
@@ -660,6 +604,101 @@ function Set-LABSources
     Write-Host -ForegroundColor Gray " ==>setting Sourcedir $Sourcedir"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
+
+function Set-LABSMBSources
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBSources")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [ValidateLength(3,256)]
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBSourcedir
+    )
+	if ($SMBSourcedir -match "\\\\")
+		{
+		write-host "got UNC SMBSourcedir, will check permissions"
+		$SOURCES_ON_UNC = $true
+		if ($labdefaults.SMBusername -and $LabDefaults.SMBPassword)
+			{
+		<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
+		#	{
+				try
+					{
+									New-SmbMapping -RemotePath $Sourcedir -UserName $LabDefaults.SMBUsername -Password $LabDefaults.SMBPassword
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				$SecurePassword = $labdefaults.SMBPassword | ConvertTo-SecureString -AsPlainText -Force
+				$Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $labdefaults.SMBUsername, $SecurePassword
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root $SMBSourcedir -Credential $Credential -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			}
+		else
+			{
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root “$SMBSources” -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			<#if (!(Get-SmbMapping -RemotePath $SMBSourcedir))
+				{
+				try
+					{
+					New-SmbMapping -RemotePath $SMBSourcedir 
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			}
+		}	   
+    try
+        {
+        Get-Item -Path $SMBSourcedir -ErrorAction Stop | Out-Null 
+        }
+    catch
+        [System.Management.Automation.DriveNotfoundException] 
+        {
+        Write-Warning "Drive not found, make sure to have your Source Stick connected"
+        exit
+        }
+    catch #[System.Management.Automation.ItemNotfoundException]
+        {
+        Write-Warning "no SMBSources directory found, trying to create"
+        New-Item -ItemType Directory -Path $SMBSourcedir -Force| Out-Null
+        }
+
+    if (!(Test-Path $SMBSourcedir)){break} 
+
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBSourcedir = $SMBSourcedir
+    Write-Host -ForegroundColor Gray " ==>setting SMBSourcedir $SMBSourcedir"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 
 function Set-LABMasterpath
 {
@@ -773,6 +812,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name IPV6Prefix -Value $Default.Config.IPV6Prefix
         $object | Add-Member -MemberType NoteProperty -Name IPv6PrefixLength -Value $Default.Config.IPV6PrefixLength
         $object | Add-Member -MemberType NoteProperty -Name Sourcedir -Value $Default.Config.Sourcedir
+        $object | Add-Member -MemberType NoteProperty -Name SMBSourcedir -Value $Default.Config.SMBSourcedir
         $object | Add-Member -MemberType NoteProperty -Name SQLVer -Value $Default.config.sqlver
         $object | Add-Member -MemberType NoteProperty -Name e14_ur -Value $Default.config.e14_ur
         $object | Add-Member -MemberType NoteProperty -Name e14_sp -Value $Default.config.e14_sp
@@ -878,6 +918,7 @@ process {
         $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
         $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
         $xmlcontent += ("<Sourcedir>$($Defaults.Sourcedir)</Sourcedir>")
+        $xmlcontent += ("<SMBSourcedir>$($Defaults.SMBSourcedir)</SMBSourcedir>")
         $xmlcontent += ("<ScaleIOVer>$($Defaults.ScaleIOVer)</ScaleIOVer>")
         $xmlcontent += ("<Masterpath>$($Defaults.Masterpath)</Masterpath>")
         $xmlcontent += ("<NoDomainCheck>$($Defaults.NoDomainCheck)</NoDomainCheck>")
@@ -992,6 +1033,7 @@ function New-LABdefaults
         $xmlcontent += ("<DNS1></DNS1>")
         $xmlcontent += ("<DNS2></DNS2>")
         $xmlcontent += ("<Sourcedir></Sourcedir>")
+        $xmlcontent += ("<SMBSourcedir></SMBSourcedir>")
         $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
         $xmlcontent += ("<Masterpath></Masterpath>")
         $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
