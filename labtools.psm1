@@ -304,7 +304,7 @@ function Set-LABNMMver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100','nmm9102',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#'nmm9100','nmm9102',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
     'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
@@ -331,7 +331,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100','nw9102',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#'nw9100','nw9102',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1228,7 +1228,7 @@ function Expand-LABpackage
                 Write-Host -ForegroundColor Gray " ==>Sucess expanding $Archive"
                 $object = New-Object psobject
 	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
-	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archive.Name)"
                 Write-Output $object
                 # return $true
                 }
@@ -1767,7 +1767,7 @@ param
 	<#
 	Version Of Networker Server / Client to be installed
 	'nw9100','nw9102',#-#
-    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100','nw9102',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#'nw9100','nw9102',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw824'
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1789,7 +1789,7 @@ param
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
 	'nw9100','nw9102',#-#
-    'nw9010','nw9011','nw9012','nw9013','nw9014',
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240',
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1812,7 +1812,8 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
 	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
-    '9.0.1-72','9.1.0.91')]$nve_ver,
+    '9.0.1-72','9.1.0.91',
+	'9.0.1.1','9.0.1.2','9.0.1.3','9.0.1.4','9.0.1.5','9.0.1.6')]$nve_ver,
 	<#
 	architecture to be downloaded, valid values are
 	'aixpower',
@@ -1902,40 +1903,70 @@ switch ($PsCmdlet.ParameterSetName)
                 { 
                 write-warning "Error Downloading $file from $Url, 
                 $url might not exist."
+				break
                 }
+			
+			if ($Destination_Filename -match ".tar.gz")
+					{
+					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
+					}
+
             }
         }
     "nve_update"
         {
         switch ($nve_ver)
             {
+			"9.0.1.4"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.4/avp-9.0.1-669_9.0.1-194.tar.gz"
+				}
+			"9.0.1.5"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.5/avp-9.0.1-692_9.0.1-230.tar.gz"
+				}
+			"9.0.1.6"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.6/avp-9.0.1-709_9.0.1-253.tar.gz"
+				}
             "9.0.1-72"
                 {
                 $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NveUpgrade-9.0.1.72.avp"
                 }
-
 			"9.1.0.91"
 				{
 				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NveUpgrade-9.1.0-91.avp"
 				}
             }
-        $FileName = Split-Path -Leaf $url
-        $Destination_Filename = Join-Path $Destination $FileName
-        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
-            {
-            Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
-            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                {
-                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                pause
-                }
+		if ($url)
+			{
+			$FileName = Split-Path -Leaf $url
+			$Destination_Filename = Join-Path $Destination $FileName
+			if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+				{
+				Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
+				if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+					{
+					Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+					pause
+					}
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
-                { 
-                write-warning "Error Downloading $file from $Url, 
-                $url might not exist."
-                }
-            }
+				if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+					{ 
+					write-warning "Error Downloading $file from $Url, 
+					$url might not exist."
+					Break
+					}
+				if ($Destination_Filename -match ".tar.gz")
+					{
+					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
+					}
+				}
+			}
+		else 
+			{
+			Write-Host "No download found for $nve_ver Update"
+			}
         }
     "installer"
         {
@@ -2119,8 +2150,10 @@ switch ($PsCmdlet.ParameterSetName)
                     }
                 if ($unzip)
                     {
-                    Write-Verbose $Zipfilename     
-                    Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
+                    Write-Verbose $Zipfilename 
+					Expand-LABpackage -Archive $Zipfilename -destination $Destinationdir
+    
+                    # Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
                     }
                if ($nwversion.Major -ge 9)
                     { 
@@ -2188,7 +2221,7 @@ param
 	#>
     [ValidateSet(
 	'nmm9100','nmm9102',#-#
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014',
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240',
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
@@ -2379,7 +2412,7 @@ if ($urls)
         if ($unzip)
             {
             Write-Verbose $Zipfilename     
-            Expand-LABZip -zipfilename "$Zipfile" -destination "$Destinationdir" -verbose
+            Expand-LABpackage -Archive "$Zipfile" -destination "$Destinationdir" -verbose
             }
         }
     }
