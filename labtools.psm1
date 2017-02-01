@@ -4540,7 +4540,7 @@ function Receive-LABSQL
 .DESCRIPTION
    receives latest .Net Versions from Microsoft
 .LINK
-   https://github.com/bottkars/labtools/wiki/Receive-LABNetFramework
+   https://github.com/bottkars/labtools/wiki/Receive-LABWindows2016Update
 .EXAMPLE
 
 #>
@@ -4556,7 +4556,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632'
+    'KB3206632','KB4010672'
     )]
     [string]$KB="KB3206632"
 )
@@ -4567,7 +4567,10 @@ Switch ($KB)
         {
         $Url = "http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu"
         }
-
+	'KB4010672'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/01/windows10.0-kb4010672-x64_e12a6da8744518197757d978764b6275f9508692.msu'
+		}
     }
     if (Test-Path -Path "$Destination")
         {
