@@ -4695,9 +4695,9 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-	'1_0_1','1_1_0'
+	'1_0_1','1_0_2','1_1_0'
     )]
-    [string]$OpenSSL_Ver="1_0_1"
+    [string]$OpenSSL_Ver="1_0_2"
 )
 
 if (Test-Path -Path "$Destination")
