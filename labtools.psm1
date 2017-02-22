@@ -2537,8 +2537,10 @@ switch ($SC_Version)
             $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
             $URL = "http://care.dlservice.microsoft.com/dl/download/2/B/8/2B8C6E4F-7918-40A6-9785-986D4D1175A5/SC2016_SCVMM.EXE"
             $WAIK_VER = "WAIK_10_1607"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
+			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
+			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
 			$UR = $true
             }
     }# end switch
@@ -2611,8 +2613,13 @@ if ($Component -match 'SCOM')
             {
             $SCOM_VER = "$($SC_Version)_$($Component)"
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/08/kb3183990-amd64-server_7cb9b71b43dfd1d021e9763587b99aa63d519924.cab"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/08/kb3183990-amd64-enu-console_53f29af4b869596567a8d3af67c92f738016124d.cab"
+			#UR1
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/08/kb3183990-amd64-server_7cb9b71b43dfd1d021e9763587b99aa63d519924.cab"
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/08/kb3183990-amd64-enu-console_53f29af4b869596567a8d3af67c92f738016124d.cab"
+			#UR2
+			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
+			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
+			
 			$UR = $true
             }
         
