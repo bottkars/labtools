@@ -3459,15 +3459,33 @@ if (!(Test-Path $Destination_path))
         }
     }
     write-host -ForegroundColor Gray " ==>we will check for the latest ScaleIO version from EMC.com"
-    $Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
-    $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
+    #$Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
+    #$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
     foreach ($arch in $MyArch)
     {
-    $Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
-    $DownloadLinks = $request.Links | where href -match $arch
-    foreach ($Link in $DownloadLinks)
-        {
-        $Url = $link.href
+	$Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
+    switch ($arch)
+		{
+		'VMware'
+			{
+			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_VMware_v2.0.zip"
+			}
+		'Windows'
+			{
+			$Url= "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Windows_v2.0.zip"
+			}
+		'Linux'
+			{
+			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Linux_v2.0.zip"
+			}
+		}
+	
+		
+		
+	#$DownloadLinks = $request.Links | where href -match $arch
+    #foreach ($Link in $DownloadLinks)
+        #{
+        #$Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
         Write-Host -ForegroundColor Gray  " ==>found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
@@ -3504,7 +3522,7 @@ if (!(Test-Path $Destination_path))
             {
             Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
             }
-        }
+        #}#
 		Write-Host " ==>Reading Package Content"
 		$Package_Content = .$VMware_Packer l $Destination_File
 		$Package_Content = $Package_Content -match "EMC-ScaleIO-lia" | Select-Object -First 1
