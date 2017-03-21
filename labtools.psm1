@@ -1926,7 +1926,10 @@ switch ($PsCmdlet.ParameterSetName)
 					{
 					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
 					$Destination_Tar = $Destination_Filename -replace ".gz"
-					Expand-LABpackage -Archive $Destination_Tar -destination $Destination -force
+					if ( Test-Path $Destination_Tar)
+						{
+						Expand-LABpackage -Archive $Destination_Tar -destination $Destination -force
+						}
 					}
 
             }
