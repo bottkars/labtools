@@ -5761,7 +5761,7 @@ param
 	[Parameter(Mandatory=$false)]
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
 	[switch]$use_aptcache = $true,
-
+	[string[]]$additional_packages,
 	$net_dev = 'eth0' #future use
 	)
 
@@ -5782,7 +5782,8 @@ begin
         $netdev= "eth0"
         }
     }
-	$required_packages = ('python','git')	
+	$required_packages = ('python','git')
+	$required_packages += $additional_packages	
 	$required_packages = $required_packages -join " "
 }
 process
@@ -5938,7 +5939,7 @@ if ($nodeclone.status -ne "started")
 		{
 		$NodeClone | Set-LabAPTCacheClient -cache_ip $global:labdefaults.APT_Cache_IP
 		}
-	$Scriptblock="apt-get install $required_packages -y"
+	$Scriptblock="apt-get update; apt-get install $required_packages -y"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
@@ -6315,3 +6316,25 @@ Keep Calm, '-defaults' Parameter has been deprecated for this Scenario !
 All your defaults are passed from the environment"
 }
 
+function Get-LabVMXUserPublicKey
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$true)]$sshuser,
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$guestuser = 'root'
+	)
+
+ 
+
+
+}
