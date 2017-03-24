@@ -304,9 +304,10 @@ function Set-LABNMMver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9100','nmm9102',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#
+	'nmm9100','nmm9102','nmm9103','nmm9104',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-	'nmm8240',
+	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244',#-#
     'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
@@ -332,9 +333,9 @@ function Set-LABNWver
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
 	'nw9100','nw9102','nw9103','nw9104',#-#
-    'nw9010','nw9011','nw9012','nw9013','nw9014',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-	'nw8240',
+	'nw8240','nw8241','nw8242','nw8243','nw8244',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
@@ -495,7 +496,40 @@ function Set-LABHostKey
     Write-Host -ForegroundColor Gray " ==>setting HostKey $HostKey"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
-
+function Set-LABSMBPassword
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBPassword")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBPassword
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBPassword = $SMBPassword
+    Write-Host -ForegroundColor Gray " ==>setting SMBPassword $SMBPassword"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+function Set-LABSMBUsername
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBUsername")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBUsername
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBUsername = $SMBUsername
+    Write-Host -ForegroundColor Gray " ==>setting SMBUsername $SMBUsername"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 function Set-LABBuilddomain
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABBuilddomain")]
@@ -542,10 +576,11 @@ function Set-LABSources
 	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
     [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
-    )   
+    )
+ 
     try
         {
-        Get-Item -Path $_ -ErrorAction Stop | Out-Null 
+        Get-Item -Path $Sourcedir -ErrorAction Stop | Out-Null 
         }
     catch
         [System.Management.Automation.DriveNotfoundException] 
@@ -559,7 +594,7 @@ function Set-LABSources
         New-Item -ItemType Directory -Path $Sourcedir -Force| Out-Null
         }
 
-    if (!(Test-Path $Sourcedir)){exit} 
+    if (!(Test-Path $Sourcedir)){break} 
 
     if (!(Test-Path $Defaultsfile))
     {
@@ -571,6 +606,101 @@ function Set-LABSources
     Write-Host -ForegroundColor Gray " ==>setting Sourcedir $Sourcedir"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
+
+function Set-LABSMBSources
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBSources")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+    [ValidateLength(3,256)]
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBSourcedir
+    )
+	if ($SMBSourcedir -match "\\\\")
+		{
+		write-host "got UNC SMBSourcedir, will check permissions"
+		$SOURCES_ON_UNC = $true
+		if ($labdefaults.SMBusername -and $LabDefaults.SMBPassword)
+			{
+		<#if (!(Get-SmbMapping -RemotePath $Sourcedir))
+		#	{
+				try
+					{
+									New-SmbMapping -RemotePath $Sourcedir -UserName $LabDefaults.SMBUsername -Password $LabDefaults.SMBPassword
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				$SecurePassword = $labdefaults.SMBPassword | ConvertTo-SecureString -AsPlainText -Force
+				$Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $labdefaults.SMBUsername, $SecurePassword
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root $SMBSourcedir -Credential $Credential -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			}
+		else
+			{
+			Get-PSDrive Sources -ErrorAction SilentlyContinue | Remove-PSDrive
+			try
+				{
+				New-PSDrive –Name “Sources” –PSProvider FileSystem –Root “$SMBSources” -Scope Global -ErrorAction Stop
+				}
+			catch
+				{
+				Write-Warning $_
+				break
+				}
+			<#if (!(Get-SmbMapping -RemotePath $SMBSourcedir))
+				{
+				try
+					{
+					New-SmbMapping -RemotePath $SMBSourcedir 
+					}
+				catch
+					{
+					Write-Host "Could not connect to SMB Share"
+					exit
+					}
+				}#>
+			}
+		}	   
+    try
+        {
+        Get-Item -Path $SMBSourcedir -ErrorAction Stop | Out-Null 
+        }
+    catch
+        [System.Management.Automation.DriveNotfoundException] 
+        {
+        Write-Warning "Drive not found, make sure to have your Source Stick connected"
+        exit
+        }
+    catch #[System.Management.Automation.ItemNotfoundException]
+        {
+        Write-Warning "no SMBSources directory found, trying to create"
+        New-Item -ItemType Directory -Path $SMBSourcedir -Force| Out-Null
+        }
+
+    if (!(Test-Path $SMBSourcedir)){break} 
+
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.SMBSourcedir = $SMBSourcedir
+    Write-Host -ForegroundColor Gray " ==>setting SMBSourcedir $SMBSourcedir"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 
 function Set-LABMasterpath
 {
@@ -684,6 +814,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name IPV6Prefix -Value $Default.Config.IPV6Prefix
         $object | Add-Member -MemberType NoteProperty -Name IPv6PrefixLength -Value $Default.Config.IPV6PrefixLength
         $object | Add-Member -MemberType NoteProperty -Name Sourcedir -Value $Default.Config.Sourcedir
+        $object | Add-Member -MemberType NoteProperty -Name SMBSourcedir -Value $Default.Config.SMBSourcedir
         $object | Add-Member -MemberType NoteProperty -Name SQLVer -Value $Default.config.sqlver
         $object | Add-Member -MemberType NoteProperty -Name e14_ur -Value $Default.config.e14_ur
         $object | Add-Member -MemberType NoteProperty -Name e14_sp -Value $Default.config.e14_sp
@@ -698,6 +829,8 @@ process
         $object | Add-Member -MemberType NoteProperty -Name Puppet -Value $Default.config.Puppet
         $object | Add-Member -MemberType NoteProperty -Name PuppetMaster -Value $Default.config.PuppetMaster
         $object | Add-Member -MemberType NoteProperty -Name HostKey -Value $Default.config.Hostkey
+        $object | Add-Member -MemberType NoteProperty -Name SMBPassword -Value $Default.config.SMBPassword
+        $object | Add-Member -MemberType NoteProperty -Name SMBUsername -Value $Default.config.SMBUsername
         $object | Add-Member -MemberType NoteProperty -Name AnsiblePublicKey -Value $Default.config.AnsiblePublicKey
 		$object | Add-Member -MemberType NoteProperty -Name MainMemUseFile -Value $Default.config.MainMemUseFile
         Write-Output $object
@@ -787,13 +920,16 @@ process {
         $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
         $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
         $xmlcontent += ("<Sourcedir>$($Defaults.Sourcedir)</Sourcedir>")
+        $xmlcontent += ("<SMBSourcedir>$($Defaults.SMBSourcedir)</SMBSourcedir>")
         $xmlcontent += ("<ScaleIOVer>$($Defaults.ScaleIOVer)</ScaleIOVer>")
         $xmlcontent += ("<Masterpath>$($Defaults.Masterpath)</Masterpath>")
         $xmlcontent += ("<NoDomainCheck>$($Defaults.NoDomainCheck)</NoDomainCheck>")
         $xmlcontent += ("<OpenWRT>$($Defaults.OpenWRT)</OpenWRT>")
         $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
         $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
-        $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")
+        $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")        
+		$xmlcontent += ("<SMBPassword>$($Defaults.SMBPassword)</SMBPassword>")
+		$xmlcontent += ("<SMBUsername>$($Defaults.SMBUsername)</SMBUsername>")
         $xmlcontent += ("<AnsiblePublicKey>$($Defaults.AnsiblePublicKey)</AnsiblePublicKey>")
 		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
@@ -899,6 +1035,7 @@ function New-LABdefaults
         $xmlcontent += ("<DNS1></DNS1>")
         $xmlcontent += ("<DNS2></DNS2>")
         $xmlcontent += ("<Sourcedir></Sourcedir>")
+        $xmlcontent += ("<SMBSourcedir></SMBSourcedir>")
         $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
         $xmlcontent += ("<Masterpath></Masterpath>")
         $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
@@ -906,6 +1043,8 @@ function New-LABdefaults
         $xmlcontent += ("<Puppet></Puppet>")
         $xmlcontent += ("<PuppetMaster></PuppetMaster>")
         $xmlcontent += ("<HostKey></HostKey>")
+        $xmlcontent += ("<SMBUsername></SMBUsername>")
+        $xmlcontent += ("<SMBPassword></SMBPassword>")
 		$xmlcontent += ("<AnsiblePublicKey></AnsiblePublicKey>")
         $xmlcontent += ("<MainMemUseFile></MainMemUseFile>")
         $xmlcontent += ("</config>")
@@ -1091,7 +1230,7 @@ function Expand-LABpackage
                 Write-Host -ForegroundColor Gray " ==>Sucess expanding $Archive"
                 $object = New-Object psobject
 	            $object | Add-Member -MemberType NoteProperty -Name Destination -Value "$Destination"
-	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archivefile.Name)"
+	            $object | Add-Member -MemberType NoteProperty -Name Archive -Value "$($Archive.Name)"
                 Write-Output $object
                 # return $true
                 }
@@ -1629,8 +1768,8 @@ param
     (
 	<#
 	Version Of Networker Server / Client to be installed
-	'nw9100','nw9102',#-#
-    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9100','nw9102',#-#
+	'nw9100','nw9102','nw9103','nw9104',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#'nw9100','nw9102','nw9103','nw9104',#-#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw824'
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1651,10 +1790,10 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
-	'nw9100','nw9102',#-#
-    'nw9010','nw9011','nw9012','nw9013','nw9014',
+	'nw9100','nw9102','nw9103','nw9104',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-	'nw8240',
+	'nw8240','nw8241','nw8242','nw8243','nw8244',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
@@ -1675,7 +1814,11 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
 	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
-    '9.0.1-72','9.1.0.91')]$nve_ver,
+    '9.0.1-72',
+	'9.1.0.3','9.1.0.4',#-#
+	'9.0.1.1','9.0.1.2','9.0.1.3','9.0.1.4','9.0.1.5','9.0.1.6' #-#
+	
+	)]$nve_ver,
 	<#
 	architecture to be downloaded, valid values are
 	'aixpower',
@@ -1749,6 +1892,17 @@ switch ($PsCmdlet.ParameterSetName)
 				{
 				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NVE-9.1.0.91.ova"
 				}
+			"9.1.0.3"
+				{
+				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.3/ova-9.1-66_9.1.0-132.tar.gz"
+				}
+			"9.1.0.4"
+				{
+				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.4/ova-9.1-82_9.1.0-166.tar.gz"
+				}
+
+
+
             }
         $FileName = Split-Path -Leaf $url
         $Destination_Filename = Join-Path $Destination $FileName
@@ -1765,40 +1919,83 @@ switch ($PsCmdlet.ParameterSetName)
                 { 
                 write-warning "Error Downloading $file from $Url, 
                 $url might not exist."
+				break
                 }
+			
+			if ($Destination_Filename -match ".tar.gz")
+					{
+					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
+					$Destination_Tar = $Destination_Filename -replace ".gz"
+					if ( Test-Path $Destination_Tar)
+						{
+						Expand-LABpackage -Archive $Destination_Tar -destination $Destination -force
+						}
+					}
+
             }
         }
     "nve_update"
         {
         switch ($nve_ver)
             {
+			"9.0.1.4"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.4/avp-9.0.1-669_9.0.1-194.tar.gz"
+				}
+			"9.0.1.5"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.5/avp-9.0.1-692_9.0.1-230.tar.gz"
+				}
+			"9.0.1.6"
+				{
+				$url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.0.1/9.0.1.6/avp-9.0.1-709_9.0.1-253.tar.gz"
+				}
             "9.0.1-72"
                 {
                 $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NveUpgrade-9.0.1.72.avp"
                 }
-
 			"9.1.0.91"
 				{
 				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NveUpgrade-9.1.0-91.avp"
 				}
+			"9.1.0.3"
+				{
+				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.3/avp-9.1-66_9.1.0-132.tar.gz"
+				}
+			"9.1.0.4"
+				{
+				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.4/avp-9.1-82_9.1.0-166.tar.gz"
+				}
             }
-        $FileName = Split-Path -Leaf $url
-        $Destination_Filename = Join-Path $Destination $FileName
-        if (!(test-path $Destination_Filename ) -or $force.IsPresent)
-            {
-            Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
-            if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
-                {
-                Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
-                pause
-                }
+		if ($url)
+			{
+			$FileName = Split-Path -Leaf $url
+			$Destination_Filename = Join-Path $Destination $FileName
+			if (!(test-path $Destination_Filename ) -or $force.IsPresent)
+				{
+				Write-Host -ForegroundColor Gray " ==>$FileName not found  locally, trying to download from $url"
+				if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
+					{
+					Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
+					pause
+					}
 
-            if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
-                { 
-                write-warning "Error Downloading $file from $Url, 
-                $url might not exist."
-                }
-            }
+				if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
+					{ 
+					write-warning "Error Downloading $file from $Url, 
+					$url might not exist."
+					Break
+					}
+				if ($Destination_Filename -match ".tar.gz")
+					{
+					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
+					}
+				}
+			}
+		else 
+			{
+			Write-Host "No download found for $nve_ver Update"
+			}
         }
     "installer"
         {
@@ -1982,8 +2179,10 @@ switch ($PsCmdlet.ParameterSetName)
                     }
                 if ($unzip)
                     {
-                    Write-Verbose $Zipfilename     
-                    Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
+                    Write-Verbose $Zipfilename 
+					Expand-LABpackage -Archive $Zipfilename -destination $Destinationdir
+    
+                    # Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
                     }
                if ($nwversion.Major -ge 9)
                     { 
@@ -2041,19 +2240,19 @@ function Receive-LABnmm
 param
     (
 	<#
-	'nmm9100','nmm9102',#-#
-	'nmm9010','nmm9011','nmm9100','nmm9102',#-#
+	'nmm9100','nmm9102','nmm9103','nmm9104',#-#
+	'nmm9010','nmm9011','nmm9100','nmm9102','nmm9103','nmm9104',#-#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008','nmm8240'
-    'nmm8240',
+    'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244',#-#
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
-	'nmm9100','nmm9102',#-#
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014',
+	'nmm9100','nmm9102','nmm9103','nmm9104',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-	'nmm8240',
+	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244',#-#
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
@@ -2242,7 +2441,7 @@ if ($urls)
         if ($unzip)
             {
             Write-Verbose $Zipfilename     
-            Expand-LABZip -zipfilename "$Zipfile" -destination "$Destinationdir" -verbose
+            Expand-LABpackage -Archive "$Zipfile" -destination "$Destinationdir" -verbose
             }
         }
     }
@@ -2366,8 +2565,10 @@ switch ($SC_Version)
             $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
             $URL = "http://care.dlservice.microsoft.com/dl/download/2/B/8/2B8C6E4F-7918-40A6-9785-986D4D1175A5/SC2016_SCVMM.EXE"
             $WAIK_VER = "WAIK_10_1607"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
+			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
+			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
 			$UR = $true
             }
     }# end switch
@@ -2442,14 +2643,19 @@ if ($Component -match 'SCOM')
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/$SCOM_VER.exe"
 			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/08/kb3183990-amd64-server_7cb9b71b43dfd1d021e9763587b99aa63d519924.cab"
 			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2016/08/kb3183990-amd64-enu-console_53f29af4b869596567a8d3af67c92f738016124d.cab"
+			
 			$UR = $true
             }
         
         "SC2016"
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/6/4/F/64F31A3C-D4FD-41B9-8EF5-74B1A87721E2/SC2016_SCOM_EN.EXE"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-server_98ce5e30a75646f68eb65351b10e2fea1384b83b.cab"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-enu-console_dc7df4d8fc15f24ee7331c423b98c22cf6c9c6ab.cab"
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-server_98ce5e30a75646f68eb65351b10e2fea1384b83b.cab"
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-enu-console_dc7df4d8fc15f24ee7331c423b98c22cf6c9c6ab.cab"
+			#ur2
+			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
+			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
+
 			$UR = $true
 			}
         }    
@@ -3281,15 +3487,33 @@ if (!(Test-Path $Destination_path))
         }
     }
     write-host -ForegroundColor Gray " ==>we will check for the latest ScaleIO version from EMC.com"
-    $Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
-    $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
+    #$Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
+    #$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
     foreach ($arch in $MyArch)
     {
-    $Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
-    $DownloadLinks = $request.Links | where href -match $arch
-    foreach ($Link in $DownloadLinks)
-        {
-        $Url = $link.href
+	$Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
+    switch ($arch)
+		{
+		'VMware'
+			{
+			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_VMware_v2.0.zip"
+			}
+		'Windows'
+			{
+			$Url= "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Windows_v2.0.zip"
+			}
+		'Linux'
+			{
+			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Linux_v2.0.zip"
+			}
+		}
+	
+		
+		
+	#$DownloadLinks = $request.Links | where href -match $arch
+    #foreach ($Link in $DownloadLinks)
+        #{
+        #$Url = $link.href
         $FileName = Split-Path -Leaf -Path $Url
         Write-Host -ForegroundColor Gray  " ==>found $FileName for $Arch on EMC Website"
         $Destination_File = Join-Path $Destination_path $FileName
@@ -3308,8 +3532,8 @@ if (!(Test-Path $Destination_path))
                 "0"
                     {
                     Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
-                    Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
-                    $Downloadok = $true
+                    $Downloadok = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+                    # $Downloadok = $true
                     }
                 "1"
                     {
@@ -3326,17 +3550,26 @@ if (!(Test-Path $Destination_path))
             {
             Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
             }
-        }
+        #}#
+		Write-Host " ==>Reading Package Content"
+		$Package_Content = .$VMware_Packer l $Destination_File
+		$Package_Content = $Package_Content -match "EMC-ScaleIO-lia" | Select-Object -First 1
+		$LIA_File = Split-Path -Leaf $Package_Content
+		Write-host "Got $LIA_File"
+		$ver = $LIA_File -replace "EMC-scaleio-lia-"
+		$ver = $ver -replace ".{4}$"
+		Write-Host " ==>Got Version $ver"
+		Write-Output $ver 
         if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             {
-			if ($force.IsPresent)
-				{
-				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
-				}
-			else
-				{
-				Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
-				}
+			#if ($force.IsPresent)
+			#	{
+				$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path" -force
+			#	}
+			#else
+			#	{
+			#	$Package = Expand-LABpackage -Archive "$Destination_File" -destination  "$Extract_Path"
+			#	}
             ## linug deb packages
 			if ($arch -eq "linux")
 				{
@@ -4361,7 +4594,7 @@ function Receive-LABSQL
 .DESCRIPTION
    receives latest .Net Versions from Microsoft
 .LINK
-   https://github.com/bottkars/labtools/wiki/Receive-LABNetFramework
+   https://github.com/bottkars/labtools/wiki/Receive-LABWindows2016Update
 .EXAMPLE
 
 #>
@@ -4377,7 +4610,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632'
+    'KB3206632','KB4010672'
     )]
     [string]$KB="KB3206632"
 )
@@ -4388,7 +4621,10 @@ Switch ($KB)
         {
         $Url = "http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu"
         }
-
+	'KB4010672'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/01/windows10.0-kb4010672-x64_e12a6da8744518197757d978764b6275f9508692.msu'
+		}
     }
     if (Test-Path -Path "$Destination")
         {
@@ -4512,9 +4748,9 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-	'1_0_1','1_1_0'
+	'1_0_1','1_0_2','1_1_0'
     )]
-    [string]$OpenSSL_Ver="1_0_1"
+    [string]$OpenSSL_Ver="1_0_2"
 )
 
 if (Test-Path -Path "$Destination")
@@ -5525,7 +5761,7 @@ param
 	[Parameter(Mandatory=$false)]
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
 	[switch]$use_aptcache = $true,
-
+	[string[]]$additional_packages,
 	$net_dev = 'eth0' #future use
 	)
 
@@ -5546,7 +5782,8 @@ begin
         $netdev= "eth0"
         }
     }
-	$required_packages = ('python','git')	
+	$required_packages = ('python','git')
+	$required_packages += $additional_packages	
 	$required_packages = $required_packages -join " "
 }
 process
@@ -5702,7 +5939,7 @@ if ($nodeclone.status -ne "started")
 		{
 		$NodeClone | Set-LabAPTCacheClient -cache_ip $global:labdefaults.APT_Cache_IP
 		}
-	$Scriptblock="apt-get install $required_packages -y"
+	$Scriptblock="apt-get update; apt-get install $required_packages -y"
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
@@ -6079,3 +6316,25 @@ Keep Calm, '-defaults' Parameter has been deprecated for this Scenario !
 All your defaults are passed from the environment"
 }
 
+function Get-LabVMXUserPublicKey
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$true)]$sshuser,
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$guestuser = 'root'
+	)
+
+ 
+
+
+}
