@@ -3496,15 +3496,15 @@ if (!(Test-Path $Destination_path))
 		{
 		'VMware'
 			{
-			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_VMware_v2.0.zip"
+			$Url = "https://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_VMware_v2.0.zip"
 			}
 		'Windows'
 			{
-			$Url= "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Windows_v2.0.zip"
+			$Url= "https://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Windows_v2.0.zip"
 			}
 		'Linux'
 			{
-			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Linux_v2.0.zip"
+			$Url = "https://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_Linux_v2.0.zip"
 			}
 		}
 	
