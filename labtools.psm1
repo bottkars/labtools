@@ -4677,9 +4677,9 @@ Switch ($KB)
         else
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
-			Set-LABWindows2016KB -Server2016KB $KB
             }
-        
+	Set-LABWindows2016KB -Server2016KB $KB
+	Write-Output $KB
     }
 
 function Set-LABWindows2016KB
