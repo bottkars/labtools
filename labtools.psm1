@@ -820,6 +820,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name e14_sp -Value $Default.config.e14_sp
         $object | Add-Member -MemberType NoteProperty -Name e15_cu -Value $Default.config.e15_cu
         $object | Add-Member -MemberType NoteProperty -Name e16_cu -Value $Default.config.e16_cu
+        $object | Add-Member -MemberType NoteProperty -Name Server2016KB -Value $Default.config.Server2016KB
         $object | Add-Member -MemberType NoteProperty -Name NMM_Ver -Value $Default.config.nmm_ver
         $object | Add-Member -MemberType NoteProperty -Name NW_Ver -Value $Default.config.nw_ver
         $object | Add-Member -MemberType NoteProperty -Name NMM -Value $Default.config.nmm
@@ -906,6 +907,7 @@ process {
         $xmlcontent += ("<e14_sp>$($Defaults.e14_sp)</e14_sp>")
         $xmlcontent += ("<e15_cu>$($Defaults.e15_cu)</e15_cu>")
         $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
+        $xmlcontent += ("<Server2016KB>$($Defaults.Server2016KB)</Server2016KB>")
         $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
         $xmlcontent += ("<vlanID>$($Defaults.vlanID)</vlanID>")
         $xmlcontent += ("<Custom_DomainSuffix>$($Defaults.Custom_DomainSuffix)</Custom_DomainSuffix>")
@@ -1021,6 +1023,7 @@ function New-LABdefaults
         $xmlcontent += ("<e14_sp></e14_sp>")
         $xmlcontent += ("<e15_cu></e15_cu>")
         $xmlcontent += ("<e16_cu></e16_cu>")
+        $xmlcontent += ("<Server2016KB></Server2016KB>")
         $xmlcontent += ("<vmnet></vmnet>")
         $xmlcontent += ("<vlanID></vlanID>")
         $xmlcontent += ("<BuildDomain></BuildDomain>")
@@ -2754,7 +2757,7 @@ param
     (
     [Parameter(ParameterSetName = "sp16",Mandatory = $true)][switch][alias('sp16')]$Sharepoint2016,
     #[Parameter(ParameterSetName = "sp16", Mandatory = $false)]
-    #[ValidateSet('final','cu1','cu2','cu3','cu4')]
+    #[ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
     #$sp16_cu,
 	[Parameter(ParameterSetName = "sp13",Mandatory = $true)][switch][alias('sp3')]$Sharepoint2013,
     #[Parameter(ParameterSetName = "sp13", Mandatory = $false)]
@@ -2965,11 +2968,11 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
@@ -3072,6 +3075,10 @@ if ($Exchange2016)
 		'CU4'
 			{
 			$URL = 'https://download.microsoft.com/download/B/9/F/B9F59CF4-7C60-49EF-8A5B-8C2B7991FA86/ExchangeServer2016-x64-cu4.iso'
+			}
+		'CU5'
+			{
+			$URL = 'https://download.microsoft.com/download/A/A/7/AA7F69B2-9E25-4073-8945-E4B16E827B7A/ExchangeServer2016-x64-cu5.iso'
 			}
         }
     }
@@ -3185,6 +3192,10 @@ if ($Exchange2013)
 		"CU15"
 			{
 			$URL = "https://download.microsoft.com/download/3/A/5/3A5CE1A3-FEAA-4185-9A27-32EA90831867/Exchange2013-x64-cu15.exe"
+			}
+		'cu16'
+			{
+			$URL = 'https://download.microsoft.com/download/7/B/9/7B91E07E-21D6-407E-803B-85236C04D25D/Exchange2013-x64-cu16.exe'
 			}
 		}
     } 
@@ -4610,9 +4621,9 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632','KB4010672'
+    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635'
     )]
-    [string]$KB="KB3206632"
+    [string]$KB = 'KB4016635'
 )
 
 Switch ($KB)
@@ -4621,14 +4632,26 @@ Switch ($KB)
         {
         $Url = "http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu"
         }
+	'KB3213986'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3213986-x64_a1f5adacc28b56d7728c92e318d6596d9072aec4.msu'
+		}
 	'KB4010672'
 		{
 		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/01/windows10.0-kb4010672-x64_e12a6da8744518197757d978764b6275f9508692.msu'
 		}
+	'KB4013429'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2017/03/windows10.0-kb4013429-x64_ddc8596f88577ab739cade1d365956a74598e710.msu'
+		}
 	'KB4015438'
 		{
 		$url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/03/windows10.0-kb4015438-x64_c0e4b528d1c6b75503efd12d44d71a809c997555.msu'
-		}	
+		}
+	'KB4016635'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/03/windows10.0-kb4016635-x64_2b1b48aa6ec51c019187f15059b768b1638a21ab.msu'
+		}		
 		
 		
     }
@@ -4654,11 +4677,30 @@ Switch ($KB)
         else
             {
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+			Set-LABWindows2016KB -Server2016KB $KB
             }
         
     }
 
+function Set-LABWindows2016KB
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
+	[ValidateSet('KB3206632','KB4010672')]$Server2016KB 
 
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.Server2016KB = $Server2016KB
+    Write-Host -ForegroundColor Gray " ==>setting Server2016KB to $Server2016KB"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 <#
 .DESCRIPTION
    receives latest .Net Versions from Microsoft
