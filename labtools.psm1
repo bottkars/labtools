@@ -4688,7 +4688,9 @@ function Set-LABWindows2016KB
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateSet('KB3206632','KB4010672')]$Server2016KB 
+	[ValidateSet(
+    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635'
+	)]$Server2016KB 
 
     )
 if (!(Test-Path $Defaultsfile))
