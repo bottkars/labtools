@@ -1,4 +1,4 @@
-﻿<#
+﻿  
 .Synopsis
    Short description
 .DESCRIPTION
@@ -4037,7 +4037,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE',
 	'OpenWRT',
-	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
 	'esximaster'
 	#>
@@ -4049,7 +4049,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE',
 	'OpenWRT',
-	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
 	'esximaster'
     )]
@@ -5414,7 +5414,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE',
 	'OpenWRT',
-	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
 	'esximaster'
 	#>
@@ -5426,7 +5426,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE',
 	'OpenWRT',
-	'Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
 	'esximaster'
     )]
@@ -5640,8 +5640,8 @@ param
 	[ValidateSet('14_4','15_4','15_10','16_4')]
 	$Ubuntu_ver = '14_4',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
-	[ValidateSet('Centos7_1_1511','Centos7_1_1503')]
-	$CentOS_ver = 'Centos7_1_1511',	
+	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
+	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$true)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	$VMXname,
@@ -6013,8 +6013,8 @@ param
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
     [Parameter(Mandatory=$false)]$Path,
 	[Parameter(Mandatory=$false)]
-	[ValidateSet('Centos7_1_1511','Centos7_1_1503')]
-	$CentOS_ver = 'Centos7_1_1511',	
+	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
+	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(Mandatory=$false)]
 	$Scriptdir = (join-path (Get-Location) "labbuildr-scripts"),
 	[Parameter(Mandatory=$false)]
@@ -6058,8 +6058,8 @@ begin
 	$OS ='Centos'
     $Logfile = "/tmp/labbuildr.log"
 	$OS_Sourcedir = Join-Path $Sourcedir $OS
-	$OS_CahcheDir = Join-Path $OS_Sourcedir "cache"
-    $yumcachedir = Join-path -Path $OS_CahcheDir "yum"  -ErrorAction stop
+	$OS_CacheDir = Join-Path $OS_Sourcedir "cache"
+    $yumcachedir = Join-path -Path $OS_CacheDir "yum"  -ErrorAction stop
 	$epel = "http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 	If (!$DefaultGateway)
 		{
@@ -6162,7 +6162,7 @@ process
         Write-Verbose $Scriptblock
         $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
         }
-
+	
 	Write-Verbose "setting sudoers"
     $Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
     Write-Verbose $Scriptblock
