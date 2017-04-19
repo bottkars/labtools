@@ -4621,7 +4621,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635'
+    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217'
     )]
     [string]$KB = 'KB4016635'
 )
@@ -4652,8 +4652,10 @@ Switch ($KB)
 		{
 		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/03/windows10.0-kb4016635-x64_2b1b48aa6ec51c019187f15059b768b1638a21ab.msu'
 		}		
-		
-		
+	'KB4015217'
+		{
+		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2017/04/windows10.0-kb4015217-x64_60bfcc7b365f9ab40608e2fb96bc2be8229bc319.msu'
+		}
     }
     if (Test-Path -Path "$Destination")
         {
