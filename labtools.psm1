@@ -4031,7 +4031,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016',#
+    '2016TP5','2016TP5_GER','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -4043,7 +4043,7 @@ param(
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016TP5','2016TP5_GER','2016',#
+    '2016TP5','2016TP5_GER','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -5408,7 +5408,7 @@ param(
     $Masterpath="./",
 	<#
 	Possible Master for labbuildr:
-	'2016TP5','2016TP5_GER','2016',#
+	'2016TP5','2016TP5_GER','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -5420,7 +5420,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016TP5','2016TP5_GER','2016',#
+    '2016TP5','2016TP5_GER','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
