@@ -5730,6 +5730,10 @@ if ($CentOS.IsPresent)
 	{
 	$Required_Master = "$CentOS_ver"
 	}
+if ($Windows.IsPresent)
+	{
+	$Required_Master = "$Windows_ver"
+	}
 try
     {
     $MasterVMX = test-labmaster -Masterpath $MasterPath -Master $Required_Master -erroraction stop
@@ -5742,7 +5746,7 @@ catch
     ------------------------------------------------
     get-help $($MyInvocation.MyCommand.Name) -online
     ------------------------------------------------"
-    exit
+    break
     }
 Write-Host -ForegroundColor Gray " ==>found Master $($Mastervmx.VMXName)"
 if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyContinue))
@@ -6329,6 +6333,353 @@ end
 	{}
 }
 
+function Test-LABuserLoggedIn
+{
+	param (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+	$whois,
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+	$Adminuser,
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+	$Adminpassword,
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path
+	)
+	$Origin = $MyInvocation.MyCommand
+	Write-Host -ForegroundColor Gray -NoNewline " ==>waiting for user $whois logged in " 
+	do
+		{
+		$sleep = 1
+		$cmdresult = Get-VMXProcessesInGuest -Guestuser $Adminuser -Guestpassword $Adminpassword -config $Config -VMXName $VMXName -ErrorAction SilentlyContinue
+		foreach ($i in (1..$sleep))
+			{
+			Write-Host -ForegroundColor Yellow "-`b" -NoNewline
+			sleep 1
+			Write-Host -ForegroundColor Yellow "\`b" -NoNewline
+			sleep 1
+			Write-Host -ForegroundColor Yellow "|`b" -NoNewline
+			sleep 1
+			Write-Host -ForegroundColor Yellow "/`b" -NoNewline
+			sleep 1
+			}
+	}
+until ($cmdresult -match $whois) 
+Write-Host	-ForegroundColor Green "[success]"
+}
+function Set-LabWindowsVMX
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename')][string]$VMXName,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
+    [Parameter(Mandatory=$false)]$Path,
+	[Parameter(Mandatory=$false)]
+	[ValidateSet('2016','2016core')]
+	$Windows_ver = '2016',
+	[Parameter(Mandatory=$false)]
+	$Scriptdir = (join-path (Get-Location) "labbuildr-scripts"),
+	[Parameter(Mandatory=$false)]
+	[switch]$NO_DOMAIN_JOIN = $true,
+	[Parameter(Mandatory=$false)]
+	$Sourcedir = $Global:labdefaults.Sourcedir,
+	[Parameter(Mandatory=$false)]
+	$DefaultGateway = $Global:labdefaults.DefaultGateway,
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$Rootuser = 'Administrator',
+	$Hostkey = $Global:labdefaults.HostKey,
+	$Default_Guestuser = 'labbuildr',
+	[Parameter(Mandatory=$true)][ipaddress]
+	$ip,
+	[Parameter(Mandatory=$false)]
+	$Subnet = $Global:labdefaults.MySubnet,
+	[Parameter(Mandatory=$false)]
+	$DNS1 = $Global:labdefaults.DNS1,
+	[Parameter(Mandatory=$false)]
+	$DNS2 = $Global:labdefaults.DNS2,
+	[Parameter(Mandatory=$false)]
+	$Host_Name = $VMXName,
+	[Parameter(Mandatory = $False)]
+	[AllowNull()] 
+    [AllowEmptyCollection()]
+	[string[]]$Additional_Packages,
+	[Parameter(Mandatory=$false)]
+	$custom_domainsuffix = "$($Global:labdefaults.Custom_DomainSuffix)",
+	$BUilddomain = "$($Global:labdefaults.BuildDomain)",
+	$IN_Guest_UNC_Scriptroot = "\\vmware-host\Shared Folders\Scripts",
+	$IN_Guest_UNC_Sourcepath = "\\vmware-host\Shared Folders\Sources",
+	$IN_Guest_UNC_NodeScriptDir = "$IN_Guest_UNC_Scriptroot\Node"
+	#$netdev= "eno16777984"
+	)
+
+begin
+{
+$System_Packages = $System_Packages -join " "
+if ($NO_DOMAIN_JOIN.IsPresent)
+	{
+	$Addonparameters = "-NO_DOMAIN_JOIN"
+	}
+if ($DefaultGateway)
+	{
+	$Addonparameters = "$Addonparameters -DefaultGateway $DefaultGateway"
+	}
+[System.Version]$subnet = $Subnet.ToString()
+$Subnet = $Subnet.major.ToString() + "." + $Subnet.Minor + "." + $Subnet.Build
+}
+
+process
+	{
+	try
+		{
+		$nodeclone = Get-VMX -VMXName $VMXName -ErrorAction stop
+		}
+	catch
+		{
+		break
+		}
+	if ($nodeclone.status -ne "started")
+		{
+		$nodeclone | start-vmx | Out-Null
+		}
+	Write-Host -ForegroundColor Gray " ==>waiting for firstboot finished on " -NoNewline 
+	Write-Host -ForegroundColor Magenta "$VMXName" -NoNewline
+	do {
+			$ToolState = Get-VMXToolsState -config $NodeClone.config
+			Write-Verbose "VMware tools are in $($ToolState.State) state"
+			sleep 5
+		}
+    until ($ToolState.state -match "running")
+	Write-Host -ForegroundColor Green "[success]"
+	Write-verbose "waiting for Pass 1 (sysprep Finished)"
+	$nodeclone | Test-LABuserLoggedIn -Adminuser $Rootuser -Adminpassword $guestpassword -whois Administrator -ErrorAction SilentlyContinue
+    $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null    
+	$NodeClone | Invoke-VMXPowershell -Guestuser $Rootuser -Guestpassword $guestpassword -ScriptPath $IN_Guest_UNC_NodeScriptDir -Script configure-node.ps1 -Parameter "-nodeip $ip -nodename $($nodeclone.vmxname)  -domainsuffix $custom_domainsuffix  -IPv4Subnet  $Subnet $Addonparameters" -nowait -interactive # $CommonParameter
+
+	<#
+	$installmessage += "Node $($nodeclone.vmxname) is reachable via ssh $ip with root:$($guestpassword)  or $($Default_Guestuser):$($Guestpassword)`n"
+    $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
+    $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
+	##### evaluating net device
+	Write-Host -ForegroundColor Magenta " ==>Evaluating nic´s in $($nodeclone.vmxname)"
+	$Scriptblock = 'vmtoolsd --cmd="info-set guestinfo.IF0 $(ls /sys/class/net)"'
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	$Interfaces = $nodeclone | Get-VMXVariable -GuestVariable IF0 | Select-Object IF0
+	Write-Host -ForegroundColor Gray " ==>Found interfaces $($Interfaces.IF0 -join ",")"
+	$eth0 = $Interfaces.IF0 | where {$_ -ne "lo"} | Select-Object -First 1
+	if ($eth0)
+		{
+		$netdev = $eth0
+		Write-Host -ForegroundColor Gray  " ==>setting netdev to evaluated $netdev"
+		}
+	else
+		{
+		Write-Host -ForegroundColor Gray  " ==>using default netdev $netdev"
+		}
+	
+	####
+	$NodeClone | Set-VMXLinuxNetwork -ipaddress $ip -network "$subnet" -netmask "255.255.255.0" -gateway $DefaultGateway -device $netdev -Peerdns -DNS1 $DNS1 -DNS2 $DNS2 -DNSDOMAIN "$DNS_DOMAIN_NAME" -Hostname $Host_name  -rootuser $Rootuser -rootpassword $Guestpassword | Out-Null
+
+    $Scriptblock =  "systemctl start NetworkManager"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	$Scriptblock =  "chmod 777 $Logfile"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	write-verbose "Setting Hostname"
+	$Scriptblock = "nmcli general hostname $Host_name.$DNS_DOMAIN_NAME;systemctl restart systemd-hostnamed"
+	Write-Verbose $Scriptblock
+	$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  | Out-Null
+
+    $Scriptblock =  "/etc/init.d/network restart"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
+
+    $Scriptblock =  "systemctl stop NetworkManager"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
+
+    Write-Host -ForegroundColor Gray " ==>you can now use ssh into $ip with root:Password123! and Monitor $Logfile"
+
+    write-verbose "Disabling IPv&"
+    $Scriptblock = "echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf;sysctl -p"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
+    $Scriptblock =  "echo '$ip $($Host_name) $($Host_name).$DNS_DOMAIN_NAME'  >> /etc/hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
+    $Scriptblock = "echo 'kernel.pid_max=655360' >> /etc/sysctl.conf;sysctl -w kernel.pid_max=655360"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    if ($EMC_ca.IsPresent)
+        {
+        $files = Get-ChildItem -Path "$Sourcedir\EMC_ca"
+        foreach ($File in $files)
+            {
+            $NodeClone | copy-VMXfile2guest -Sourcefile $File.FullName -targetfile "/etc/pki/ca-trust/source/anchors/$($File.Name)" -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+        $Scriptblock = "update-ca-trust"
+        Write-Verbose $Scriptblock
+        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+        }
+	
+	Write-Verbose "setting sudoers"
+    $Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
+
+    $Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	Write-Verbose "Changing Password for $Default_Guestuser to $Guestpassword"
+    $Scriptblock = "echo $Guestpassword | passwd $Default_Guestuser --stdin"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+	### generate user ssh keys
+    $Scriptblock ="/usr/bin/ssh-keygen -t rsa -N '' -f /home/$Default_Guestuser/.ssh/id_rsa"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
+
+    $Scriptblock = "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys;chmod 0600 ~/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
+    #### Start ssh for pwless  root local login
+    $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    $Scriptblock = "cat /home/$Default_Guestuser/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
+
+    if ($labdefaults.AnsiblePublicKey)
+            {
+            $Scriptblock = "echo '$($labdefaults.AnsiblePublicKey)' >> /root/.ssh/authorized_keys"
+            Write-Verbose $Scriptblock
+            $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+    if ($Hostkey)
+            {
+            $Scriptblock = "echo '$($Hostkey)' >> /root/.ssh/authorized_keys"
+            Write-Verbose $Scriptblock
+            $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+            }
+    $Scriptblock = "cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys;chmod 0600 /root/.ssh/authorized_keys"
+    Write-Verbose $Scriptblock
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+    
+	$Scriptblock = "{ echo -n '$($NodeClone.vmxname) '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
+    $Scriptblock = "{ echo -n 'localhost '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
+	#### end ssh
+	### testing default route
+    Write-Host -ForegroundColor Cyan " ==>Testing default Route, make sure that Gateway is reachable ( install and start OpenWRT )
+    if failures occur, open a 2nd labbuildr window and run start-vmx OpenWRT "
+
+    $Scriptblock = "DEFAULT_ROUTE=`$(ip route show default | awk '/default/ {print `$3}');ping -c 1 `$DEFAULT_ROUTE"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+    ### preparing yum
+    $file = "/etc/yum.conf"
+    $Property = "cachedir"
+    $Scriptblock = "grep -q '^$Property' $file && sed -i 's\^$Property=/var*.\$Property=/mnt/hgfs/Sources/$OS/\' $file || echo '$Property=/mnt/hgfs/Sources/$OS/yum/`$basearch/`$releasever/' >> $file"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
+    $file = "/etc/yum.conf"
+    $Property = "keepcache"
+    $Scriptblock = "grep -q '^$Property' $file && sed -i 's\$Property=0\$Property=1\' $file || echo '$Property=1' >> $file"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
+    $Scriptblock="yum makecache"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+    $Scriptblock="yum install yum-plugin-versionlock -y"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+    $Scriptblock="yum versionlock open-vm-tools"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+    if ($update.IsPresent)
+        {
+        Write-Verbose "Performing yum update, this may take a while"
+        $Scriptblock = "yum update -y"
+        Write-Verbose $Scriptblock
+        $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+        }
+    $Scriptblock = "yum install $System_Packages -y;systemctl enable ntpd;systemctl start ntpd"
+    Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	if ($Additional_Epel_Packages)
+		{
+		Write-Host -ForegroundColor Gray " ==>adding EPEL Repo"
+        $Scriptblock = "rpm -i $epel"
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+		}
+    if ($Additional_Epel_Packages -contains 'docker')
+		{
+		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
+		$Packages = "tar wget python-setuptools"
+		Write-Verbose "Checking for $Packages"
+		$Scriptblock = "yum install $Packages -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		$Scriptblock = "systemctl start docker.service"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+		}
+	if ($Additional_Epel_Packages -contains 'influxdb')
+		{
+		$Scriptblock ="cat > /etc/yum.repos.d/influxdb.repo  <<EOF
+[influxdb]
+name = InfluxDB Repository - RHEL \`$releasever
+baseurl = https://repos.influxdata.com/rhel/\`$releasever/\`$basearch/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+EOF
+"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		$Scriptblock ="yum install influxdb -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+
+		}
+	if ($Additional_Epel_Packages -contains 'grafana')
+		{
+		$Scriptblock ="yum install https://grafanarel.s3.amazonaws.com/builds/grafana-3.1.1-1470047149.x86_64.rpm -y"
+		Write-Verbose $Scriptblock
+		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+		}
+#>
+
+
+	}
+end
+	{}
+}
 
 function Set-LabAPTCacheClient
 {
