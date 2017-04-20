@@ -335,7 +335,7 @@ function Set-LABNWver
 	'nw9100','nw9102','nw9103','nw9104','nw9105',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245'#-#
+	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
@@ -1796,7 +1796,7 @@ param
 	'nw9100','nw9102','nw9103','nw9104','nw9105',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
-	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245'#-#
+	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
     'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
     'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
@@ -5638,33 +5638,44 @@ param
 	[switch]$Ubuntu,
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$true)]
 	[switch]$CentOS,
+	[Parameter(ParameterSetName = "Windows",Mandatory = $true)]
+	[switch]$Windows,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[ValidateSet('14_4','15_4','15_10','16_4')]
 	$Ubuntu_ver = '14_4',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
 	$CentOS_ver = 'Centos7_3_1611',
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
+	[ValidateSet('2016','2016core')]
+	$Windows_ver = '2016',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$true)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
 	$VMXname,
 	[switch]$start = $false,
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateRange(0,3)]
 	[int]$SCSI_Controller = 1,
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
-	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$true)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateRange(0,7)]
 	[int]$SCSI_DISK_COUNT = 0,
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[Uint64]$SCSI_DISK_SIZE = 100GB,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet('pvscsi','lsisas1068')]
 	$SCSI_Controller_Type = "pvscsi",
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet('vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet9','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19')]
 	$vmnet = $Global:labdefaults.vmnet,
 	<#
@@ -5678,26 +5689,33 @@ param
     'XXL' = 4vCPU, 8192MB
     #>
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
-	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $true)]
+	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet('XS', 'S', 'M', 'L', 'XL','TXL','XXL')]
 	$Size = "XL",
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet('nat', 'bridged','custom','hostonly')]
 	$ConnectionType = 'hostonly',
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
 	[ValidateSet('e1000e','vmxnet3','e1000')]$AdapterType = 'vmxnet3',
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateRange(0,99)][alias ('apr')][int]$activationpreference,
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateRange(1,9)][int]$Scenario = 9,
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[Validatelength(1, 10)][string]$Scenarioname = 'default',
 	[Parameter(ParameterSetName = "CentOS",Mandatory = $false, ValueFromPipelineByPropertyName = $false)]
+	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
 	[Validatelength(1, 50)][string]$Displayname = $VMXname,
 	$Masterpath = $Global:labdefaults.Masterpath,
