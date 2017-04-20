@@ -2187,6 +2187,7 @@ switch ($PsCmdlet.ParameterSetName)
     
                     # Expand-LABZip -zipfilename "$Zipfilename" -destination "$Destinationdir"
                     }
+<#
                if ($nwversion.Major -ge 9)
                     { 
                     $Readme = "Readmefile.txt"
@@ -2214,6 +2215,7 @@ switch ($PsCmdlet.ParameterSetName)
                         $url might not exist."
                         }
                     }
+#>
 
                 }
             }
