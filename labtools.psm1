@@ -1367,7 +1367,7 @@ switch ($Global:vmxtoolkit_type)
 		$CurlArgs1 = "-# -u $($UserName):$($Password)"
 		$CurlArgs2 = "-C"
 		$Curl = '/usr/bin/curl'
-		Set-LABUi -short -title " ==>$Curl `"$CurlArgs1 $Source -o $TarGet`""
+		Set-LABUi -short -title " ==>$Curl $CurlArgs1 $Source -o $TarGet"
 		Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source -o $TarGet" -Wait -NoNewWindow
 		#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
 		#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
@@ -1739,7 +1739,7 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 			$CurlArgs1 = "-# -o"
 			$CurlArgs2 = "-C"
 			$Curl = '/usr/bin/curl'
-			Set-LABUi -title "$Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`"" -short
+			Set-LABUi -title "$Curl $CurlArgs $destination $DownLoadUrl" -short
 			Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $destination $DownLoadUrl" -Wait -NoNewWindow
 			}			
 		}
