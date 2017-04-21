@@ -5901,11 +5901,12 @@ if ($nodeclone.status -ne "started")
 	$nodeclone | start-vmx | Out-Null
 	do {
 		$ToolState = Get-VMXToolsState -config $NodeClone.config
-		Write-Verbose "VMware tools are in $($ToolState.State) state"
+		Set-LABUi -short -title "VMware tools are in $($ToolState.State) state"
 		sleep 5
     }
     until ($ToolState.state -match "running")
 	$installmessage += "Node $($nodeclone.vmxname) is reachable via ssh $ip with root:$($guestpassword)  or $($Default_Guestuser):$($Guestpassword)`n"
+	Set-LABUi -title "Configuration of $($nodeclone.vmxname)"
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
@@ -5916,93 +5917,93 @@ if ($nodeclone.status -ne "started")
         }
 
     $Scriptblock = "sed -i '/PermitRootLogin without-password/ c\PermitRootLogin yes' /etc/ssh/sshd_config"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
         
     $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa -force"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
     
     $Scriptblock = "/usr/bin/ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
 
     $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  | Out-Null
 
     if ($labdefaults.AnsiblePublicKey)
             {
             $Scriptblock = "echo '$($labdefaults.AnsiblePublicKey)' >> /root/.ssh/authorized_keys"
-            Write-Verbose $Scriptblock
+            Set-LABUi -short -title $Scriptblock
             $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
             }
 
     if ($Hostkey)
         {
         $Scriptblock = "echo '$Hostkey' >> /root/.ssh/authorized_keys"
-        Write-Verbose $Scriptblock
+        Set-LABUi -short -title $Scriptblock
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
         $Scriptblock = "mkdir /home/$Default_Guestuser/.ssh/;echo '$Hostkey' >> /home/$Default_Guestuser/.ssh/authorized_keys;chmod 0600 /home/$Default_Guestuser/.ssh/authorized_keys"
-        Write-Verbose $Scriptblock
+        Set-LABUi -short -title $Scriptblock
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
         }
 
     $Scriptblock = "cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys;chmod 0600 /root/.ssh/authorized_keys"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
-	Write-Verbose "setting sudoers"
+	Set-LABUi -short -title "setting sudoers"
 	$Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
-	Write-Verbose $Scriptblock
+	Set-LABUi -short -title $Scriptblock
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile  
 
  	$Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
-	Write-Verbose $Scriptblock
+	Set-LABUi -short -title $Scriptblock
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  
 
     $Scriptblock = "echo 'auto lo' > /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'iface lo inet loopback' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'auto $netdev' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'iface $netdev inet static' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'address $ip' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'gateway $DefaultGateway' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'netmask 255.255.255.0' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'network $subnet.0' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'broadcast $subnet.255' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
         
     $Scriptblock = "echo 'dns-nameservers $DNS1 $DNS2' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     $Scriptblock = "echo 'dns-search $DNS_DOMAIN_NAME' >> /etc/network/interfaces"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
         
     $Scriptblock = "echo '127.0.0.1       localhost' > /etc/hosts; echo '$ip $Host_Name $Host_Name.$DNS_DOMAIN_NAME' >> /etc/hosts; hostname $Node"
@@ -6021,14 +6022,14 @@ if ($nodeclone.status -ne "started")
             $Scriptblock = "/etc/init.d/networking restart"
             }
         }         
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
     Write-Host -ForegroundColor Cyan " ==>Testing default Route, make sure that Gateway is reachable ( eg. install and start OpenWRT )
     if failures occur, you might want to open a 2nd labbuildr windows and run start-vmx OpenWRT "
     $Scriptblock = "DEFAULT_ROUTE=`$(ip route show default | awk '/default/ {print `$3}');ping -c 1 `$DEFAULT_ROUTE"
     $Possible_Error_Fix = "1.) If no Router is present, install OpenWRT with Receive-LAbOpenWrt -start `n2.)Check if VPN Connection are Blocking inet Access for VM´sn` Retry when fixed"
-	Write-Verbose $Scriptblock
+	Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Possible_Error_Fix $Possible_Error_Fix -Guestuser $Rootuser -Guestpassword $Guestpassword     
 
 	if ($use_aptcache)
@@ -6036,14 +6037,14 @@ if ($nodeclone.status -ne "started")
 		$NodeClone | Set-LabAPTCacheClient -cache_ip $global:labdefaults.APT_Cache_IP
 		}
 	$Scriptblock="apt-get update; apt-get install $required_packages -y"
-    Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
 
 	}
 }
 end
-{}
+{Set-LABUi}
 }
 
 function Set-LabCentosVMX
@@ -6784,7 +6785,8 @@ param
 function Set-LABUi
 {
 param
-($title,
+(
+[Parameter(Mandatory = $false,Position = 0)]$title,
 [switch]$short)
 
 if ($short)
