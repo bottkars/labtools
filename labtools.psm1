@@ -1343,7 +1343,7 @@ switch ($Global:vmxtoolkit_type)
 		# create the tarGet file on the local system and the download buffer 
 		$tarGetfile = New-Object IO.FileStream ($TarGet,[IO.FileMode]::Create) 
 		[byte[]]$readbuffer = New-Object byte[] 1024 
-		Write-Host -ForegroundColor Gray " ==>Downloading $Source via ftp" 
+		Set-LABUi -short -title " ==>Downloading $Source via ftp" 
 		# loop through the download stream and send the data to the tarGet file 
 		$I = 1
 		do{ 
@@ -1367,7 +1367,7 @@ switch ($Global:vmxtoolkit_type)
 	$CurlArgs1 = "-# -u $($UserName):$($Password)"
 	$CurlArgs2 = "-C"
 	$Curl = '/usr/bin/curl'
-	Write-Host " ==>$global:vmxtoolkit_type, need trying $Curl `"$CurlArgs1 $Source -o $TarGet`" -Wait -NoNewWindow"
+	Set-LABUi -short -title " ==>$Curl `"$CurlArgs1 $Source -o $TarGet`""
 	Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source -o $TarGet" -Wait -NoNewWindow
 	#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
 	#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
