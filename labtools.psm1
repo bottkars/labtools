@@ -1598,8 +1598,7 @@ function Receive-LABjava64
 			}
 			default
 			{
-
-			$Latest_java8  = $Headers.BaseResponse.RequestMessage.RequestURI.AbsolutePath
+			$Latest_java8  = split-path -Leaf $Headers.BaseResponse.RequestMessage.RequestURI.AbsolutePath
 			}
 		}
 
