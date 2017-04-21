@@ -5773,6 +5773,7 @@ catch
 Write-Host -ForegroundColor Gray " ==>found Master $($Mastervmx.VMXName)"
 if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyContinue))
 	{
+	Set-LABUi -title "Creating $VMXname from $Master $($Mastervmx.VMXName) "
 	$NodeClone = $MasterVMX | Get-VMXSnapshot | where Snapshot -Match "Base" | New-VMXLinkedClone -CloneName $VMXname
 	If ($SCSI_DISK_COUNT -gt 0)
 		{
@@ -5815,6 +5816,7 @@ else
 	{
 	#Write-Warning "Machine $VMXname already exists"
 	}
+Set-LABUi
 }
 
 function Set-LabUbuntuVMX
