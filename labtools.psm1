@@ -1722,7 +1722,7 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 					{
 					New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
 					}
-				Set-LABUi -title " ==>Starting Download of $DownLoadUrl to $destination"
+				Set-LABUi -title " ==>Starting Download of $DownLoadUrl to $destination" -short
 				Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
 				If ($err) {Throw ""} 
 				} 
@@ -1739,7 +1739,7 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 			$CurlArgs1 = "-# -o"
 			$CurlArgs2 = "-C"
 			$Curl = '/usr/bin/curl'
-			Set-LABUi -title "$Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`""
+			Set-LABUi -title "$Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`"" -short
 			Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $destination $DownLoadUrl" -Wait -NoNewWindow
 			}			
 		}
@@ -6765,8 +6765,15 @@ param
 function Set-LABUi
 {
 param
-($title)
+($title,
+[switch]$short)
 
-$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)  Subnet:$($labdefaults.MySubnet) DNS1: $($labdefaults.DNS1) DNS2:$($labdefaults.DNS2) $title"
-
+if ($short)
+	{
+	$host.ui.RawUI.WindowTitle = "$title"
+	}
+else
+	{
+	$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)  Subnet:$($labdefaults.MySubnet) DNS1: $($labdefaults.DNS1) DNS2:$($labdefaults.DNS2) $title"
+	}
 }
