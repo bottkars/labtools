@@ -1624,18 +1624,19 @@ function Receive-LABjava64
                 break
                 } 
 			switch ($vmxtoolkit_type)
-			{
-				'win_x86_64'
-				{		
-				if ( (Get-ChildItem $DownloadDir\$Latest_java8).length -ne $Length )
-					{
-					Write-Warning "Invalid FileSize, must be $Length, Deleting Download File"
-					Remove-Item $DownloadDir\$Latest_java8 -Force
-					break
+				{
+					'win_x86_64'
+					{		
+					if ( (Get-ChildItem $DownloadDir\$Latest_java8).length -ne $Length )
+						{
+						Write-Warning "Invalid FileSize, must be $Length, Deleting Download File"
+						Remove-Item $DownloadDir\$Latest_java8 -Force
+						break
+						}
 					}
+					default
+					{}
 				}
-				default
-				{}
 			}
         else
             {
