@@ -1609,12 +1609,13 @@ function Receive-LABjava64
 			break
 			}
         Write-Host -ForegroundColor Gray " ==>we found $latest_java8 online"
-        if (!(Test-Path "$DownloadDir\$Latest_java8"))
+		$Download_File = join-path $DownloadDir $Latest_java8
+        if (!(Test-Path $Download_File))
             {
             Write-Host -ForegroundColor Gray " ==>Downloading $Latest_java8"
             Try
                 {
-                Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination "$DownloadDir\$latest_java8" 
+                Receive-LABBitsFile -DownLoadUrl $latest_java8uri -destination $Download_File
                 #Invoke-WebRequest "$latest_java8uri" -OutFile "$DownloadDir\$latest_java8" -TimeoutSec 60
                 }
             catch [Exception] 
@@ -1627,10 +1628,10 @@ function Receive-LABjava64
 				{
 					'win_x86_64'
 					{		
-					if ( (Get-ChildItem $DownloadDir\$Latest_java8).length -ne $Length )
+					if ( (Get-ChildItem  $Download_File).length -ne $Length)
 						{
 						Write-Warning "Invalid FileSize, must be $Length, Deleting Download File"
-						Remove-Item $DownloadDir\$Latest_java8 -Force
+						Remove-Item $Download_File -Force
 						break
 						}
 					}
@@ -1644,7 +1645,7 @@ function Receive-LABjava64
             }
             $object = New-Object psobject
 	        $object | Add-Member -MemberType NoteProperty -Name LatestJava8 -Value $Latest_java8
-	        $object | Add-Member -MemberType NoteProperty -Name LatestJava8File -Value (Join-Path $DownloadDir $Latest_java8)
+	        $object | Add-Member -MemberType NoteProperty -Name LatestJava8File -Value $Download_File
             Write-Output $object
         }
     }
