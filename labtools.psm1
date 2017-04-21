@@ -6773,6 +6773,6 @@ if ($short)
 	}
 else
 	{
-	$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)  Subnet:$($labdefaults.MySubnet) DNS1: $($labdefaults.DNS1) DNS2:$($labdefaults.DNS2) $title"
+	$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)|Subnet:$($labdefaults.MySubnet)|GW:$($labdefaults.Defaultgateway)|DNS1: $($labdefaults.DNS1)|DNS2:$($labdefaults.DNS2)|$title"
 	}
 }
