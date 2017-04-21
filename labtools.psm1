@@ -1599,6 +1599,7 @@ function Receive-LABjava64
 			default
 			{
 			$Latest_java8  = split-path -Leaf $Headers.BaseResponse.RequestMessage.RequestURI.AbsolutePath
+			$latest_java8uri = $Headers.BaseResponse.RequestMessage.RequestURI.AbsoluteURI
 			}
 		}
 
