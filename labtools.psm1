@@ -1359,8 +1359,6 @@ switch ($Global:vmxtoolkit_type)
 		while ($readlength -ne 0) 
  
 		$tarGetfile.close()
-		Write-Host
-		return $true		
 		}
 	default
 		{
@@ -1373,6 +1371,7 @@ switch ($Global:vmxtoolkit_type)
 		#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
 		}
 	}
+return $true	
 Set-LABUi
 }
 <#
