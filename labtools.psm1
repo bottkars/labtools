@@ -6761,3 +6761,11 @@ param
 
 
 }
+function Set-LABUi
+{
+param
+($title)
+
+$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)  Subnet:$($labdefaults.MySubnet) $title"
+
+}
