@@ -1722,7 +1722,7 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 					{
 					New-Item -ItemType Directory  -Path (Split-Path $destination) -Force
 					}
-				Write-Host -ForegroundColor Gray " ==>Starting Download of $DownLoadUrl to $destination"
+				Set-LABUi -title " ==>Starting Download of $DownLoadUrl to $destination"
 				Start-BitsTransfer -Source $DownLoadUrl -Destination $destination -DisplayName "Getting $destination" -Priority Foreground -Description "From $DownLoadUrl..." -ErrorVariable err -Confirm:$false
 				If ($err) {Throw ""} 
 				} 
@@ -1739,11 +1739,12 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 			$CurlArgs1 = "-# -o"
 			$CurlArgs2 = "-C"
 			$Curl = '/usr/bin/curl'
-			Write-Host " ==>$global:vmxtoolkit_type, need trying start-process $Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`" -Wait -NoNewWindow"
+			Set-LABUi -title "$Curl -ArgumentList `"$CurlArgs $destination $DownLoadUrl`""
 			Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $destination $DownLoadUrl" -Wait -NoNewWindow
 			}			
 		}
-    }
+    Set-LABUi
+	}
 else
     {
     Write-Host -ForegroundColor Gray " ==>No download needed, file exists" 
