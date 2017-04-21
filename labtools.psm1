@@ -1363,17 +1363,17 @@ switch ($Global:vmxtoolkit_type)
 		return $true		
 		}
 	default
-	{
-	$CurlArgs1 = "-# -u $($UserName):$($Password)"
-	$CurlArgs2 = "-C"
-	$Curl = '/usr/bin/curl'
-	Set-LABUi -short -title " ==>$Curl `"$CurlArgs1 $Source -o $TarGet`""
-	Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source -o $TarGet" -Wait -NoNewWindow
-	#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
-	#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
+		{
+		$CurlArgs1 = "-# -u $($UserName):$($Password)"
+		$CurlArgs2 = "-C"
+		$Curl = '/usr/bin/curl'
+		Set-LABUi -short -title " ==>$Curl `"$CurlArgs1 $Source -o $TarGet`""
+		Start-Process "/usr/bin/curl" -ArgumentList "$CurlArgs1 $Source -o $TarGet" -Wait -NoNewWindow
+		#Write-Host -ForegroundColor Gray " ==>using curl -u `"$($UserName):$($Password)`" $Source -o $TarGet"
+		#curl -# -u  `"$($UserName):$($Password)`" $Source -o $TarGet
+		}
 	}
-}
-
+Set-LABUi
 }
 <#
 .DESCRIPTION
