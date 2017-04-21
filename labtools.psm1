@@ -1587,10 +1587,21 @@ function Receive-LABjava64
         {
         $latest_java8uri = $link.href
         Write-Host -ForegroundColor Gray " ==>$($link.href)"
-        $Headers = Invoke-WebRequest  $Link.href -UseBasicParsing -Method Head
-        $File =  $Headers.BaseResponse | Select-Object responseUri
-        $Length = $Headers.Headers.'Content-Length'
-        $Latest_java8 = split-path -leaf $File.ResponseUri.AbsolutePath
+		$Headers = Invoke-WebRequest  $Link.href -UseBasicParsing -Method Head
+		switch ($vmxtoolkit_type)
+		{
+			'win_x86_64'
+			{
+			$File =  $Headers.BaseResponse | Select-Object responseUri
+			$Length = $Headers.Headers.'Content-Length'
+			$Latest_java8 = split-path -leaf $File.ResponseUri.AbsolutePath
+			}
+			default
+			{
+
+			$Latest_java8  = $Headers.BaseResponse.RequestMessage.RequestURI.AbsolutePath
+			}
+		}
 
 		if (!$Latest_java8)
 			{
@@ -1612,13 +1623,20 @@ function Receive-LABjava64
                 Write-Warning $_.Exception
                 break
                 } 
-            if ( (Get-ChildItem $DownloadDir\$Latest_java8).length -ne $Length )
-                {
-                Write-Warning "Invalid FileSize, must be $Length, Deleting Download File"
-                Remove-Item $DownloadDir\$Latest_java8 -Force
-                break
-                }
-            }
+			switch ($vmxtoolkit_type)
+			{
+				'win_x86_64'
+				{		
+				if ( (Get-ChildItem $DownloadDir\$Latest_java8).length -ne $Length )
+					{
+					Write-Warning "Invalid FileSize, must be $Length, Deleting Download File"
+					Remove-Item $DownloadDir\$Latest_java8 -Force
+					break
+					}
+				}
+				default
+				{}
+			}
         else
             {
             Write-Host -ForegroundColor Gray "$Latest_java8 already exists in $DownloadDir"
