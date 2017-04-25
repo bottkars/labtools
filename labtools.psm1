@@ -4057,7 +4057,7 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE',
+    'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
@@ -4069,7 +4069,7 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE',
+    'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
@@ -5436,7 +5436,7 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE',
+    'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
@@ -5448,7 +5448,7 @@ param(
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
-    'OpenSUSE',
+    'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
