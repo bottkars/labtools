@@ -1887,7 +1887,7 @@ param
     [Parameter(ParameterSetName = "installer",Mandatory = $false)]
     [switch]$force
     )
-        
+$Destination = Join-Path "Networker"        
 if (!(Test-Path $Destination))
     {
     Try
