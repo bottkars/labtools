@@ -1887,7 +1887,7 @@ param
     [Parameter(ParameterSetName = "installer",Mandatory = $false)]
     [switch]$force
     )
-$Destination = Join-Path "Networker"        
+$Destination = Join-Path $Destination  "Networker"        
 if (!(Test-Path $Destination))
     {
     Try
@@ -2288,6 +2288,9 @@ param
     [switch]$force
     )
 $nmm_scvmm_ver = $nmm_ver -replace "nmm","scvmm"
+$Destination = Join-Path $Destination  "Networker"        
+
+
 if (!(Test-Path $Destination))
     {
     Try
