@@ -4556,6 +4556,7 @@ function Receive-LABSQL
             }
 
             "SQL2016_ISO"#>
+
 	switch ($SQLVER)
 		{
 		"SQL2016_ISO"
@@ -4564,10 +4565,10 @@ function Receive-LABSQL
 			$url = $SQL2016_ISO
 			Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 461 
 		    $SQL_BASEDir = Join-Path $Product_Dir $SQL_BASEVER
-			$FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $SQL2016_SSMS)
+			$SSMS_FileName = Join-Path ($SQL_BASEDir) (Split-Path -Leaf $SQL2016_SSMS)
 			try
 				{
-				$SSMS_VERSION_INFO = (Get-ChildItem $FileName -ErrorAction SilentlyContinue).VersionInfo.ProductName 
+				$SSMS_VERSION_INFO = (Get-ChildItem $SSMS_FileName -ErrorAction SilentlyContinue).VersionInfo.ProductName 
 				}
 			catch 
 				{
@@ -4576,8 +4577,7 @@ function Receive-LABSQL
 
 			if (!($SSMS_VERSION_INFO) -or $SSMS_VERSION_INFO -notmatch $SSMS_LATEST)
 				{
-				Write-Host -ForegroundColor Gray " ==> Getting SSMS $SSMS_LATEST"
-				Receive-LABBitsFile -DownLoadUrl $SQL2016_SSMS -destination $FileName -force
+                $SSMS_REQUIRED = $true        
 				}
 			else
 				{
@@ -4610,7 +4610,11 @@ function Receive-LABSQL
         break
         }
     }
-
+    if  ($SSMS_REQUIRED)
+        {
+        Write-Host -ForegroundColor Gray " ==> Getting SSMS $SSMS_LATEST"
+        Receive-LABBitsFile -DownLoadUrl $SQL2016_SSMS -destination $SSMS_FileName -force
+        }
     if (!(Test-Path $FileName))
         {
         Write-Host -ForegroundColor Gray " ==>Trying $SQLVER Download"
