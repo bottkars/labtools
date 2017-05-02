@@ -310,7 +310,8 @@ function Set-LABNMMver
 	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244',#-#
     'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
+    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210',
+    'nmmunknown'
     )]
     $nmm_ver
     )
