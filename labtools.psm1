@@ -4435,6 +4435,45 @@ Switch ($KB)
 	Write-Output $KB
     }
 
+function Set-LABMaster
+{
+[CmdletBinding(DefaultParametersetName = "vmware",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    <#
+	Available Masters:
+	==================
+    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012'
+	#>
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
+    [ValidateSet(
+    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP4',
+    '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
+    '2012_Ger','2012'
+    )]
+    [string]$Master
+)
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.Master= $Master
+    Write-Host -ForegroundColor Gray " ==>setting Master to $Master"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+
+   
+
 function Set-LABWindows2016KB
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
