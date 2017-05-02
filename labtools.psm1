@@ -4482,7 +4482,7 @@ function Set-LABWindows2016KB
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635'
+    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217'
 	)]$Server2016KB 
 
     )
