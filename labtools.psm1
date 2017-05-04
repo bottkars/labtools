@@ -501,7 +501,7 @@ function Set-LABTimeZone
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABTimeZone")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('W. Europe Standard Time')]$TimeZone = "W. Europe Standard Time"
+    [Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateSet('W. Europe Standard Time')]$TimeZone = "W. Europe Standard Time"
     )
 if (!(Test-Path $Defaultsfile))
     {
