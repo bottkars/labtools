@@ -510,7 +510,7 @@ if (!(Test-Path $Defaultsfile))
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
     $Defaults.TimeZone= $TimeZone
-    Write-Host -ForegroundColor Gray " ==>setting $LanguageTag"
+    Write-Host -ForegroundColor Gray " ==>setting $Timezone"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
@@ -1013,7 +1013,7 @@ process {
 	  -->")
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
-        $xmlcontent += ("<Timezone>$($Defaults.Timezone)</Timezone>")
+        $xmlcontent += ("<Timezone>$($Defaults.TimeZone)</Timezone>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
         $xmlcontent += ("<nmm>$($Defaults.nmm)</nmm>")
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
