@@ -384,10 +384,10 @@ function Set-LABExchangeCU
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
-    $e14_sp="sp3",
-    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('de_DE','en_US')]
-    $e14_lang = "de_DE"
+    $e14_sp="sp3"
+  #  [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+  #  [ValidateSet('de_DE','en_US')]
+  #  $e14_lang = "de_DE"
     )
 
 if (!(Test-Path $Defaultsfile))
@@ -402,7 +402,6 @@ switch ($PsCmdlet.ParameterSetName)
         {
         $Defaults.e16_cu = $e16_cu
         Write-Host -ForegroundColor Gray " ==>setting E16CU to $e16_cu"
-
         }
     "E15"
         {
@@ -413,8 +412,8 @@ switch ($PsCmdlet.ParameterSetName)
         {
         $Defaults.e14_ur = $e14_ur
         $Defaults.e14_sp = $e14_sp
-        $Defaults.e14_lang = $e14_lang
-        Write-Host -ForegroundColor Gray " ==>setting E14 wit $e14cu $e14_sp in $e14_lang"
+ #       $Defaults.e14_lang = $e14_lang
+        Write-Host -ForegroundColor Gray " ==>setting E14 with $e14cu $e14_sp"
        }
     }          
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
