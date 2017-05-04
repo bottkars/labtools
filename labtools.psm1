@@ -496,6 +496,24 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABLTimeZone
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABTimeZone")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('W. Europe Standard Time')]$TimeZone = "W. Europe Standard Time"
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.$TimeZone= $TimeZone
+    Write-Host -ForegroundColor Gray " ==>setting $LanguageTag"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
 
 function Set-LABMainMemUseFile
 {
@@ -894,6 +912,7 @@ process
         [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
+        $object | Add-Member -MemberType NoteProperty -Name TimeZone -Value $Default.config.$TimeZone
 	    $object | Add-Member -MemberType NoteProperty -Name Master -Value $Default.config.master
         $object | Add-Member -MemberType NoteProperty -Name ScaleIOVer -Value $Default.config.scaleiover
         $object | Add-Member -MemberType NoteProperty -Name BuildDomain -Value $Default.config.Builddomain
@@ -994,6 +1013,7 @@ process {
 	  -->")
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
+        $xmlcontent += ("<Timezone>$($Defaults.Timezone)</Timezone>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
         $xmlcontent += ("<nmm>$($Defaults.nmm)</nmm>")
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
@@ -1109,7 +1129,8 @@ function New-LABdefaults
 	  edits may break labbuildr functionality
 	  -->")
         $xmlcontent += ("<config>")
-        $xmlcontent += ("<LanguageTag</LanguageTag>")
+        $xmlcontent += ("<LanguageTag></LanguageTag>")
+        $xmlcontent += ("<Timezone></Timezone")
         $xmlcontent += ("<nmm_ver></nmm_ver>")
         $xmlcontent += ("<nmm></nmm>")
         $xmlcontent += ("<nw_ver></nw_ver>")
