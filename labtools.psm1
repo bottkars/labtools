@@ -372,6 +372,7 @@ function Set-LABExchangeCU
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABExchangeCU")]
 	param (
+	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "E16", Mandatory = $true)]
     [ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
     $e16_cu,
@@ -416,7 +417,6 @@ switch ($PsCmdlet.ParameterSetName)
         Write-Host -ForegroundColor Gray " ==>setting E14 wit $e14cu $e14_sp in $e14_lang"
        }
     }          
-        
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
