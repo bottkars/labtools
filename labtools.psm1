@@ -913,7 +913,7 @@ process
         #[xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
-        $object | Add-Member -MemberType NoteProperty -Name TimeZone -Value $Default.config.$TimeZone
+        $object | Add-Member -MemberType NoteProperty -Name TimeZone -Value $Default.config.TimeZone
 	    $object | Add-Member -MemberType NoteProperty -Name Master -Value $Default.config.master
         $object | Add-Member -MemberType NoteProperty -Name ScaleIOVer -Value $Default.config.scaleiover
         $object | Add-Member -MemberType NoteProperty -Name BuildDomain -Value $Default.config.Builddomain
