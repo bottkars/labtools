@@ -1013,7 +1013,7 @@ process {
 	  -->")
         $xmlcontent += ("<config>")
         $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
-        $xmlcontent += ("<Timezone>'$($Defaults.TimeZone)'</Timezone>")
+        $xmlcontent += ("<Timezone>`"$($Defaults.TimeZone)`"</Timezone>")
         $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
         $xmlcontent += ("<nmm>$($Defaults.nmm)</nmm>")
         $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
