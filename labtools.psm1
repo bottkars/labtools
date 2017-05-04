@@ -366,6 +366,102 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+
+
+function Set-LABExchangeCU
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABExchangeCU")]
+	param (
+    [Parameter(ParameterSetName = "E16", Mandatory = $true)]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
+    $e16_cu,
+    [Parameter(ParameterSetName = "E15", Mandatory = $false)]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16')]
+    $e15_cu,
+    [Parameter(ParameterSetName = "E14", Mandatory = $true)]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16')]
+    $e14_ur = "ur13",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('sp3')]
+    $e14_sp="sp3",
+    [Parameter(ParameterSetName = "E14", Mandatory = $false)]
+    [ValidateSet('de_DE','en_US')]
+    $e14_lang = "de_DE"
+    )
+
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+$Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+switch ($PsCmdlet.ParameterSetName)
+{
+    "E16"
+        {
+        $Defaults.e16_cu = $e16_cu
+        Write-Host -ForegroundColor Gray " ==>setting E16CU to $e16_cu"
+
+        }
+    "E15"
+        {
+        $Defaults.e15_cu = $e15_cu
+        Write-Host -ForegroundColor Gray " ==>setting E15CU to $e15_cu"
+        }     
+    "E14"
+        {
+        $Defaults.e14_ur = $e14_ur
+        $Defaults.e14_sp = $e14_sp
+        $Defaults.e14_lang = $e14_lang
+        Write-Host -ForegroundColor Gray " ==>setting E14 wit $e14cu $e14_sp in $e14_lang"
+       }
+    }          
+        
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+function Set-LABNWver
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
+    [ValidateSet(
+	'nw9100','nw9102','nw9103','nw9104','nw9105',#-#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',
+    'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
+	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245',#-#
+    'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
+    'nw8226','nw8225','nw8224','nw8223','nw8222','nw8221','nw822',
+    'nw8218','nw8217','nw8216','nw8215','nw8214','nw8213','nw8212','nw8211','nw8210',
+    'nw8206','nw8205','nw8204','nw8203','nw8202','nw8200',
+    'nw8138','nw8137','nw8136','nw8135','nw8134','nw8133','nw8132','nw8131','nw8130',
+    'nw8127','nw8126','nw8125','nw8124','nw8123','nw8122','nw8121','nw8120',
+    'nw8119','nw8118','nw8117','nw8116','nw8115','nw8114', 'nw8113','nw8112', 'nw811',
+    'nw8105','nw8104','nw8103','nw8102','nw8100',
+    'nw8044','nw8043','nw8042','nw8041',
+    'nw8037','nw8036','nw8035','nw81034','nw8033','nw8032','nw8031',
+    'nw8026','nw8025','nw81024','nw8023','nw8022','nw8021',
+    'nw8016','nw8015','nw81014','nw8013','nw8012','nw8010',
+    'nw8007','nw8006','nw8005','nw81004','nw8003','nw8002','nw8000',
+    'nwunknown'
+    )]
+    $nw_ver
+
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.nw_ver = $nw_ver
+    Write-Host -ForegroundColor Gray " ==>setting Networker Version to $nw_ver"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
+
+
+
 function Set-LABPuppetMaster
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppetMaster")]
