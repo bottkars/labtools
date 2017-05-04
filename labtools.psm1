@@ -4145,7 +4145,9 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     }
 if ($start.IsPresent)
 	{
-	Get-vmx "OpenWRT_$ver" | start-vmx -nowait | Out-Null
+	$MyOpenwrt = Get-vmx "OpenWRT_$ver" 
+    $MyOpenwrt | Set-VMXVnet -Adapter 1 -Vnet $global:labdefaults.vmnet
+    $Myopenwrt | start-vmx -nowait | Out-Null
 	Set-LABOpenWRT -enabled
 	Set-LABDefaultGateway -DefaultGateway ($global:labdefaults.MySubnet -replace ".$","4")
 	}
