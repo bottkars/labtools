@@ -496,7 +496,7 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
-function Set-LABLTimeZone
+function Set-LABTimeZone
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABTimeZone")]
 	param (
