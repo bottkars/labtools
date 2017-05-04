@@ -509,7 +509,7 @@ if (!(Test-Path $Defaultsfile))
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.$TimeZone= $TimeZone
+    $Defaults.TimeZone= $TimeZone
     Write-Host -ForegroundColor Gray " ==>setting $LanguageTag"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
