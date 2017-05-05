@@ -955,8 +955,8 @@ process
         {
 
         Write-Host -ForegroundColor Gray " ==>loading defaults from $Defaultsfile"
-        $Default = [xml]([System.IO.File]::ReadAllText("$Defaultsfile"))
-        #[xml]$Default = Get-Content -Path $Defaultsfile
+        #$Default = [xml]([System.IO.File]::ReadAllText("$Defaultsfile"))
+        [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
         $object | Add-Member -MemberType NoteProperty -Name TimeZone -Value $Default.config.TimeZone
