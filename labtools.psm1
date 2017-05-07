@@ -2759,8 +2759,10 @@ switch ($SC_Version)
             $WAIK_VER = "WAIK_10_1607"
 			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190598_adminconsole_amd64_060d74669243b992442f10bea58f1fdac123c570.cab"
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
+			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
+			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
+            $Latest_UR_SERVER ="http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/02/kb4011491_vmmserver_amd64_dd697546265af71d9edc388fe23803dad3146271.cab"
+            $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/02/kb4011492_adminconsole_amd64_2e008dcc1aa7f36bb3f449be93debca9314ffc78.cab"
 			$UR = $true
             }
     }# end switch
