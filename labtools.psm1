@@ -3892,7 +3892,7 @@ Else
 
 if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
     {
-    Expand-LABZip -zipfilename "$Destination_File" -destination "$Destination_path"
+    Expand-LABpackage -Archive "$Destination_File" -destination "$Destination_path"
     }
 } #end ISI
 
