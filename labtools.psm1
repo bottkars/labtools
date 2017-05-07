@@ -297,23 +297,21 @@ if (!(Test-Path $Defaultsfile))
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
-function Set-LABNMMver
+function Set-LABScaleIOver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#
-	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105',#-#
-    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
-	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244',#-#
-    'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
-    'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
-    'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210',
-    'nmmunknown'
+	'2.0-13000.211','2.0-10000.2075','2.0-12000.122',
+	'2.0-7536.0','2.0-7536.0','2.0-7120.0','2.0-6035.0','2.0-5014.0',
+	'1.32-277.0','1.32-402.1','1.32-403.2','1.32-2451.4','1.32-3455.5','1.32-4503.5',
+	'1.31-258.2','1.31-1277.3','1.31-2333.2',
+	'1.30-426.0'
     )]
-    $nmm_ver
+    [alias('siover','ScaleIOVer')]
+    $ScaleIO_ver
     )
 if (!(Test-Path $Defaultsfile))
     {
@@ -321,8 +319,8 @@ if (!(Test-Path $Defaultsfile))
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.nmm_ver = $nmm_ver
-    Write-Host -ForegroundColor Gray " ==>setting Networker Modules for Microsoft Version to $nmm_ver"
+    $Defaults.ScaleIO_ver = $ScaleIO_ver
+    Write-Host -ForegroundColor Gray " ==>setting Networker Modules for Microsoft Version to $ScaleIO_ver"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
