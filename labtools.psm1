@@ -319,8 +319,8 @@ if (!(Test-Path $Defaultsfile))
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
     $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.ScaleIO_ver = $ScaleIO_ver
-    Write-Host -ForegroundColor Gray " ==>setting Networker Modules for Microsoft Version to $ScaleIO_ver"
+    $Defaults.ScaleIOver = $ScaleIO_ver
+    Write-Host -ForegroundColor Gray " ==>setting ScaleIO Version to $ScaleIO_ver"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
