@@ -365,6 +365,45 @@ if (!(Test-Path $Defaultsfile))
 }
 
 
+function Set-LABnmmver
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
+	param (
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
+    [ValidateSet(
+	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
+	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244','nmm8245',#-#
+    'nmm8230','nmm8231','nmm8232','nmm8233','nmm8234','nmm8235','nmm8236','nmm8237','nmm8238',
+    'nmm8226','nmm8225','nmm8224','nmm8223','nmm8222','nmm8221','nmm822',
+    'nmm8218','nmm8217','nmm8216','nmm8215','nmm8214','nmm8213','nmm8212','nmm8211','nmm8210',
+    'nmm8206','nmm8205','nmm8204','nmm8203','nmm8202','nmm8200',
+    'nmm8138','nmm8137','nmm8136','nmm8135','nmm8134','nmm8133','nmm8132','nmm8131','nmm8130',
+    'nmm8127','nmm8126','nmm8125','nmm8124','nmm8123','nmm8122','nmm8121','nmm8120',
+    'nmm8119','nmm8118','nmm8117','nmm8116','nmm8115','nmm8114', 'nmm8113','nmm8112', 'nmm811',
+    'nmm8105','nmm8104','nmm8103','nmm8102','nmm8100',
+    'nmm8044','nmm8043','nmm8042','nmm8041',
+    'nmm8037','nmm8036','nmm8035','nmm81034','nmm8033','nmm8032','nmm8031',
+    'nmm8026','nmm8025','nmm81024','nmm8023','nmm8022','nmm8021',
+    'nmm8016','nmm8015','nmm81014','nmm8013','nmm8012','nmm8010',
+    'nmm8007','nmm8006','nmm8005','nmm81004','nmm8003','nmm8002','nmm8000',
+    'nmmunknown'
+    )]
+    $nmm_ver
+
+    )
+if (!(Test-Path $Defaultsfile))
+    {
+    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+    New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.nmm_ver = $nmm_ver
+    Write-Host -ForegroundColor Gray " ==>setting Networker Version to $nmm_ver"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 
 function Set-LABExchangeCU
 {
