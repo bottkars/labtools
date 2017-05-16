@@ -6173,9 +6173,14 @@ process
 
     Write-Host -ForegroundColor Gray " ==>you can now use ssh into $ip with root:Password123! and Monitor $Logfile"
 
-    write-verbose "Disabling IPv&"
+    rite-Host -ForegroundColor Gray " ==>Disabling IPv6"
     $Scriptblock = "echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf;sysctl -p"
     Write-Verbose $Scriptblock
+    $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
+    Write-Host -ForegroundColor Gray " ==>disabeling firewalld"
+    $Scriptblock = 'if [ "$(systemctl is-enabled firewalld)" == "enabled" ]; then echo $(systemctl disable firewalld);fi;
+if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl stop firewalld); fi'
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
 
     $Scriptblock =  "echo '$ip $($Host_name) $($Host_name).$DNS_DOMAIN_NAME'  >> /etc/hosts"
@@ -6480,7 +6485,7 @@ process
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
 	##### evaluating net device
-	Write-Host -ForegroundColor Magenta " ==>Evaluating nic´s in $($nodeclone.vmxname)"
+	Write-Host -ForegroundColor Magenta " ==>Evaluating ´s in $($nodeclone.vmxname)"
 	$Scriptblock = 'vmtoolsd --cmd="info-set guestinfo.IF0 $(ls /sys/class/net)"'
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 	$Interfaces = $nodeclone | Get-VMXVariable -GuestVariable IF0 | Select-Object IF0
