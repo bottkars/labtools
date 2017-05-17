@@ -1,6 +1,6 @@
 <#  
 .Synopsis
-   Short description
+   meta
 .DESCRIPTION
    Labtools are common extensions to Labbuildr, used for downlods, checks, environment settings
 .EXAMPLE
