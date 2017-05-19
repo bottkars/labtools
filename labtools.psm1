@@ -5726,6 +5726,7 @@ param
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory = $false, ValueFromPipelineByPropertyName = $False)]
 	[Validatelength(1, 50)][string]$Displayname = $VMXname,
 	$Masterpath = $Global:labdefaults.Masterpath,
+    [Parameter(Mandatory=$false)][ValidateSet('8192','12288','16384','20480','30720','51200','65536')]$Memory,
 	[switch]$vtbit
 
 )
@@ -5786,6 +5787,10 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
 	$NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
 	Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
 	$NodeClone |Set-VMXSize -Size $Size | Out-Null
+    if ($Memory)
+      {
+          	$NodeClone |Set-VMXMemory -MemoryMB $Memory | Out-Null
+      }  
 
 	if ($vtbit.ispresent)
 		{		
