@@ -1,6 +1,6 @@
 <#  
 .Synopsis
-   Short description
+   meta
 .DESCRIPTION
    Labtools are common extensions to Labbuildr, used for downlods, checks, environment settings
 .EXAMPLE
@@ -6137,7 +6137,7 @@ process
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
 	##### evaluating net device
-	Write-Host -ForegroundColor Magenta " ==>Evaluating nic´s in $($nodeclone.vmxname)"
+	Write-Host -ForegroundColor Magenta " ==>Evaluating ethernet devices in $($nodeclone.vmxname)"
 	$Scriptblock = 'vmtoolsd --cmd="info-set guestinfo.IF0 $(ls /sys/class/net)"'
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 	$Interfaces = $nodeclone | Get-VMXVariable -GuestVariable IF0 | Select-Object IF0
