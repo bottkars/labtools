@@ -3878,7 +3878,7 @@ if (!(Test-Path $Destination_path))
 write-host -ForegroundColor Magenta  "we will check for the latest $Product version from EMC.com"
 $Uri = "http://www.emc.com/products-solutions/trial-software-download/isilon.htm"
 $request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
-$Link = $request.Links | where OuterHTML -Match Onefs_simulator | Select-Object -First 1
+$Link = $request.Links | where OuterHTML -Match simulator.zip | Select-Object -First 1
 $Url = $link.href
 Write-Verbose $Url
 try
