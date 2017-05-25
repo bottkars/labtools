@@ -6158,28 +6158,35 @@ process
 
     $Scriptblock =  "systemctl start NetworkManager"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
-	$Scriptblock =  "chmod 777 $Logfile"
+	
+    $Scriptblock =  "chmod 777 $Logfile"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
 	write-verbose "Setting Hostname"
 	$Scriptblock = "nmcli general hostname $Host_name.$DNS_DOMAIN_NAME;systemctl restart systemd-hostnamed"
+    Set-LABUi -short -title $Scriptblock
 	Write-Verbose $Scriptblock
 	$NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  | Out-Null
 
     $Scriptblock =  "/etc/init.d/network restart"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
 
     $Scriptblock =  "systemctl stop NetworkManager"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  -logfile $Logfile
 
     Write-Host -ForegroundColor Gray " ==>you can now use ssh into $ip with root:Password123! and Monitor $Logfile"
 
     Write-Host -ForegroundColor Gray " ==>Disabling IPv6"
     $Scriptblock = "echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf;sysctl -p"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
 
@@ -6190,10 +6197,12 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
 
     $Scriptblock =  "echo '$ip $($Host_name) $($Host_name).$DNS_DOMAIN_NAME'  >> /etc/hosts"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
 
     $Scriptblock = "echo 'kernel.pid_max=655360' >> /etc/sysctl.conf;sysctl -w kernel.pid_max=655360"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
     if ($EMC_ca.IsPresent)
         {
@@ -6209,54 +6218,68 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
 	
 	Write-Verbose "setting sudoers"
     $Scriptblock = "echo '$Default_Guestuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
 
     $Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
 	Write-Verbose "Changing Password for $Default_Guestuser to $Guestpassword"
     $Scriptblock = "echo $Guestpassword | passwd $Default_Guestuser --stdin"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
 	### generate user ssh keys
     $Scriptblock ="/usr/bin/ssh-keygen -t rsa -N '' -f /home/$Default_Guestuser/.ssh/id_rsa"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
 
     $Scriptblock = "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys;chmod 0600 ~/.ssh/authorized_keys"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Default_Guestuser -Guestpassword $Guestpassword
     #### Start ssh for pwless  root local login
     $Scriptblock = "/usr/bin/ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa"
     Write-Verbose $Scriptblock
+    Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
+
     $Scriptblock = "cat /home/$Default_Guestuser/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #  -logfile $Logfile
 
     if ($labdefaults.AnsiblePublicKey)
             {
             $Scriptblock = "echo '$($labdefaults.AnsiblePublicKey)' >> /root/.ssh/authorized_keys"
+            Set-LABUi -short -title $Scriptblock
             Write-Verbose $Scriptblock
             $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
             }
     if ($Hostkey)
             {
             $Scriptblock = "echo '$($Hostkey)' >> /root/.ssh/authorized_keys"
+            Set-LABUi -short -title $Scriptblock
             Write-Verbose $Scriptblock
             $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
             }
     $Scriptblock = "cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys;chmod 0600 /root/.ssh/authorized_keys"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
     
 	$Scriptblock = "{ echo -n '$($NodeClone.vmxname) '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
+
     $Scriptblock = "{ echo -n 'localhost '; cat /etc/ssh/ssh_host_rsa_key.pub; } >> ~/.ssh/known_hosts"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword  #-logfile $Logfile
 	#### end ssh
@@ -6265,6 +6288,7 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
     if failures occur, open a 2nd labbuildr window and run start-vmx OpenWRT "
 
     $Scriptblock = "DEFAULT_ROUTE=`$(ip route show default | awk '/default/ {print `$3}');ping -c 1 `$DEFAULT_ROUTE"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
@@ -6272,21 +6296,26 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
     $file = "/etc/yum.conf"
     $Property = "cachedir"
     $Scriptblock = "grep -q '^$Property' $file && sed -i 's\^$Property=/var*.\$Property=/mnt/hgfs/Sources/$OS/\' $file || echo '$Property=/mnt/hgfs/Sources/$OS/yum/`$basearch/`$releasever/' >> $file"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
     $file = "/etc/yum.conf"
     $Property = "keepcache"
     $Scriptblock = "grep -q '^$Property' $file && sed -i 's\$Property=0\$Property=1\' $file || echo '$Property=1' >> $file"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword #-logfile $Logfile
     $Scriptblock="yum makecache"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
     $Scriptblock="yum install yum-plugin-versionlock -y"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
     $Scriptblock="yum versionlock open-vm-tools"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
     if ($update.IsPresent)
@@ -6294,14 +6323,17 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
         Write-Verbose "Performing yum update, this may take a while"
         $Scriptblock = "yum update -y"
         Write-Verbose $Scriptblock
+        Set-LABUi -short -title $Scriptblock
         $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
         }
     $Scriptblock = "yum install $System_Packages -y;systemctl enable ntpd;systemctl start ntpd"
+    Set-LABUi -short -title $Scriptblock
     Write-Verbose $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 	if ($Additional_Epel_Packages)
 		{
 		Write-Host -ForegroundColor Gray " ==>adding EPEL Repo"
+        Set-LABUi -short -title $Scriptblock
         $Scriptblock = "rpm -i $epel"
         $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 		}
@@ -6309,15 +6341,18 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
 		{
 		$Scriptblock = "curl https://get.docker.com/ | sh -;systemctl enable docker"
 		Write-Verbose $Scriptblock
+        Set-LABUi -short -title $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword
 		$Packages = "tar wget python-setuptools"
 		Write-Verbose "Checking for $Packages"
 		$Scriptblock = "yum install $Packages -y"
+        Set-LABUi -short -title $Scriptblock
 		Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
 		$Scriptblock = "systemctl start docker.service"
-		Write-Verbose $Scriptblock
+	    Set-LABUi -short -title $Scriptblock
+    	Write-Verbose $Scriptblock
 		$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 		}
 	if ($Additional_Epel_Packages -contains 'influxdb')
