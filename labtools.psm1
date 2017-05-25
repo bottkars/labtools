@@ -6385,7 +6385,9 @@ EOF
 
 	}
 end
-	{}
+	{
+    Set-LABUi
+    }
 }
 
 function Test-LABuserLoggedIn
