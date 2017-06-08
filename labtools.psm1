@@ -2714,6 +2714,7 @@ param(
     [switch]$unzip,
     [switch]$force
 )
+
     Try
         {
         $Product_Dir = Join-path (Join-Path $Destination $Product_Dir) $SC_Version
@@ -2752,7 +2753,7 @@ if (!(Test-Path $Prereq_Dir))
     Try
         {
         Write-Host -ForegroundColor Gray " ==>Trying to create $Prereq_Dir"
-        $NewDirectory = New-Item -ItemType Directory -Path "$Product_Dir" -ErrorAction Stop -Force
+        $NewDirectory = New-Item -ItemType Directory -Path $Prereq_Dir -ErrorAction Stop -Force
         }
     catch
         {
@@ -2922,20 +2923,20 @@ if ($Component -match 'SCDPM')
 
     $FileName = Split-Path -Leaf -Path $Url
     Write-Host -ForegroundColor Gray " ==>Testing $SC_Version"
-    if (!(test-path  "$Product_Dir\$FileName") -or $force.IsPresent) 
+    if (!(test-path  (join-path $Product_Dir $FileName)) -or $force.IsPresent) 
         {
         Write-Host -ForegroundColor Gray " ==>Getting $SC_Version $FileName, Could take a While"
 
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  "$Product_Dir\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination  (join-path $Product_Dir $FileName)))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             return $False
             }
-        Unblock-File -Path "$Product_Dir\$FileName"
+        Unblock-File -Path (join-path $Product_Dir$FileName)
         }
     if ($unzip.IsPresent) 
         {
-        if ((Test-Path "$Product_Dir\$Component\Setup.exe") -and !$force.IsPresent)
+        if ((Test-Path (join-path $Product_Dir (join-path $Component "Setup.exe"))) -and !$force.IsPresent)
             { 
             Write-Warning "setup.exe already exists, overwrite with -force"
             $returnvalue =  $true
@@ -2943,7 +2944,7 @@ if ($Component -match 'SCDPM')
         else
             {
             Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-            Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+            Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
             $returnvalue = $true
             }
         }
