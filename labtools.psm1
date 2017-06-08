@@ -2714,7 +2714,7 @@ param(
     [switch]$unzip,
     [switch]$force
 )
-
+$Component = $Component.ToUpper()
     Try
         {
         $Product_Dir = Join-path (Join-Path $Destination $Product_Dir) $SC_Version
@@ -2954,7 +2954,15 @@ if ($Component -match 'SCDPM')
 		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER))
 		{
 			$Component_Dir = Join-Path $Product_Dir $Component
+            if (!(test-path $Component_Dir))
+                {
+                    New-Item -ItemType Directory $Component_Dir
+                }
 			$Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
+            if (!(test-path $Update_Dir))
+                {
+                    New-Item -ItemType Directory $Update_Dir
+                }
 			$FileName = Split-Path -Leaf -Path $Url
 			$Update_File = Join-Path $Update_Dir $FileName
 			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
