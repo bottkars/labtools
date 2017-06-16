@@ -4328,7 +4328,7 @@ if (!(Test-Path $Destination_path))
         break
         }
     }
-write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version from Azure"
+write-host -ForegroundColor Magenta  "we will check for the latest $Master $Product version"
 Switch ($mastertype)
     {
     "vmware"
