@@ -4290,7 +4290,8 @@ param(
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
-	'esximaster'
+	'esximaster',
+    'photon-1.0-rev2'
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
@@ -4302,7 +4303,8 @@ param(
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
-	'esximaster'
+	'esximaster',
+    'photon-1.0-rev2'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
@@ -4368,12 +4370,23 @@ Switch ($Master)
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/OpenWRT_15_5.$Packer"
         }
+    'photon-1.0-rev2'
+        {
+        $URL = "https://bintray.com/vmware/photon/download_file?file_path=photon-custom-hw11-1.0-62c543d.ova"
+        $ova = $true
+        }
     default
         {
         $URL = "https://labbuildrmaster.blob.core.windows.net/master/$Master.$Packer"
         }    
     }
-$Filename = Split-Path -Leaf $url
+    if ($URL -match "=") 
+        {
+        $FileName = ($URL -split "=")[-1]
+        }
+    else{
+        $Filename = Split-Path -Leaf $url
+        }
 $Destination_File = Join-Path $Destination_path $FileName
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
@@ -4427,7 +4440,14 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
             }
 		default
 			{
-			Expand-LABpackage -Archive $Destination_File -destination $Destination
+            if ($ova)
+                {
+                Import-VMXOVATemplate -ova $Destination_File -destination $Destination -Name $Master -acceptAllEulas
+                }
+            else
+                {
+			    Expand-LABpackage -Archive $Destination_File -destination $Destination
+                }
 			}
         }
     Return $true
@@ -5086,7 +5106,7 @@ param(
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet('1.0'
     )]
-    [string]$Photon_Release="1.o"
+    [string]$Photon_Release="1.0"
 )
 $Product = "Photon"
 if (Test-Path -Path "$Destination")
@@ -5436,7 +5456,8 @@ param(
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
-	'esximaster'
+	'esximaster',
+    'photon-1.0-rev2'
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
@@ -5448,7 +5469,8 @@ param(
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
-	'esximaster'
+	'esximaster',
+    'photon-1.0-rev2'
     )]
     [string]$Master,
     [Parameter(ParameterSetName = "vmware", Mandatory = $false)]
