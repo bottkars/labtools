@@ -61,6 +61,24 @@ function Set-LABDefaultGateway
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
 }
 
+function Set-LABDockerRegistry
+{
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDockerRegistry")]
+	param (    
+    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$DockerRegistry,
+    [Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml"
+    )
+    if (!(Test-Path $Defaultsfile))
+    {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+    }
+
+    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    $Defaults.DockerRegistry = $DockerRegistry
+    Write-Host -ForegroundColor Gray " ==>setting Docker Registry $DockerRegistry"
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+}
 function Set-LABDNS1
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDNS1")]
@@ -1020,6 +1038,7 @@ process
         $object | Add-Member -MemberType NoteProperty -Name vmnet -Value $Default.config.vmnet
         $object | Add-Member -MemberType NoteProperty -Name vlanID -Value $Default.config.vlanID
         $object | Add-Member -MemberType NoteProperty -Name DefaultGateway -Value $Default.config.DefaultGateway
+        $object | Add-Member -MemberType NoteProperty -Name DockerRegistry -Value $Default.config.DockerRegistry
         $object | Add-Member -MemberType NoteProperty -Name APT_Cache_IP -Value $Default.config.APT_Cache_IP
         $object | Add-Member -MemberType NoteProperty -Name DNS1 -Value $Default.config.DNS1
         $object | Add-Member -MemberType NoteProperty -Name DNS2 -Value $Default.config.DNS2
@@ -1133,6 +1152,7 @@ process {
         $xmlcontent += ("<IPv6PrefixLength>$($Defaults.IPv6PrefixLength)</IPv6PrefixLength>")
         $xmlcontent += ("<Gateway>$($Defaults.Gateway)</Gateway>")
         $xmlcontent += ("<DefaultGateway>$($Defaults.DefaultGateway)</DefaultGateway>")
+        $xmlcontent += ("<DockerRegistry>$($Defaults.DockerRegistry)</DockerRegistry>")        
         $xmlcontent += ("<APT_Cache_IP>$($Defaults.APT_Cache_IP)</APT_Cache_IP>")
         $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
         $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
@@ -1250,6 +1270,7 @@ function New-LABdefaults
         $xmlcontent += ("<IPv6PrefixLength></IPv6PrefixLength>")
         $xmlcontent += ("<Gateway></Gateway>")
         $xmlcontent += ("<DefaultGateway></DefaultGateway>")
+        $xmlcontent += ("<DockerRegistry></DockerRegistry>")
         $xmlcontent += ("<APT_Cache_IP></APT_Cache_IP>")
         $xmlcontent += ("<DNS1></DNS1>")
         $xmlcontent += ("<DNS2></DNS2>")
