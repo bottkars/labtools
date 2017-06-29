@@ -2967,7 +2967,7 @@ if ($Component -match 'SCDPM')
             write-warning "Error Downloading file $Url, Please check connectivity"
             return $False
             }
-        Unblock-File -Path (join-path $Product_Dir$FileName)
+        Unblock-File -Path (join-path $Product_Dir $FileName)
         }
     if ($unzip.IsPresent) 
         {
