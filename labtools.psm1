@@ -948,7 +948,7 @@ function Set-LABMasterpath
         Write-Warning "Drive not found, make sure to have your Source Stick connected"
         exit
         }
-    catch #[System.Management.Automation.ItemNotFoundException]
+    catch [System.Management.Automation.ItemNotFoundException]
         {
         write-warning "no Master directory found, creating now"
         New-Item -ItemType Directory -Path $Masterpath -Force | Out-Null
