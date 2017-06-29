@@ -943,7 +943,7 @@ function Set-LABMasterpath
     )
     try
         {
-        Get-Item -Path $_ -ErrorAction Stop | Out-Null 
+        Get-Item -Path $Masterpath -ErrorAction Stop | Out-Null 
         }
     catch
         [System.Management.Automation.DriveNotFoundException] 
