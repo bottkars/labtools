@@ -431,13 +431,13 @@ function Set-LABExchangeCU
 	param (
 	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "E16", Mandatory = $true)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14", Mandatory = $true)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -3252,15 +3252,15 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -3363,13 +3363,17 @@ if ($Exchange2016)
 		'CU5'
 			{
 			$URL = 'https://download.microsoft.com/download/A/A/7/AA7F69B2-9E25-4073-8945-E4B16E827B7A/ExchangeServer2016-x64-cu5.iso'
+            }
+        'CU6'
+			{
+			$URL = 'https://download.microsoft.com/download/2/D/B/2DB1EEA2-CD9B-48F1-8235-1C9B82D19D68/ExchangeServer2016-x64-cu6.iso'
 			}
         }
     }
 if ($Exchange2013)
     {
     $ex_cu = $e15_cu
-	if ($ex_cu -lt "cu99")
+	if ($ex_cu -lt "cu16")
 		{
 		$NET_VER = "452"
 		}
@@ -3480,8 +3484,11 @@ if ($Exchange2013)
 		'cu16'
 			{
 			$URL = 'https://download.microsoft.com/download/7/B/9/7B91E07E-21D6-407E-803B-85236C04D25D/Exchange2013-x64-cu16.exe'
-			}
-		}
+            }
+        'cu17'
+			{
+			$URL = 'https://download.microsoft.com/download/D/E/1/DE1C3D22-28A6-4A30-9811-0A0539385E51/Exchange2013-x64-cu17.exe'
+        }		}
     } 
 If ($Exchange2010)
     {
@@ -3630,6 +3637,11 @@ If ($Exchange2010)
 			{
 			$de_DE_URL = "https://download.microsoft.com/download/E/4/B/E4BC16FF-DD7F-49EC-9460-178F8DA2890E/Exchange2010-KB3184730-x64-de.msp"
 			$en_US_URL = "https://download.microsoft.com/download/8/A/4/8A4D8150-3757-4EC5-8CFB-8E28124EF390/Exchange2010-KB3184730-x64-en.msp"
+            }
+        'ur17'
+			{
+			$de_DE_URL = "https://download.microsoft.com/download/6/C/5/6C52002A-0F0E-4305-9575-8058B70A9F1C/Exchange2010-KB4011326-x64-de.msp"
+			$en_US_URL = "https://download.microsoft.com/download/F/6/5/F658C317-2DA5-4693-B294-A6AF146C8BB1/Exchange2010-KB4011326-x64-en.msp"
 			}
        }
     Switch ($e14_lang)
