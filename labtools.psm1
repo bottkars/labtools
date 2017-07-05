@@ -5797,7 +5797,6 @@ param
     [Parameter(Mandatory=$false)][ValidateSet('8192','12288','16384','20480','30720','51200','65536')]$Memory,
 	[switch]$vtbit,
     $MainMemUseFile = $Global:labdefaults.MainMemUseFile
-
 )
 if ($Ubuntu.IsPresent)
 	{
@@ -5858,7 +5857,7 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
 	$NodeClone |Set-VMXSize -Size $Size | Out-Null
     if ($Memory)
       {
-          	$NodeClone |Set-VMXMemory -MemoryMB $Memory | Out-Null
+        $NodeClone |Set-VMXMemory -MemoryMB $Memory | Out-Null
       }  
     if ($MainMemUseFile)  
 		{		
