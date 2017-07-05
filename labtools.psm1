@@ -5859,7 +5859,7 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
       {
         $NodeClone |Set-VMXMemory -MemoryMB $Memory | Out-Null
       }  
-    if ($MainMemUseFile)  
+    if ($MainMemUseFile -eq "true")  
 		{		
 		$NodeClone | Set-VMXMainMemory -usefile  | Out-Null
 		}
