@@ -5870,7 +5870,6 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
         }
     else {
        	$NodeClone | Set-VMXMainMemory -usefile:$true | Out-Null
- 
     }    
 	Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
 	$NodeClone |Set-VMXSize -Size $Size | Out-Null
