@@ -5864,7 +5864,14 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
 	$Nodeclone | Set-VMXNetworkAdapter -Adapter 0 -ConnectionType $ConnectionType -AdapterType $AdapterType -WarningAction SilentlyContinue | Out-Null
 	$Nodeclone | Set-VMXVnet -Adapter 0 -vnet $vmnet| Out-Null
 	Set-VMXDisplayName -DisplayName $Displayname -config $NodeClone.config |Out-Null
-	$NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
+    if ($Global:labdefaults.$MainMemUseFile -eq "false")
+        {
+	    $NodeClone | Set-VMXMainMemory -usefile:$false | Out-Null
+        }
+    else {
+       	$NodeClone | Set-VMXMainMemory -usefile:$true | Out-Null
+ 
+    }    
 	Set-VMXscenario -Scenarioname $Scenarioname -Scenario $Scenario -config $NodeClone.config | Out-Null
 	$NodeClone |Set-VMXSize -Size $Size | Out-Null
     if ($Memory)
