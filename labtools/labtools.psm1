@@ -6603,7 +6603,7 @@ process
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null    
-	$NodeClone | Invoke-VMXPowershell -Guestuser $Rootuser -Guestpassword $guestpassword -ScriptPath $IN_Guest_UNC_NodeScriptDir -Script configure-node.ps1 -Parameter "-nodeip $ip -nodename $($nodeclone.vmxname)  -domainsuffix $custom_domainsuffix  -IPv4Subnet  $Subnet $Addonparameters -builddomain $Builddomain" -nowait -interactive # $CommonParameter
+	$NodeClone | Invoke-VMXPowershell -Guestuser $Rootuser -Guestpassword $guestpassword -ScriptPath $IN_Guest_UNC_NodeScriptDir -Script configure-node.ps1 -Parameter "-nodeip $ip -nodename $($nodeclone.vmxname)  -domainsuffix $custom_domainsuffix  -IPv4Subnet  $Subnet $Addonparameters -domain $Builddomain" -nowait -interactive # $CommonParameter
 
 	
 
