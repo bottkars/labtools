@@ -6556,7 +6556,8 @@ param
 	$Builddomain = "$($Global:labdefaults.BuildDomain)",
 	$IN_Guest_UNC_Scriptroot = "\\vmware-host\Shared Folders\Scripts",
 	$IN_Guest_UNC_Sourcepath = "\\vmware-host\Shared Folders\Sources",
-	$IN_Guest_UNC_NodeScriptDir = "$IN_Guest_UNC_Scriptroot\Node"
+    $IN_Guest_UNC_NodeScriptDir = "$IN_Guest_UNC_Scriptroot\Node"
+    $Timezone = $Global:labdefaults.TimeZone
 	#$netdev= "eno16777984"
 	)
 
@@ -6603,7 +6604,7 @@ process
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null    
-	$NodeClone | Invoke-VMXPowershell -Guestuser $Rootuser -Guestpassword $guestpassword -ScriptPath $IN_Guest_UNC_NodeScriptDir -Script configure-node.ps1 -Parameter "-nodeip $ip -nodename $($nodeclone.vmxname)  -domainsuffix $custom_domainsuffix  -IPv4Subnet  $Subnet $Addonparameters -domain $Builddomain" -nowait -interactive # $CommonParameter
+	$NodeClone | Invoke-VMXPowershell -Guestuser $Rootuser -Guestpassword $guestpassword -ScriptPath $IN_Guest_UNC_NodeScriptDir -Script configure-node.ps1 -Parameter "-nodeip $ip -nodename $($nodeclone.vmxname)  -domainsuffix $custom_domainsuffix  -IPv4Subnet  $Subnet $Addonparameters -domain $Builddomain -Timezone $Timezone" -nowait -interactive # $CommonParameter
 
 	
 
