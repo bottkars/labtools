@@ -6557,8 +6557,7 @@ param
 	$IN_Guest_UNC_Scriptroot = "\\vmware-host\Shared Folders\Scripts",
 	$IN_Guest_UNC_Sourcepath = "\\vmware-host\Shared Folders\Sources",
     $IN_Guest_UNC_NodeScriptDir = "$IN_Guest_UNC_Scriptroot\Node",
-    $Timezone = $Global:labdefaults.TimeZone
-	#$netdev= "eno16777984"
+    $Timezone = "$($Global:labdefaults.TimeZone)"
 	)
 
 begin
