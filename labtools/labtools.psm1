@@ -6192,11 +6192,8 @@ begin
 		$DefaultGateway = $ip
 		}
 	Write-Verbose "yumcachedir $yumcachedir"
-	$System_Packages = ('bind-utils',
-						'ntp',
-						'curl',
-						'git')
-	$System_Packages = $System_Packages -join " "
+	$System_Packages = ('bind-utils','ntp','curl','git')
+	$System_Packages = $System_Packages + $Node_requires -join " "
 }
 
 process
