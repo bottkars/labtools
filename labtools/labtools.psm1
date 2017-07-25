@@ -6193,7 +6193,7 @@ begin
 		}
 	Write-Verbose "yumcachedir $yumcachedir"
 	$System_Packages = ('bind-utils','ntp','curl','git')
-	$System_Packages = $System_Packages + $Node_requires -join " "
+	$System_Packages = $System_Packages + $Additional_Packages -join " "
 }
 
 process
