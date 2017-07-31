@@ -3803,7 +3803,7 @@ if (!(Test-Path $Destination_path))
 		{
 		'VMware'
 			{
-			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_VMWare_SW_Download.zip"
+			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_VMware_SW_Download.zip"
 			}
 		'Windows'
 			{
