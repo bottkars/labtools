@@ -349,6 +349,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nw9201',#-#      
     'nw9111','nw9112',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#
@@ -483,6 +484,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nw9201',#-#      
     'nw9111','nw9112',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',
@@ -2027,7 +2029,8 @@ function Receive-LABNetworker
 param
     (
 	<#
-	Version Of Networker Server / Client to be installed
+    Version Of Networker Server / Client to be installed
+    'nw9201',#-#  
     'nw9111','nw9112',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -2051,6 +2054,7 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
+    'nw9201',#-#      
     'nw9111','nw9112',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016',#
