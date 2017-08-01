@@ -13,7 +13,7 @@
 ModuletoProcess = "labtools.psm1"
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '4.2'
+ModuleVersion = '4.3'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()

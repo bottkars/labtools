@@ -3797,30 +3797,40 @@ if (!(Test-Path $Destination_path))
         break
         }
     }
-    write-host -ForegroundColor Gray " ==>we will check for the latest ScaleIO version from EMC.com"
+    
     #$Uri = "http://www.emc.com/products-solutions/trial-software-download/scaleio.htm"
     #$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
     foreach ($arch in $MyArch)
     {
+    write-host -ForegroundColor Gray " ==>we will check for the latest ScaleIO $arch version from EMC.com"        
 	$Extract_Path = Join-Path $Destination_path "ScaleIO_$($Arch)_SW_Download"
     switch ($arch)
 		{
 		'VMware'
 			{
-			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_VMware_SW_Download.zip"
+            $Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_VMware_SW_Download.zip"
+            $uri = ((Invoke-WebRequest -UseBasicParsing -Uri "https://www.emc.com/scaleiovmwaresoftwaredownload.htm").links | where  OuterHtml -Match 'zip').href
 			}
 		'Windows'
 			{
 			$Url= "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_Windows_SW_Download.zip"
+            $uri = ((Invoke-WebRequest -UseBasicParsing -Uri "https://www.emc.com/scaleiowindowssoftwaredownload.htm").links | where  OuterHtml -Match 'zip').href
 			}
 		'Linux'
 			{
 			$Url = "http://downloads.emc.com/emc-com/usa/ScaleIO/ScaleIO_2.0.1.3_Complete_Linux_SW_Download.zip"
+            $uri = ((Invoke-WebRequest -UseBasicParsing -Uri "https://www.emc.com/scaleiolinuxsoftwaredownload.htm").links | where  OuterHtml -Match 'zip').href
 			}
 		}
 	
-		
-		
+    if ($uri)
+        {
+            $url = $uri -replace '\s',''
+        }
+    else 
+        {
+            Write-Host "Could not parse download, using default url"
+        }
 	#$DownloadLinks = $request.Links | where href -match $arch
     #foreach ($Link in $DownloadLinks)
         #{
