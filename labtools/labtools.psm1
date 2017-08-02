@@ -4182,7 +4182,7 @@ param(
     [ValidateSet(
     'beta','stable'
     )]
-    [string]$branch="beta",
+    [string]$branch="stable",
 	[switch]$force,
     [Parameter(ParameterSetName = "install", Mandatory = $true)]
 	[switch]$install,
