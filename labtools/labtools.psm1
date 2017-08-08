@@ -1626,7 +1626,7 @@ function Enable-LABfolders
     {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Enable-Labfolders")]
     param()
-    Get-vmx | where state -match running  | Set-VMXSharedFolderState -Enabled
+    get-vmx | where state -Match running  | Get-VMXToolsState | where {$_.state -Match "intalled" -or $_.state -match "running"} | Set-VMXSharedFolderState -enabled
     }
 <#
 .DESCRIPTION
