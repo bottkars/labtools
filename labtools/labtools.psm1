@@ -392,7 +392,7 @@ function Set-LABnmmver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9111','nmm9112',#-#
+    'nmm9111','nmm9112','nmm9113',#-#
     'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
@@ -2515,19 +2515,19 @@ function Receive-LABnmm
 param
     (
 	<#
-    'nmm9111','nmm9112',#-#
+    'nmm9111','nmm9112','nmm9113',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
-	'nmm9010','nmm9011','nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
-    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008','nmm8240'
-    'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244','nmm8246',#-#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
+    'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
+	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244','nmm8246',#-#
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
     'nmm8221','nmm8222','nmm8223','nmm8224','nmm8225','nmm8226',
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
-    'nmm9111','nmm9112',#-#   
+    'nmm9111','nmm9112','nmm9113',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
-    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',#
+    'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
 	'nmm8240','nmm8241','nmm8242','nmm8243','nmm8244','nmm8246',#-#
 	'nmm230','nmm8231','nmm8232','nmm8233','nmm8235','nmm8236','nmm8237','nmm8238',
