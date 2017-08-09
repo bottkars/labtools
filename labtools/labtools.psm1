@@ -1772,7 +1772,7 @@ try
                     # Trying to download $SourceURL 
                     # The File size is $($size)GB, this might take a while....
                     # Please do not interrupt the download"
-                    Invoke-WebRequest $SourceURL -OutFile $TarGetFile
+                    Invoke-WebRequest $SourceURL -OutFile $TarGetFile -UseBasicParsing
                     }
                 catch [Exception] 
                     {
@@ -1812,7 +1812,7 @@ function Receive-LABjava64
     Write-Host -ForegroundColor Gray " ==>Asking for latest Java"
     Try
         {
-        $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp
+        $javaparse = Invoke-WebRequest https://www.java.com/en/download/manual.jsp -UseBasicParsing
         }
     catch [Exception] 
         {
@@ -4213,7 +4213,7 @@ $Filename = Split-Path -Leaf $url
 if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
-    $DownloadOK = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+    $DownloadOK = Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File" -force
     if (!$DownloadOK)
 		{
 		break
@@ -4238,7 +4238,7 @@ if ($install.IsPresent)
 		Write-Host " ==>getting DockerMachineDriver for VMware"
 		$Download_URL = "https://github.com/pecigonzalo/docker-machine-vmwareworkstation/releases/download/v1.0.10/docker-machine-driver-vmwareworkstation.exe"
 		$Destination_File = Join-Path $target_dir ( Split-Path -Leaf $Download_URL) 
-		Invoke-WebRequest -Uri $Download_URL -OutFile $Destination_File
+		Invoke-WebRequest -Uri $Download_URL -OutFile $Destination_File -UseBasicParsing
 		}
 } #end docker
 
