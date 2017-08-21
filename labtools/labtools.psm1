@@ -1994,7 +1994,7 @@ if (!(Test-Path $Destination ) -or ($force.IsPresent)) #($Global:vmxtoolkit_type
 			}
 		default
 			{
-			$CurlArgs1 = "-# -o"
+			$CurlArgs1 = "-L -# -o"
 			$CurlArgs2 = "-C"
 			$Curl = '/usr/bin/curl'
 			Set-LABUi -title "$Curl $CurlArgs $destination $DownLoadUrl" -short
