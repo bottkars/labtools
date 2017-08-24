@@ -1387,7 +1387,8 @@ function Expand-LABpackage
 	param (
         [Parameter(Mandatory = $true, Position = 1)]
         [System.IO.FileInfo]$Archive,
-		[string]$filepattern,
+        [string]$filepattern,
+        [int]$chmod,
         [string]$destination = "./",
         [switch]$force
         )
@@ -1486,6 +1487,10 @@ function Expand-LABpackage
                 {
                 Write-Host -ForegroundColor Gray " ==>expand exited with code $LASTEXITCODE"
                 }
+            }
+         if ($chmod -and $global:vmxtoolkit_type -ne 'win_x86_64')   
+            {
+            chmod -Rv $chmod $destination    
             }
 	}
 }
@@ -3901,7 +3906,7 @@ if (!(Test-Path $Destination_path))
 				foreach ($tarfile in $tarfiles)
 					{
 					Write-Host -ForegroundColor Gray " ==>Expanding UBUNTU siob tars"
-					Expand-LABpackage -Archive $tarfile -destination $tarfile.Directory -force
+					Expand-LABpackage -Archive $tarfile -destination $tarfile.Directory -force -chmod 755
 					}
 
 				}
