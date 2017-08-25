@@ -1181,7 +1181,7 @@ process { <#
 end {
 	# $Global:labdefaults = Get-LABDefaults
 	Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
-	$Global:labdefaults | ConvertTo-Json | Out-File $Defaultsfile
+	$Defaults | ConvertTo-Json | Out-File $Defaultsfile
 	}
 }
 
