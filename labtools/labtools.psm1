@@ -54,11 +54,9 @@ function Set-LABDefaultGateway
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.DefaultGateway = $DefaultGateway
+    $Global:labdefaults.DefaultGateway = $DefaultGateway
     Write-Host -ForegroundColor Gray " ==>setting Default Gateway $DefaultGateway"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABDockerRegistry
@@ -74,10 +72,9 @@ function Set-LABDockerRegistry
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.DockerRegistry = $DockerRegistry
+    $Global:labdefaults.DockerRegistry = $DockerRegistry
     Write-Host -ForegroundColor Gray " ==>setting Docker Registry $DockerRegistry"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABDNS1
 {
@@ -92,10 +89,9 @@ function Set-LABDNS1
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.DNS1 = $DNS1
+    $Global:labdefaults.DNS1 = $DNS1
     Write-Host -ForegroundColor Gray " ==>setting DNS1 $DNS1"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -112,10 +108,9 @@ function Set-LABAPT_Cache_IP
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.APT_Cache_IP = $APT_Cache_IP
+    $Global:labdefaults.APT_Cache_IP = $APT_Cache_IP
     Write-Host -ForegroundColor Gray " ==>setting APT_Cache_IP $APT_Cache_IP"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -133,17 +128,17 @@ function Set-LABDNS
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
+    
     if ($DNS1)
         {
-        $Defaults.DNS1 = $DNS1
+        $Global:labdefaults.DNS1 = $DNS1
         }
     if ($DNS2)
         {
-        $Defaults.DNS2 = $DNS2
+        $Global:labdefaults.DNS2 = $DNS2
         }
     Write-Host -ForegroundColor Gray " ==>setting DNS"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABvmnet
@@ -158,10 +153,10 @@ function Set-LABvmnet
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.vmnet = $VMnet
+    
+    $Global:labdefaults.vmnet = $VMnet
     Write-Host -ForegroundColor Gray " ==>setting LABVMnet $VMnet"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABVlanID
@@ -176,10 +171,9 @@ function Set-LABVlanID
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.vlanID = $vlanID
+    $Global:labdefaults.vlanID = $vlanID
     Write-Host -ForegroundColor Gray " ==>setting LABVMnet $VMnet"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 <#
 .Synopsis
@@ -233,10 +227,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Gateway = $enabled.IsPresent
+    $Global:labdefaults.Gateway = $enabled.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting $Gateway"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABOpenWRT
@@ -251,10 +244,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.OpenWRT = $enabled.IsPresent
+    $Global:labdefaults.OpenWRT = $enabled.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting $OpenWRT"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABNoDomainCheck
 {
@@ -268,10 +260,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.NoDomainCheck = $enabled.IsPresent
+    $Global:labdefaults.NoDomainCheck = $enabled.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting $NoDomainCheck"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABpuppet
@@ -286,10 +277,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.puppet = $enabled.IsPresent
+    $Global:labdefaults.puppet = $enabled.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting $puppet"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABSQLver
@@ -309,10 +299,10 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.SQLVER = $SQLVER
+    
+    $Global:labdefaults.SQLVER = $SQLVER
     Write-Host -ForegroundColor Gray " ==>setting SQL Version to $SQLVER"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABScaleIOver
@@ -336,10 +326,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.ScaleIOver = $ScaleIO_ver
+    $Global:labdefaults.ScaleIOver = $ScaleIO_ver
     Write-Host -ForegroundColor Gray " ==>setting ScaleIO Version to $ScaleIO_ver"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABNWver
@@ -378,10 +367,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.nw_ver = $nw_ver
+    $Global:labdefaults.nw_ver = $nw_ver
     Write-Host -ForegroundColor Gray " ==>setting Networker Version to $nw_ver"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -420,10 +408,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.nmm_ver = $nmm_ver
+    $Global:labdefaults.nmm_ver = $nmm_ver
     Write-Host -ForegroundColor Gray " ==>setting Networker Version to $nmm_ver"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABExchangeCU
@@ -453,28 +440,27 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-$Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
 switch ($PsCmdlet.ParameterSetName)
 {
     "E16"
         {
-        $Defaults.e16_cu = $e16_cu
+        $Global:labdefaults.e16_cu = $e16_cu
         Write-Host -ForegroundColor Gray " ==>setting E16CU to $e16_cu"
         }
     "E15"
         {
-        $Defaults.e15_cu = $e15_cu
+        $Global:labdefaults.e15_cu = $e15_cu
         Write-Host -ForegroundColor Gray " ==>setting E15CU to $e15_cu"
         }     
     "E14"
         {
-        $Defaults.e14_ur = $e14_ur
-        $Defaults.e14_sp = $e14_sp
- #       $Defaults.e14_lang = $e14_lang
+        $Global:labdefaults.e14_ur = $e14_ur
+        $Global:labdefaults.e14_sp = $e14_sp
+ #       $Global:labdefaults.e14_lang = $e14_lang
         Write-Host -ForegroundColor Gray " ==>setting E14 with $e14cu $e14_sp"
        }
     }          
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABNWver
@@ -513,10 +499,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.nw_ver = $nw_ver
+    $Global:labdefaults.nw_ver = $nw_ver
     Write-Host -ForegroundColor Gray " ==>setting Networker Version to $nw_ver"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -533,10 +518,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.puppetmaster = $PuppetMaster
+    $Global:labdefaults.puppetmaster = $PuppetMaster
     Write-Host -ForegroundColor Gray " ==>setting $puppetMaster"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABLanguageTag
 {
@@ -562,10 +546,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.LanguageTag = $LanguageTag
+    $Global:labdefaults.LanguageTag = $LanguageTag
     Write-Host -ForegroundColor Gray " ==>setting $LanguageTag"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABTimeZone
@@ -626,10 +609,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.TimeZone= $TimeZone
+    $Global:labdefaults.TimeZone= $TimeZone
     Write-Host -ForegroundColor Gray " ==>setting $Timezone"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -646,10 +628,10 @@ function Set-LABMainMemUseFile
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.MainMemUseFile = $UseFile.IsPresent
+    
+    $Global:labdefaults.MainMemUseFile = $UseFile.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting  MainMemUseFile to $($UseFile.IsPresent)"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -666,10 +648,10 @@ function Set-LABnmm
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.NMM = $NMM.IsPresent
+    
+    $Global:labdefaults.NMM = $NMM.IsPresent
     Write-Host -ForegroundColor Gray " ==>setting NMM to $($NMM.IsPresent)"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABsubnet
@@ -684,10 +666,9 @@ function Set-LABsubnet
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Mysubnet = $subnet
+    $Global:labdefaults.Mysubnet = $subnet
     Write-Host -ForegroundColor Gray " ==>setting subnet $subnet"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -704,10 +685,9 @@ function Set-LABAnsiblePublicKey
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.AnsiblePublicKey = $AnsiblePublicKey
+    $Global:labdefaults.AnsiblePublicKey = $AnsiblePublicKey
     Write-Host -ForegroundColor Gray " ==>setting AnsiblePublicKey $AnsiblePublicKey"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -723,10 +703,9 @@ function Set-LABHostKey
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.HostKey = $HostKey
+    $Global:labdefaults.HostKey = $HostKey
     Write-Host -ForegroundColor Gray " ==>setting HostKey $HostKey"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABSMBPassword
 {
@@ -740,10 +719,10 @@ function Set-LABSMBPassword
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.SMBPassword = $SMBPassword
+    
+    $Global:labdefaults.SMBPassword = $SMBPassword
     Write-Host -ForegroundColor Gray " ==>setting SMBPassword $SMBPassword"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABSMBUsername
 {
@@ -757,10 +736,10 @@ function Set-LABSMBUsername
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.SMBUsername = $SMBUsername
+    
+    $Global:labdefaults.SMBUsername = $SMBUsername
     Write-Host -ForegroundColor Gray " ==>setting SMBUsername $SMBUsername"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABBuilddomain
 {
@@ -775,10 +754,10 @@ function Set-LABBuilddomain
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.builddomain = $builddomain.ToLower()
+    
+    $Global:labdefaults.builddomain = $builddomain.ToLower()
     Write-Host -ForegroundColor Gray " ==>setting builddomain $($builddomain.ToLower())"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABCustomDomainSuffix
@@ -796,10 +775,10 @@ function Set-LABCustomDomainSuffix
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Custom_DomainSuffix = $Custom_DomainSuffix.ToLower()
+    
+    $Global:labdefaults.Custom_DomainSuffix = $Custom_DomainSuffix.ToLower()
     Write-Host -ForegroundColor Gray " ==>setting Custom_DomainSuffix $($Custom_DomainSuffix.ToLower())"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 function Set-LABSources
 {
@@ -833,10 +812,10 @@ function Set-LABSources
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.sourcedir = $Sourcedir
+    
+    $Global:labdefaults.sourcedir = $Sourcedir
     Write-Host -ForegroundColor Gray " ==>setting Sourcedir $Sourcedir"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 function Set-LABSMBSources
@@ -927,10 +906,10 @@ function Set-LABSMBSources
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.SMBSourcedir = $SMBSourcedir
+    
+    $Global:labdefaults.SMBSourcedir = $SMBSourcedir
     Write-Host -ForegroundColor Gray " ==>setting SMBSourcedir $SMBSourcedir"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -967,10 +946,10 @@ function Set-LABMasterpath
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Masterpath = $Masterpath
+    
+    $Global:labdefaults.Masterpath = $Masterpath
     Write-Host -ForegroundColor Gray " ==>setting Masterpath $Masterpath"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -1135,45 +1114,45 @@ process { <#
 	  edits may break labbuildr functionality
 	  -->")
         $xmlcontent += ("<config>")
-        $xmlcontent += ("<LanguageTag>$($Defaults.LanguageTag)</LanguageTag>")
-        $xmlcontent += ("<Timezone>$($Defaults.TimeZone)</Timezone>")
-        $xmlcontent += ("<nmm_ver>$($Defaults.nmm_ver)</nmm_ver>")
-        $xmlcontent += ("<nmm>$($Defaults.nmm)</nmm>")
-        $xmlcontent += ("<nw_ver>$($Defaults.nw_ver)</nw_ver>")
-        $xmlcontent += ("<master>$($Defaults.Master)</master>")
-        $xmlcontent += ("<sqlver>$($Defaults.SQLVER)</sqlver>")
-        $xmlcontent += ("<e14_ur>$($Defaults.e14_ur)</e14_ur>")
-        $xmlcontent += ("<e14_sp>$($Defaults.e14_sp)</e14_sp>")
-        $xmlcontent += ("<e15_cu>$($Defaults.e15_cu)</e15_cu>")
-        $xmlcontent += ("<e16_cu>$($Defaults.e16_cu)</e16_cu>")
-        $xmlcontent += ("<Server2016KB>$($Defaults.Server2016KB)</Server2016KB>")
-        $xmlcontent += ("<vmnet>$($Defaults.VMnet)</vmnet>")
-        $xmlcontent += ("<vlanID>$($Defaults.vlanID)</vlanID>")
-        $xmlcontent += ("<Custom_DomainSuffix>$($Defaults.Custom_DomainSuffix)</Custom_DomainSuffix>")
-        $xmlcontent += ("<BuildDomain>$($Defaults.BuildDomain)</BuildDomain>")
-        $xmlcontent += ("<MySubnet>$($Defaults.MySubnet)</MySubnet>")
-        $xmlcontent += ("<AddressFamily>$($Defaults.AddressFamily)</AddressFamily>")
-        $xmlcontent += ("<IPV6Prefix>$($Defaults.IPV6Prefix)</IPV6Prefix>")
-        $xmlcontent += ("<IPv6PrefixLength>$($Defaults.IPv6PrefixLength)</IPv6PrefixLength>")
-        $xmlcontent += ("<Gateway>$($Defaults.Gateway)</Gateway>")
-        $xmlcontent += ("<DefaultGateway>$($Defaults.DefaultGateway)</DefaultGateway>")
-        $xmlcontent += ("<DockerRegistry>$($Defaults.DockerRegistry)</DockerRegistry>")        
-        $xmlcontent += ("<APT_Cache_IP>$($Defaults.APT_Cache_IP)</APT_Cache_IP>")
-        $xmlcontent += ("<DNS1>$($Defaults.DNS1)</DNS1>")
-        $xmlcontent += ("<DNS2>$($Defaults.DNS2)</DNS2>")
-        $xmlcontent += ("<Sourcedir>$($Defaults.Sourcedir)</Sourcedir>")
-        $xmlcontent += ("<SMBSourcedir>$($Defaults.SMBSourcedir)</SMBSourcedir>")
-        $xmlcontent += ("<ScaleIOVer>$($Defaults.ScaleIOVer)</ScaleIOVer>")
-        $xmlcontent += ("<Masterpath>$($Defaults.Masterpath)</Masterpath>")
-        $xmlcontent += ("<NoDomainCheck>$($Defaults.NoDomainCheck)</NoDomainCheck>")
-        $xmlcontent += ("<OpenWRT>$($Defaults.OpenWRT)</OpenWRT>")
-        $xmlcontent += ("<Puppet>$($Defaults.Puppet)</Puppet>")
-        $xmlcontent += ("<PuppetMaster>$($Defaults.PuppetMaster)</PuppetMaster>")
-        $xmlcontent += ("<Hostkey>$($Defaults.HostKey)</Hostkey>")        
-		$xmlcontent += ("<SMBPassword>$($Defaults.SMBPassword)</SMBPassword>")
-		$xmlcontent += ("<SMBUsername>$($Defaults.SMBUsername)</SMBUsername>")
-        $xmlcontent += ("<AnsiblePublicKey>$($Defaults.AnsiblePublicKey)</AnsiblePublicKey>")
-		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
+        $xmlcontent += ("<LanguageTag>$($Global:labdefaults.LanguageTag)</LanguageTag>")
+        $xmlcontent += ("<Timezone>$($Global:labdefaults.TimeZone)</Timezone>")
+        $xmlcontent += ("<nmm_ver>$($Global:labdefaults.nmm_ver)</nmm_ver>")
+        $xmlcontent += ("<nmm>$($Global:labdefaults.nmm)</nmm>")
+        $xmlcontent += ("<nw_ver>$($Global:labdefaults.nw_ver)</nw_ver>")
+        $xmlcontent += ("<master>$($Global:labdefaults.Master)</master>")
+        $xmlcontent += ("<sqlver>$($Global:labdefaults.SQLVER)</sqlver>")
+        $xmlcontent += ("<e14_ur>$($Global:labdefaults.e14_ur)</e14_ur>")
+        $xmlcontent += ("<e14_sp>$($Global:labdefaults.e14_sp)</e14_sp>")
+        $xmlcontent += ("<e15_cu>$($Global:labdefaults.e15_cu)</e15_cu>")
+        $xmlcontent += ("<e16_cu>$($Global:labdefaults.e16_cu)</e16_cu>")
+        $xmlcontent += ("<Server2016KB>$($Global:labdefaults.Server2016KB)</Server2016KB>")
+        $xmlcontent += ("<vmnet>$($Global:labdefaults.VMnet)</vmnet>")
+        $xmlcontent += ("<vlanID>$($Global:labdefaults.vlanID)</vlanID>")
+        $xmlcontent += ("<Custom_DomainSuffix>$($Global:labdefaults.Custom_DomainSuffix)</Custom_DomainSuffix>")
+        $xmlcontent += ("<BuildDomain>$($Global:labdefaults.BuildDomain)</BuildDomain>")
+        $xmlcontent += ("<MySubnet>$($Global:labdefaults.MySubnet)</MySubnet>")
+        $xmlcontent += ("<AddressFamily>$($Global:labdefaults.AddressFamily)</AddressFamily>")
+        $xmlcontent += ("<IPV6Prefix>$($Global:labdefaults.IPV6Prefix)</IPV6Prefix>")
+        $xmlcontent += ("<IPv6PrefixLength>$($Global:labdefaults.IPv6PrefixLength)</IPv6PrefixLength>")
+        $xmlcontent += ("<Gateway>$($Global:labdefaults.Gateway)</Gateway>")
+        $xmlcontent += ("<DefaultGateway>$($Global:labdefaults.DefaultGateway)</DefaultGateway>")
+        $xmlcontent += ("<DockerRegistry>$($Global:labdefaults.DockerRegistry)</DockerRegistry>")        
+        $xmlcontent += ("<APT_Cache_IP>$($Global:labdefaults.APT_Cache_IP)</APT_Cache_IP>")
+        $xmlcontent += ("<DNS1>$($Global:labdefaults.DNS1)</DNS1>")
+        $xmlcontent += ("<DNS2>$($Global:labdefaults.DNS2)</DNS2>")
+        $xmlcontent += ("<Sourcedir>$($Global:labdefaults.Sourcedir)</Sourcedir>")
+        $xmlcontent += ("<SMBSourcedir>$($Global:labdefaults.SMBSourcedir)</SMBSourcedir>")
+        $xmlcontent += ("<ScaleIOVer>$($Global:labdefaults.ScaleIOVer)</ScaleIOVer>")
+        $xmlcontent += ("<Masterpath>$($Global:labdefaults.Masterpath)</Masterpath>")
+        $xmlcontent += ("<NoDomainCheck>$($Global:labdefaults.NoDomainCheck)</NoDomainCheck>")
+        $xmlcontent += ("<OpenWRT>$($Global:labdefaults.OpenWRT)</OpenWRT>")
+        $xmlcontent += ("<Puppet>$($Global:labdefaults.Puppet)</Puppet>")
+        $xmlcontent += ("<PuppetMaster>$($Global:labdefaults.PuppetMaster)</PuppetMaster>")
+        $xmlcontent += ("<Hostkey>$($Global:labdefaults.HostKey)</Hostkey>")        
+		$xmlcontent += ("<SMBPassword>$($Global:labdefaults.SMBPassword)</SMBPassword>")
+		$xmlcontent += ("<SMBUsername>$($Global:labdefaults.SMBUsername)</SMBUsername>")
+        $xmlcontent += ("<AnsiblePublicKey>$($Global:labdefaults.AnsiblePublicKey)</AnsiblePublicKey>")
+		$xmlcontent += ("<MainMemUseFile>$($Global:labdefaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
 		Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
         $xmlcontent | Set-Content $defaultsfile #>
@@ -1181,7 +1160,7 @@ process { <#
 end {
 	# $Global:labdefaults = Get-LABDefaults
 	Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
-	$Defaults | ConvertTo-Json | Out-File $Defaultsfile
+	$Global:labdefaults | ConvertTo-Json | Out-File $Defaultsfile
 	}
 }
 
@@ -4275,10 +4254,10 @@ if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
 if ($start.IsPresent)
 	{
 	$MyOpenwrt = Get-vmx "OpenWRT_$ver" 
-    $MyOpenwrt | Set-VMXVnet -Adapter 0 -Vnet $global:labdefaults.vmnet | Out-Null
+    $MyOpenwrt | Set-VMXVnet -Adapter 0 -Vnet $Global:labdefaults.vmnet | Out-Null
     $Myopenwrt | start-vmx -nowait | Out-Null
 	Set-LABOpenWRT -enabled
-	Set-LABDefaultGateway -DefaultGateway ($global:labdefaults.MySubnet -replace ".$","4")
+	Set-LABDefaultGateway -DefaultGateway ($Global:labdefaults.MySubnet -replace ".$","4")
 	}
 } #end OpenWRT
 
@@ -4735,10 +4714,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Master= $Master
+    $Global:labdefaults.Master= $Master
     Write-Host -ForegroundColor Gray " ==>setting Master to $Master"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 
 
@@ -4760,10 +4738,9 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Defaults = Get-LABdefaults -Defaultsfile $Defaultsfile
-    $Defaults.Server2016KB = $Server2016KB
+    $Global:labdefaults.Server2016KB = $Server2016KB
     Write-Host -ForegroundColor Gray " ==>setting Server2016KB to $Server2016KB"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Defaults
+    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
 <#
 .DESCRIPTION
@@ -6090,7 +6067,7 @@ if ($nodeclone.status -ne "started")
 
 	if ($use_aptcache)
 		{
-		$NodeClone | Set-LabAPTCacheClient -cache_ip $global:labdefaults.APT_Cache_IP
+		$NodeClone | Set-LabAPTCacheClient -cache_ip $Global:labdefaults.APT_Cache_IP
 		}
 	$Scriptblock="apt-get update; apt-get install $required_packages -y"
     Set-LABUi -short -title $Scriptblock
