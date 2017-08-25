@@ -47,7 +47,7 @@ function Set-LABDefaultGateway
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDefaultGateway")]
 	param (    
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$DefaultGateway,
-    [Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml"
+    [Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json"
     )
     if (!(Test-Path $Defaultsfile))
     {
@@ -66,7 +66,7 @@ function Set-LABDockerRegistry
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDockerRegistry")]
 	param (    
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$DockerRegistry,
-    [Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml"
+    [Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json"
     )
     if (!(Test-Path $Defaultsfile))
     {
@@ -83,7 +83,7 @@ function Set-LABDNS1
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDNS1")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$DNS1
     )
     if (!(Test-Path $Defaultsfile))
@@ -103,7 +103,7 @@ function Set-LABAPT_Cache_IP
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABAPT_Cache_IP")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$APT_Cache_IP
     )
     if (!(Test-Path $Defaultsfile))
@@ -123,7 +123,7 @@ function Set-LABDNS
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABDNS1")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $False,Position = 1)][system.net.ipaddress]$DNS1,
     [Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][system.net.ipaddress]$DNS2
     )
@@ -150,7 +150,7 @@ function Set-LABvmnet
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABvmnet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet9','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19')]$VMnet
     )
     if (!(Test-Path $Defaultsfile))
@@ -168,7 +168,7 @@ function Set-LABVlanID
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABvlanid")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateRange(0,4096)]$vlanID
     )
     if (!(Test-Path $Defaultsfile))
@@ -207,7 +207,7 @@ function Set-LABvmnet2hvswitch
 	param (
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('vmnet0','vmnet1','vmnet2','vmnet3','vmnet4','vmnet5','vmnet6','vmnet7','vmnet8')]$VMnet, #','vmnet10','vmnet11','vmnet12','vmnet13','vmnet14','vmnet15','vmnet16','vmnet17','vmnet18','vmnet19'
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 2)][String]$hvswitch,
-	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile="./Switchdefaults.xml"
+	[Parameter(ParameterSetName = "1", Mandatory = $false )][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile="./Switchdefaults.json"
 
     )
     if (!(Test-Path $SwitchDefaultsfile))
@@ -225,7 +225,7 @@ function Set-LABGateway
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABGateway")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$enabled
     )
 if (!(Test-Path $Defaultsfile))
@@ -243,7 +243,7 @@ function Set-LABOpenWRT
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABOpenWRT")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$enabled
     )
 if (!(Test-Path $Defaultsfile))
@@ -260,7 +260,7 @@ function Set-LABNoDomainCheck
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABNoDomainCheck")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$enabled
     )
 if (!(Test-Path $Defaultsfile))
@@ -278,7 +278,7 @@ function Set-LABpuppet
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$enabled
     )
 if (!(Test-Path $Defaultsfile))
@@ -296,7 +296,7 @@ function Set-LABSQLver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateSet(#'SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016',
 	'SQL2012_ISO',
@@ -319,7 +319,7 @@ function Set-LABScaleIOver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
 	'2.0-13000.211','2.0-10000.2075','2.0-12000.122',
@@ -346,7 +346,7 @@ function Set-LABNWver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nw9201',#-#      
@@ -389,7 +389,7 @@ function Set-LABnmmver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nmm9111','nmm9112','nmm9113',#-#
@@ -430,7 +430,7 @@ function Set-LABExchangeCU
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABExchangeCU")]
 	param (
-	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "E16", Mandatory = $true)]
     [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6')]
     $e16_cu,
@@ -481,7 +481,7 @@ function Set-LABNWver
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nw9201',#-#      
@@ -525,7 +525,7 @@ function Set-LABPuppetMaster
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppetMaster")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('puppetlabs-release-7-11', 'PuppetEnterprise')]$PuppetMaster = "PuppetEnterprise"
     )
 if (!(Test-Path $Defaultsfile))
@@ -542,7 +542,7 @@ function Set-LABLanguageTag
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABLanguageTag")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][ValidateSet('af-ZA',
     'sq-AL','ar-DZ','ar-BH','ar-EG','ar-IQ','ar-JO','ar-KW','ar-LB','ar-LY','ar-MA','ar-OM','ar-QA','ar-SA','ar-SY','ar-TN','ar-AE','ar-YE',
     'hy-AM','Cy-az-AZ','Lt-az-AZ','eu-ES','be-BY','bg-BG','ca-ES','zh-CN','zh-HK','zh-MO','zh-SG','zh-TW','zh-CHS','zh-CHT','hr-HR','cs-CZ',
@@ -572,7 +572,7 @@ function Set-LABTimeZone
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABTimeZone")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateSet(
     'W. Europe Standard Time',
     'W. Central Africa Standard Time',
@@ -637,7 +637,7 @@ function Set-LABMainMemUseFile
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABnmm")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$UseFile
     )
     if (!(Test-Path $Defaultsfile))
@@ -657,7 +657,7 @@ function Set-LABnmm
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABnmm")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][switch]$NMM
     )
     if (!(Test-Path $Defaultsfile))
@@ -676,7 +676,7 @@ function Set-LABsubnet
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABsubnet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)][system.net.ipaddress]$subnet
     )
     if (!(Test-Path $Defaultsfile))
@@ -696,7 +696,7 @@ function Set-LABAnsiblePublicKey
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABAnsiblePublicKey")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$AnsiblePublicKey
     )
     if (!(Test-Path $Defaultsfile))
@@ -715,7 +715,7 @@ function Set-LABHostKey
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABHostKey")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$HostKey
     )
     if (!(Test-Path $Defaultsfile))
@@ -732,7 +732,7 @@ function Set-LABSMBPassword
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBPassword")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBPassword
     )
     if (!(Test-Path $Defaultsfile))
@@ -749,7 +749,7 @@ function Set-LABSMBUsername
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBUsername")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBUsername
     )
     if (!(Test-Path $Defaultsfile))
@@ -766,7 +766,7 @@ function Set-LABBuilddomain
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABBuilddomain")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateLength(1,63)][ValidatePattern("^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]$BuildDomain
     )
@@ -785,7 +785,7 @@ function Set-LABCustomDomainSuffix
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABCustom_DomainSuffix")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateLength(1,63)]
 	#"^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9]+$")][string]
@@ -805,7 +805,7 @@ function Set-LABSources
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSources")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$Sourcedir
     )
@@ -843,7 +843,7 @@ function Set-LABSMBSources
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABSMBSources")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [ValidateLength(3,256)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]$SMBSourcedir
     )
@@ -938,7 +938,7 @@ function Set-LABMasterpath
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABMaster")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json",
     [ValidateLength(3,200)]
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)] 
     $Masterpath
@@ -1013,7 +1013,7 @@ function Get-LABDefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Get-LABDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.xml"
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$Defaultsfile="./defaults.json"
     )
 begin {
     }
@@ -1028,7 +1028,7 @@ process
 
         Write-Host -ForegroundColor Gray " ==>loading defaults from $Defaultsfile"
         #$Default = [xml]([System.IO.File]::ReadAllText("$Defaultsfile"))
-        [xml]$Default = Get-Content -Path $Defaultsfile
+     <#   [xml]$Default = Get-Content -Path $Defaultsfile
         $object = New-Object psobject
 	    $object | Add-Member -MemberType NoteProperty -Name LanguageTag -Value $Default.config.LanguageTag
         $object | Add-Member -MemberType NoteProperty -Name TimeZone -Value $Default.config.TimeZone
@@ -1070,9 +1070,13 @@ process
         $object | Add-Member -MemberType NoteProperty -Name AnsiblePublicKey -Value $Default.config.AnsiblePublicKey
 		$object | Add-Member -MemberType NoteProperty -Name MainMemUseFile -Value $Default.config.MainMemUseFile
         Write-Output $object
+        #>
+        $Default = Get-Content $Defaultsfile | ConvertFrom-Json
+        Write-Output $Default
         }
     }
 end {
+    
     }
 }
 
@@ -1080,7 +1084,7 @@ function Get-LABSwitchDefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Get-LABSwitchDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile="./SwitchDefaults.xml"
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateScript({ Test-Path -Path $_ })]$SwitchDefaultsfile="./Switchdefaults.json"
     )
 begin {
     }
@@ -1118,14 +1122,13 @@ function Save-LABdefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Save-LABDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile="./defaults.xml",
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaults_jsonfile="./defaults.json",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true)]$Defaults
 
     )
 begin {
     }
-process {
+process { <#
         $xmlcontent =@()
 		$xmlcontent += ("<!--
       Warning ! DO NOT EDIT THIS FILE !!!!!!!!!!!!!!!
@@ -1173,12 +1176,12 @@ process {
 		$xmlcontent += ("<MainMemUseFile>$($Defaults.MainMemUseFile)</MainMemUseFile>")
         $xmlcontent += ("</config>")
 		Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
-        $xmlcontent | Set-Content $defaultsfile
+        $xmlcontent | Set-Content $defaultsfile #>
         }
 end {
-	$Global:labdefaults = Get-LABDefaults
-	Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaults_jsonfile"
-	$Global:labdefaults | ConvertTo-Json | Out-File $Defaults_jsonfile
+	# $Global:labdefaults = Get-LABDefaults
+	Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
+	$Global:labdefaults | ConvertTo-Json | Out-File $Defaultsfile
 	}
 }
 
@@ -1186,7 +1189,7 @@ function Save-LABSwitchdefaults
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Save-LABDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile="./Switchdefaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile="./Switchdefaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true)]$SwitchDefaults
 
     )
@@ -1241,63 +1244,17 @@ function New-LABdefaults
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/New-LABDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile="./defaults.xml"
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$Defaultsfile="./defaults.json"
     )
-        Write-Host -ForegroundColor Gray " ==>saving defaults to $Defaultsfile"
-        $xmlcontent =@()
-		$xmlcontent += ("<!--
-      Warning ! DO NOT EDIT THIS FILE !!!!!!!!!!!!!!!
-	  edits may break labbuildr functionality
-	  -->")
-        $xmlcontent += ("<config>")
-        $xmlcontent += ("<LanguageTag></LanguageTag>")
-        $xmlcontent += ("<Timezone></Timezone")
-        $xmlcontent += ("<nmm_ver></nmm_ver>")
-        $xmlcontent += ("<nmm></nmm>")
-        $xmlcontent += ("<nw_ver></nw_ver>")
-        $xmlcontent += ("<master></master>")
-        $xmlcontent += ("<sqlver></sqlver>")
-        $xmlcontent += ("<e14_ur></e14_ur>")
-        $xmlcontent += ("<e14_sp></e14_sp>")
-        $xmlcontent += ("<e15_cu></e15_cu>")
-        $xmlcontent += ("<e16_cu></e16_cu>")
-        $xmlcontent += ("<Server2016KB></Server2016KB>")
-        $xmlcontent += ("<vmnet></vmnet>")
-        $xmlcontent += ("<vlanID></vlanID>")
-        $xmlcontent += ("<BuildDomain></BuildDomain>")
-        $xmlcontent += ("<Custom_DomainSuffix></Custom_DomainSuffix>")
-        $xmlcontent += ("<MySubnet></MySubnet>")
-        $xmlcontent += ("<AddressFamily></AddressFamily>")
-        $xmlcontent += ("<IPV6Prefix></IPV6Prefix>")
-        $xmlcontent += ("<IPv6PrefixLength></IPv6PrefixLength>")
-        $xmlcontent += ("<Gateway></Gateway>")
-        $xmlcontent += ("<DefaultGateway></DefaultGateway>")
-        $xmlcontent += ("<DockerRegistry></DockerRegistry>")
-        $xmlcontent += ("<APT_Cache_IP></APT_Cache_IP>")
-        $xmlcontent += ("<DNS1></DNS1>")
-        $xmlcontent += ("<DNS2></DNS2>")
-        $xmlcontent += ("<Sourcedir></Sourcedir>")
-        $xmlcontent += ("<SMBSourcedir></SMBSourcedir>")
-        $xmlcontent += ("<ScaleIOVer></ScaleIOVer>")
-        $xmlcontent += ("<Masterpath></Masterpath>")
-        $xmlcontent += ("<NoDomainCheck></NoDomainCheck>")
-        $xmlcontent += ("<OpenWRT></OpenWRT>")
-        $xmlcontent += ("<Puppet></Puppet>")
-        $xmlcontent += ("<PuppetMaster></PuppetMaster>")
-        $xmlcontent += ("<HostKey></HostKey>")
-        $xmlcontent += ("<SMBUsername></SMBUsername>")
-        $xmlcontent += ("<SMBPassword></SMBPassword>")
-		$xmlcontent += ("<AnsiblePublicKey></AnsiblePublicKey>")
-        $xmlcontent += ("<MainMemUseFile></MainMemUseFile>")
-        $xmlcontent += ("</config>")
-        $xmlcontent | Set-Content $defaultsfile
+        Write-Host -ForegroundColor Gray " ==>generating  defaults from template"
+        copy-item defaults.json.example $Defaultsfile
      }
 
 function New-LABSwitchdefaults   
 {
     [CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/New-LABDefaults")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile="./Switchdefaults.xml"
+	[Parameter(ParameterSetName = "1", Mandatory = $false)]$SwitchDefaultsfile="./Switchdefaults.json"
     )
         Write-Host -ForegroundColor Gray " ==>saving defaults to $SwitchDefaultsfile"
         $xmlcontent =@()
@@ -4764,7 +4721,7 @@ param(
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
 	#>
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     '2016','2016core',#
@@ -4791,7 +4748,7 @@ function Set-LABWindows2016KB
 {
 	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.xml",
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateSet(
     'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217'
