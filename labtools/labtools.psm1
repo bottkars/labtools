@@ -89,7 +89,7 @@ function Set-LABDNS1
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Global:labdefaults.DNS1 = $DNS1
+    $Global:labdefaults.DNS1 = $DNS1.ToString()
     Write-Host -ForegroundColor Gray " ==>setting DNS1 $DNS1"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -131,11 +131,11 @@ function Set-LABDNS
     
     if ($DNS1)
         {
-        $Global:labdefaults.DNS1 = $DNS1
+        $Global:labdefaults.DNS1 = $DNS1.ToString()
         }
     if ($DNS2)
         {
-        $Global:labdefaults.DNS2 = $DNS2
+        $Global:labdefaults.DNS2 = $DNS2.ToString()
         }
     Write-Host -ForegroundColor Gray " ==>setting DNS"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
