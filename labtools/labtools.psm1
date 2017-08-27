@@ -54,7 +54,7 @@ function Set-LABDefaultGateway
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Global:labdefaults.DefaultGateway = $DefaultGateway
+    $Global:labdefaults.DefaultGateway = $DefaultGateway.IPAddressToString
     Write-Host -ForegroundColor Gray " ==>setting Default Gateway $DefaultGateway"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -72,7 +72,7 @@ function Set-LABDockerRegistry
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Global:labdefaults.DockerRegistry = $DockerRegistry
+    $Global:labdefaults.DockerRegistry = $DockerRegistry.IPAddressToString
     Write-Host -ForegroundColor Gray " ==>setting Docker Registry $DockerRegistry"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -89,7 +89,7 @@ function Set-LABDNS1
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Global:labdefaults.DNS1 = $DNS1.ToString()
+    $Global:labdefaults.DNS1 = $DNS1.IPAddressToString
     Write-Host -ForegroundColor Gray " ==>setting DNS1 $DNS1"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -108,7 +108,7 @@ function Set-LABAPT_Cache_IP
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
 
-    $Global:labdefaults.APT_Cache_IP = $APT_Cache_IP
+    $Global:labdefaults.APT_Cache_IP = $APT_Cache_IP.IPAddressToString
     Write-Host -ForegroundColor Gray " ==>setting APT_Cache_IP $APT_Cache_IP"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -131,11 +131,11 @@ function Set-LABDNS
     
     if ($DNS1)
         {
-        $Global:labdefaults.DNS1 = $DNS1.ToString()
+        $Global:labdefaults.DNS1 = $DNS1.IPAddressToString
         }
     if ($DNS2)
         {
-        $Global:labdefaults.DNS2 = $DNS2.ToString()
+        $Global:labdefaults.DNS2 = $DNS2.IPAddressToString
         }
     Write-Host -ForegroundColor Gray " ==>setting DNS"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
@@ -666,7 +666,7 @@ function Set-LABsubnet
         Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
         New-LABdefaults -Defaultsfile $Defaultsfile
     }
-    $Global:labdefaults.Mysubnet = $subnet
+    $Global:labdefaults.Mysubnet = $subnet.IPAddressToString
     Write-Host -ForegroundColor Gray " ==>setting subnet $subnet"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
 }
@@ -6616,8 +6616,9 @@ Write-Host -ForegroundColor Gray "
                 ( o  o )
             --ooO-(_)-Ooo--"
 Write-Host -ForegroundColor Yellow "
-Keep Calm, '-defaults' Parameter has been deprecated for this Scenario !
-All your defaults are passed from the environment"
+Keep Calm, '-defaults' Parameter has been deprecated for this Scenario/Solutionpack!
+All your defaults are passed from the environment.
+Please retry coommand without -defaults switch"
 }
 
 function Get-LabVMXUserPublicKey
