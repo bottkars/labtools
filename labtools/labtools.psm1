@@ -2021,10 +2021,10 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
 	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
-    '9.0.1-72',
+    '9.0.1-72',#-#
+    '9.1.1.1','9.1.1.2','9.1.1.3',#-#
 	'9.1.0.3','9.1.0.4',#-#
 	'9.0.1.1','9.0.1.2','9.0.1.3','9.0.1.4','9.0.1.5','9.0.1.6' #-#
-	
 	)]$nve_ver,
 	<#
 	architecture to be downloaded, valid values are
@@ -2094,7 +2094,6 @@ switch ($PsCmdlet.ParameterSetName)
                 {
                 $url ="ftp://ftp.legato.com/pub/eval/2016Q2/NVE-9.0.1.72.ova"
                 }
-
 			"9.1.0.91"
 				{
 				$url= "ftp://ftp.legato.com/pub/eval/2016Q4/nw91/NVE-9.1.0.91.ova"
@@ -2107,9 +2106,18 @@ switch ($PsCmdlet.ParameterSetName)
 				{
 				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.4/ova-9.1-82_9.1.0-166.tar.gz"
 				}
-
-
-
+            "9.1.1.1"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.1/ova-9.1.1-145_9.1.1-107.tar.gz"    
+                } 
+            "9.1.1.2"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.2/ova-9.1.1-156_9.1.1-129.tar.gz"    
+                } 
+            "9.1.1.3"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.3/ova-9.1.1-189_9.1.1-188.tar.gz"    
+                }          
             }
         $FileName = Split-Path -Leaf $url
         $Destination_Filename = Join-Path $Destination $FileName
@@ -2172,7 +2180,19 @@ switch ($PsCmdlet.ParameterSetName)
 			"9.1.0.4"
 				{
 				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.4/avp-9.1-82_9.1.0-166.tar.gz"
-				}
+                }
+                "9.1.1.1"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.1/avp-9.1.1-145_9.1.1-107.tar.gz"    
+                } 
+            "9.1.1.2"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.2/avp-9.1.1-156_9.1.1-129.tar.gz"    
+                } 
+            "9.1.1.3"
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.3/avp-9.1.1-189_9.1.1-188.tar.gz"    
+                }
             }
 		if ($url)
 			{
