@@ -2129,26 +2129,22 @@ switch ($PsCmdlet.ParameterSetName)
                 Write-Host -ForegroundColor Gray " ==>Press any Key to start Download"
                 pause
                 }
-
             if (!( Get-LABFTPFile -Source $URL -Target $Destination_Filename -Defaultcredentials -ErrorAction SilentlyContinue))
                 { 
                 write-warning "Error Downloading $file from $Url, 
                 $url might not exist."
 				break
                 }
-			
-			if ($Destination_Filename -match ".tar.gz")
-					{
-					Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
-					$Destination_Tar = $Destination_Filename -replace ".gz"
-					if ( Test-Path $Destination_Tar)
-						{
-						Expand-LABpackage -Archive $Destination_Tar -destination $Destination -force
-						}
-					}
-
+            }
+            
+        if ($Destination_Filename -match ".tar.gz") {
+            Expand-LABpackage -Archive $Destination_Filename -destination $Destination -force
+            $Destination_Tar = $Destination_Filename -replace ".gz"
+            if ( Test-Path $Destination_Tar) {
+                Expand-LABpackage -Archive $Destination_Tar -destination $Destination -force
             }
         }
+    }
     "nve_update"
         {
         switch ($nve_ver)
@@ -2181,7 +2177,7 @@ switch ($PsCmdlet.ParameterSetName)
 				{
 				$url= "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.0/9.1.0.4/avp-9.1-82_9.1.0-166.tar.gz"
                 }
-                "9.1.1.1"
+            "9.1.1.1"
                 {
                 $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.1/avp-9.1.1-145_9.1.1-107.tar.gz"    
                 } 
