@@ -6665,13 +6665,10 @@ function Stop-LabVMXUnity
 param
     (
 	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
-    [Alias('Clonename','VMXname')][string]$UnityName = "UnityNode1"
+    [Alias('Clonename','VMXname')][string]$UnityName = "UnityNode1",
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $false)]$config,
     [Parameter(Mandatory=$false)]$serviceuser = "service",
 	[Parameter(Mandatory=$true)]$servicepassword = "service"
-	[Parameter(Mandatory=$false)]
-	$guestpassword = "Password123!",
-	$guestuser = 'root'
     )
     $uemcli_service = "/usr/bin/uemcli -u $serviceuser -p $servicepassword"
 if ($config)
