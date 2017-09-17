@@ -6653,12 +6653,52 @@ param
 	[Parameter(Mandatory=$false)]
 	$guestpassword = "Password123!",
 	$guestuser = 'root'
-	)
-
- 
-
-
+    )
 }
+
+function Stop-LabVMXUnity
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param
+    (
+	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias('Clonename','VMXname')][string]$UnityName = "UnityNode1"
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $false)]$config,
+    [Parameter(Mandatory=$false)]$serviceuser = "service",
+	[Parameter(Mandatory=$true)]$servicepassword = "service"
+	[Parameter(Mandatory=$false)]
+	$guestpassword = "Password123!",
+	$guestuser = 'root'
+    )
+    $uemcli_service = "/usr/bin/uemcli -u $serviceuser -p $servicepassword"
+if ($config)
+    {
+    $Nodeclone = get-vmx -config $config
+    }
+else
+    {
+    $Nodeclone = get-vmx -VMXName $UnityName     
+    }
+if (!$Nodeclone)
+    {
+        Write-Host "$VMXname not found"
+    }
+if ($NodeClone.state -match "running")
+    {
+    $NodeClone | Invoke-VMXBash -Scriptblock "/usr/bin/sudo -n /EMC/Platform/bin/svc_shutdown --system-halt --force" -Guestuser $serviceuser -Guestpassword $servicepassword
+    }            
+else
+    {
+        Write-host "$($nodeclone.vmxname) is not  in running state"
+    }
+}
+
+
+
+
 function Set-LABUi
 {
 param
