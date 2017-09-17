@@ -6668,7 +6668,7 @@ param
     [Alias('Clonename','VMXname')][string]$UnityName = "UnityNode1",
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $false)]$config,
     [Parameter(Mandatory=$false)]$serviceuser = "service",
-	[Parameter(Mandatory=$true)]$servicepassword = "service"
+	[Parameter(Mandatory=$false)]$servicepassword = "service"
     )
     $uemcli_service = "/usr/bin/uemcli -u $serviceuser -p $servicepassword"
 if ($config)
