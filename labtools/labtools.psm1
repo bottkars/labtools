@@ -6670,7 +6670,6 @@ param
     [Parameter(Mandatory=$false)]$serviceuser = "service",
 	[Parameter(Mandatory=$false)]$servicepassword = "service"
     )
-    $uemcli_service = "/usr/bin/uemcli -u $serviceuser -p $servicepassword"
 if ($config)
     {
     $Nodeclone = get-vmx -config $config
