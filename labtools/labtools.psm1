@@ -6664,7 +6664,7 @@ function Stop-LabVMXUnity
 	[OutputType([psobject])]
 param
     (
-	[Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+	[Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
     [Alias('Clonename','VMXname')][string]$UnityName = "UnityNode1",
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $false)]$config,
     [Parameter(Mandatory=$false)]$serviceuser = "service",
