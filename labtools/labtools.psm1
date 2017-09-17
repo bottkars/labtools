@@ -6656,7 +6656,7 @@ param
     )
 }
 
-function Stop-LabVMXUnity
+function Stop-LabUnity
 {
 [CmdletBinding(DefaultParametersetName = "1",
     SupportsShouldProcess=$true,
