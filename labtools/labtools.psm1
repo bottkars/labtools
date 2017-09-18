@@ -2022,6 +2022,7 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
 	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
+    '9.2.0.3',#-#
     '9.0.1-72',#-#
     '9.1.1.1','9.1.1.2','9.1.1.3',#-#
 	'9.1.0.3','9.1.0.4',#-#
@@ -2118,7 +2119,11 @@ switch ($PsCmdlet.ParameterSetName)
             "9.1.1.3"
                 {
                 $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.1.1/9.1.1.3/ova-9.1.1-189_9.1.1-188.tar.gz"    
-                }          
+                }
+            "9.2.0.3"
+                {
+                $url = "https://download.emc.com/downloads/DL85770/ova-9.2-85_9.2.0-128.tar.gz"    
+                }                              
             }
         $FileName = Split-Path -Leaf $url
         $Destination_Filename = Join-Path $Destination $FileName
