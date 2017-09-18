@@ -338,10 +338,10 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9201',#-#      
+    'nw9201','nw9203',#-#      
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
-   'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245','nw8246','nw8247',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -380,6 +380,7 @@ function Set-LABnmmver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113',#-#
     'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',
@@ -470,7 +471,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9201',#-#      
+    'nw9201','nw9203',#-#      
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
@@ -1971,10 +1972,10 @@ param
     (
 	<#
     Version Of Networker Server / Client to be installed
-    'nw9201',#-#  
+    'nw9201','nw9203',#-#  
     'nw9111','nw9112','nw9113',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
-   'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw824'
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -1995,10 +1996,10 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
-    'nw9201',#-#      
+    'nw9201','nw9203',#-#      
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
-   'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
+    'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
 	'nw8240','nw8241','nw8242','nw8243','nw8244','nw8245','nw8246','nw8247',#-#
     'nw8230','nw8231','nw8232','nw8233','nw8234','nw8235','nw8236','nw8237','nw8238',
@@ -2471,7 +2472,8 @@ function Receive-LABnmm
 	[OutputType([psobject])]
 param
     (
-	<#
+    <#
+    'nmm9201','nmm9203',#-# 
     'nmm9111','nmm9112','nmm9113',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
@@ -2482,6 +2484,7 @@ param
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
+    'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
