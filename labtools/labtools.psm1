@@ -2382,7 +2382,13 @@ switch ($PsCmdlet.ParameterSetName)
                     }
                 default
                     {
-                    $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+                    if ($nwversion.Major -ge 9)
+                        {
+                        $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,5))/$nwversion/$nwzip"
+                        }
+                    else {
+                        $url = "ftp://ftp.legato.com/pub/NetWorker/Cumulative_Hotfixes/$($nwdotver.Substring(0,3))/$nwversion/$nwzip"
+                        }    
                     }
                 }
             Write-Host -ForegroundColor Gray " ==>nwzip for ftp: $nwzip"
