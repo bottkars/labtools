@@ -5438,17 +5438,17 @@ param(
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    'Nested_ESXi6','Nested_ESXi5','Nested_ESXi6.5'
+    'Nested_ESXi6.0',Nested_ESXi6.5'
         )]
     [string]$nestedesx_ver
 )
 write-host "Browsing http://www.virtuallyghetto.com/ for templates"	
 switch ($nestedesx_ver)
 	{
-	'Nested_ESXi6.5'
-		{
-		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2016/11/esxi-6-5-virtual-appliance-is-now-available.html'
-		}
+#	'Nested_ESXi6.5'
+#		{
+#		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2016/11/esxi-6-5-virtual-appliance-is-now-available.html'
+#		}
 	default
 		{
 		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html'
