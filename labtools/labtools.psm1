@@ -4343,7 +4343,7 @@ param(
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
 	#>
@@ -4355,7 +4355,7 @@ param(
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
     )]
@@ -5510,7 +5510,7 @@ param(
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
 	#>
@@ -5522,7 +5522,7 @@ param(
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
 	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
-    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4',
+    'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
     )]
@@ -5735,7 +5735,8 @@ param
 	[Parameter(ParameterSetName = "Windows",Mandatory = $true)]
 	[switch]$Windows,
 	[Parameter(ParameterSetName = "Ubuntu",Mandatory=$false)]
-	[ValidateSet('14_4','15_4','15_10','16_4')]
+    [ValidateSet('14_4','15_4','15_10','16_4','17_10' #-#
+    )]
 	$Ubuntu_ver = '14_4',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
 	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
@@ -5901,7 +5902,7 @@ if (!(get-vmx -path (Join-Path (Get-Location) $VMXname) -WarningAction SilentlyC
 	}
 else
 	{
-	#Write-Warning "Machine $VMXname already exists"
+	Write-Warning "Machine $VMXname already exists"
 	}
 Set-LABUi
 }
@@ -5919,7 +5920,8 @@ param
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
     [Parameter(Mandatory=$false)]$Path,
 	[Parameter(Mandatory=$false)]
-	[ValidateSet('14_4','15_4','15_10','16_4')]
+    [ValidateSet('14_4','15_4','15_10','16_4','17_10' #-#
+    )]
 	$Ubuntu_ver = '14_4',
 	####
 	[Parameter(Mandatory=$false)]
@@ -5964,7 +5966,7 @@ begin
         }
     default
         {
-        $netdev= "eth0"
+        $netdev= "ens160"
         }
     }
 	$required_packages = ('python','git')
@@ -5979,6 +5981,7 @@ try
 	}
 catch
 	{
+
 	break
 	}
 If (!$DefaultGateway)
@@ -5999,6 +6002,22 @@ if ($nodeclone.status -ne "started")
     $NodeClone | Set-VMXSharedFolderState -enabled | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Sources -Folder $Sourcedir  | Out-Null
     $NodeClone | Set-VMXSharedFolder -add -Sharename Scripts -Folder $Scriptdir  | Out-Null
+    	##### evaluating net device
+	Write-Host -ForegroundColor Magenta " ==>Evaluating ethernet devices in $($nodeclone.vmxname)"
+	$Scriptblock = 'vmtoolsd --cmd="info-set guestinfo.IF0 $(ls /sys/class/net)"'
+	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
+	$Interfaces = $nodeclone | Get-VMXVariable -GuestVariable IF0 | Select-Object IF0
+	Write-Host -ForegroundColor Gray " ==>Found interfaces $($Interfaces.IF0 -join ",")"
+	$eth0 = $Interfaces.IF0 | where {$_ -ne "lo"} | Select-Object -First 1
+	if ($eth0)
+		{
+		$netdev = $eth0
+		Write-Host -ForegroundColor Gray  " ==>setting netdev to evaluated $netdev"
+		}
+	else
+		{
+		Write-Host -ForegroundColor Gray  " ==>using default netdev $netdev"
+		}
     If ($ubuntu_ver -match "15")
         {
         $Scriptblock = "systemctl disable iptables.service"
@@ -6050,67 +6069,100 @@ if ($nodeclone.status -ne "started")
  	$Scriptblock = "sed -i 's/^.*\bDefaults    requiretty\b.*$/Defaults    !requiretty/' /etc/sudoers"
 	Set-LABUi -short -title $Scriptblock
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  
-
-    $Scriptblock = "echo 'auto lo' > /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'iface lo inet loopback' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'auto $netdev' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'iface $netdev inet static' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'address $ip' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'gateway $DefaultGateway' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'netmask 255.255.255.0' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'network $subnet.0' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'broadcast $subnet.255' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-    $Scriptblock = "echo 'dns-nameservers $DNS1 $DNS2' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    $Scriptblock = "echo 'dns-search $DNS_DOMAIN_NAME' >> /etc/network/interfaces"
-    Set-LABUi -short -title $Scriptblock
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-    $Scriptblock = "echo '127.0.0.1       localhost' > /etc/hosts; echo '$ip $Host_Name $Host_Name.$DNS_DOMAIN_NAME' >> /etc/hosts; hostname $Node"
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-    $Scriptblock = "hostnamectl set-hostname $Host_Name.$DNS_DOMAIN_NAME"
-    $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-
-    switch ($ubuntu_ver)
+    if ($Ubuntu_ver -lt "17_0") 
         {
-        "14_4"
-            {
-            $Scriptblock = "/sbin/ifdown eth0 && /sbin/ifup eth0"
-            }
-        default
-            {
-            $Scriptblock = "/etc/init.d/networking restart"
-            }
-        }         
+            $Scriptblock = "echo 'auto lo' > /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'iface lo inet loopback' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'auto $netdev' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'iface $netdev inet static' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'address $ip' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'gateway $DefaultGateway' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'netmask 255.255.255.0' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'network $subnet.0' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'broadcast $subnet.255' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+                
+            $Scriptblock = "echo 'dns-nameservers $DNS1 $DNS2' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            $Scriptblock = "echo 'dns-search $DNS_DOMAIN_NAME' >> /etc/network/interfaces"
+            Set-LABUi -short -title $Scriptblock
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+                
+            $Scriptblock = "echo '127.0.0.1       localhost' > /etc/hosts; echo '$ip $Host_Name $Host_Name.$DNS_DOMAIN_NAME' >> /etc/hosts; hostname $Node"
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+            $Scriptblock = "hostnamectl set-hostname $Host_Name.$DNS_DOMAIN_NAME"
+            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        
+            switch ($ubuntu_ver)
+                {
+                "14_4"
+                    {
+                    $Scriptblock = "/sbin/ifdown eth0 && /sbin/ifup eth0"
+                    }
+                default
+                    {
+                    $Scriptblock = "/etc/init.d/networking restart"
+                    }
+                }  
+        }
+    else {
+        $yml = "
+network:
+    renderer: networkd
+    ethernets:
+      $netdev`:
+        dhcp4: no
+        dhcp6: no
+        addresses: [$ip/24]
+        gateway4: $DefaultGateway
+        nameservers:
+          search: [$DNS_DOMAIN_NAME]
+          addresses: [$DNS1,$DNS2]
+"
+        $Netplan_file = "01-netcfg.yaml"
+        $yml_config_file = Join-Path $Scriptdir $Netplan_file
+        $yml | Set-Content -Path $yml_config_file
+        convert-VMXdos2unix -Sourcefile $yml_config_file -Verbose
+        Write-Host -ForegroundColor Magenta " ==>Injecting RexRay Config from config.yml"
+        $NodeClone | copy-VMXfile2guest -Sourcefile $yml_config_file -targetfile "/etc/netplan/$Netplan_file" -Guestuser $Rootuser -Guestpassword $Guestpassword #| Out-Null
+    $Scriptlets = ("echo 'auto lo' >/etc/network/interfaces", 
+    "echo 'iface lo inet loopback' >>/etc/network/interfaces",
+"/usr/bin/netplan generate;/usr/sbin/netplan apply")        
+    foreach ($Scriptblock in $Scriptlets)
+        {
+        Write-Verbose $Scriptblock
+        $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
+        }
+   
+    }
+        
     Set-LABUi -short -title $Scriptblock
     $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
 
