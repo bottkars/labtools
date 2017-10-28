@@ -6149,7 +6149,7 @@ network:
         $Netplan_file = "01-netcfg.yaml"
         $yml_config_file = Join-Path $Scriptdir $Netplan_file
         $yml | Set-Content -Path $yml_config_file
-        convert-VMXdos2unix -Sourcefile $yml_config_file -Verbose
+        convert-VMXdos2unix -Sourcefile $yml_config_file 
         Write-Host -ForegroundColor Magenta " ==>Injecting $Netplan_file"
         $NodeClone | copy-VMXfile2guest -Sourcefile $yml_config_file -targetfile "/etc/netplan/$Netplan_file" -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
     $Scriptlets = ("echo 'auto lo' >/etc/network/interfaces", 
