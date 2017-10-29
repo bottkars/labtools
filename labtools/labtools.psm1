@@ -6177,7 +6177,7 @@ network:
 		{
 		$NodeClone | Set-LabAPTCacheClient -cache_ip $Global:labdefaults.APT_Cache_IP
 		}
-	$Scriptblock="apt-get update; apt-get install $required_packages -y"
+	$Scriptblock="apt-get update;apt-get upgrade ca-certificates -y;apt-get install $required_packages -y"
     Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
