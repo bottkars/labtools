@@ -6072,47 +6072,19 @@ if ($nodeclone.status -ne "started")
 	$Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile  
     if ($Ubuntu_ver -lt "17_0") 
         {
-            $Scriptblock = "echo 'auto lo' > /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'iface lo inet loopback' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'auto $netdev' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'iface $netdev inet static' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'address $ip' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'gateway $DefaultGateway' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'netmask 255.255.255.0' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'network $subnet.0' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'broadcast $subnet.255' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-                
-            $Scriptblock = "echo 'dns-nameservers $DNS1 $DNS2' >> /etc/network/interfaces"
-            Set-LABUi -short -title $Scriptblock
-            $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
-        
-            $Scriptblock = "echo 'dns-search $DNS_DOMAIN_NAME' >> /etc/network/interfaces"
+        $Scriptblock = "cat > /etc/network/interfaces   <<EOF
+auto lo`
+iface lo inet loopback`
+auto $netdev`
+iface $netdev inet static`
+address $ip`
+gateway $DefaultGateway`
+netmask 255.255.255.0`
+network $subnet.0`
+broadcast $subnet.255`
+dns-nameservers $DNS1 $DNS2`
+dns-search $DNS_DOMAIN_NAME`
+"
             Set-LABUi -short -title $Scriptblock
             $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword | Out-Null
                 
