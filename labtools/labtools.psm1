@@ -5970,7 +5970,7 @@ begin
         $netdev= "ens160"
         }
     }
-	$required_packages = ('python','git')
+	$required_packages = ('python','git','bash-completion')
 	$required_packages += $additional_packages	
 	$required_packages = $required_packages -join " "
 }
