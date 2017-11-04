@@ -4342,7 +4342,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
-	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
@@ -4354,7 +4354,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
-	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
@@ -5509,7 +5509,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
-	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
@@ -5521,7 +5521,7 @@ param(
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
 	'OpenWRT',
-	'Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
+	'Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503','Centos7 Master',
     'Ubuntu14_4','Ubuntu15_4','Ubuntu15_10','Ubuntu16_4','Ubuntu17_10', #-#
 	'esximaster',
     'photon-1.0-rev2'
@@ -5739,7 +5739,7 @@ param
     )]
 	$Ubuntu_ver = '14_4',
 	[Parameter(ParameterSetName = "CentOS",Mandatory=$false)]
-	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
+	[ValidateSet('Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
@@ -6174,7 +6174,7 @@ param
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]$config,
     [Parameter(Mandatory=$false)]$Path,
 	[Parameter(Mandatory=$false)]
-	[ValidateSet('Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
+	[ValidateSet('Centos7_4_1708','Centos7_3_1611','Centos7_1_1511','Centos7_1_1503')]
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(Mandatory=$false)]
 	$Scriptdir = (join-path (Get-Location) "labbuildr-scripts"),
