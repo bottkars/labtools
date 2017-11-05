@@ -338,7 +338,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9201','nw9203','nw9204',#-#           
+    'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
@@ -471,7 +471,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9201','nw9203','nw9204',#-#           
+    'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
@@ -1972,7 +1972,7 @@ param
     (
 	<#
     Version Of Networker Server / Client to be installed
-    'nw9201','nw9203','nw9204',#-#       
+    'nw9201','nw9203','nw9204','nw9205',#-#       
     'nw9111','nw9112','nw9113',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
@@ -1996,7 +1996,7 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
-    'nw9201','nw9203','nw9204',#-#           
+    'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113',#-#    
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
