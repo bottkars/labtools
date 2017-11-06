@@ -5289,6 +5289,7 @@ param(
         )]
     [string]$lang = 'en_US'
 )
+
 Switch ($lang)
     {
     'de_DE'
@@ -5306,8 +5307,9 @@ Switch ($lang)
                 }
             '2016'
                 {
-                $URL = 'http://care.dlservice.microsoft.com/dl/download/A/0/6/A0696267-C005-4E35-8336-2CB1105D3F07/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_DE-DE.ISO'
-                }
+                #$URL = 'http://care.dlservice.microsoft.com/dl/download/A/0/6/A0696267-C005-4E35-8336-2CB1105D3F07/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_DE-DE.ISO'
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/7/E/B/7EBCA3A0-1F42-4966-B03E-713C3DEF98B7/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_DE-DE.ISO'    
+            }
             default
                 {
                 write-host -ForegroundColor Magenta "this download will be integrated soon"
@@ -5329,8 +5331,9 @@ Switch ($lang)
                 }
             '2016'
                 {
-                $URL = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
-                }
+            #    $URL = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/1/4/9/149D5452-9B29-4274-B6B3-5361DBDA30BC/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO'        
+            }
             default
                 {
                 write-host -ForegroundColor Magenta "this download will be integrated soon"
