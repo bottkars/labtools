@@ -700,6 +700,549 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
+Switch ($TimeZone)
+    {
+        'Afghanistan Standard Time'
+        {
+        $tzdata = 'Asia/Kabul'
+        }
+        'Alaskan Standard Time'
+        {
+        $tzdata = 'America/Anchorage'
+        }
+        'Aleutian Standard Time'
+        {
+        $tzdata = 'America/Adak'
+        }
+        'Altai Standard Time'
+        {
+        $tzdata = 'Asia/Barnaul'
+        }
+        'Arab Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Arabian Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Arabic Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Argentina Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Astrakhan Standard Time'
+        {
+        $tzdata = 'Europe/Astrakhan'
+        }
+        'Atlantic Standard Time'
+        {
+        $tzdata = 'America/Moncton'
+        }
+        'AUS Central Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Aus Central W. Standard Time'
+        {
+        $tzdata = 'Australia/ACT'
+        }
+        'AUS Eastern Standard Time'
+        {
+        $tzdata = 'Australia/Currie'
+        }
+        'Azerbaijan Standard Time'
+        {
+        $tzdata = 'Asia/Baku'
+        }
+        'Azores Standard Time'
+        {
+        $tzdata = 'Atlantic/Azores'
+        }
+        'Bahia Standard Time'
+        {
+        $tzdata = 'America/Bahia'
+        }
+        'Bangladesh Standard Time'
+        {
+        $tzdata = 'Asia/Kashgar'
+        }
+        'Belarus Standard Time'
+        {
+        $tzdata = 'Europe/Minsk'
+        }
+        'Bougainville Standard Time'
+        {
+        $tzdata = 'Pacific/Port_Moresby'
+        }
+        'Canada Central Standard Time'
+        {
+        $tzdata = 'America/Winnipeg'
+        }
+        'Cape Verde Standard Time'
+        {
+        $tzdata = 'Atlantic/Cape_Verde'
+        }
+        'Caucasus Standard Time'
+        {
+        $tzdata = 'Asia/Baku'
+        }
+        'Cen. Australia Standard Time'
+        {
+        $tzdata = 'Australia/Adelaide'
+        }
+        'Central America Standard Time'
+        {
+        $tzdata = 'America/Matamoros'
+        }
+        'Central Asia Standard Time'
+        {
+        $tzdata = 'Asia/Dhaka'
+        }
+        'Central Brazilian Standard Time'
+        {
+        $tzdata = 'America/Sao_Paulo'
+        }
+        'Central Europe Standard Time'
+        {
+        $tzdata = 'Europe/Berlin'
+        }
+        'Central European Standard Time'
+        {
+        $tzdata = 'Europe/Berlin'
+        }
+        'Central Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Central Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Central Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Chatham Islands Standard Time'
+        {
+        $tzdata = ''
+        }
+        'China Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Cuba Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Dateline Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Australia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Europe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. South America Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Easter Island Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Eastern Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Egypt Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Ekaterinburg Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Fiji Standard Time'
+        {
+        $tzdata = ''
+        }
+        'FLE Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Georgian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'GMT Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Greenland Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Greenwich Standard Time'
+        {
+        $tzdata = ''
+        }
+        'GTB Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Haiti Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Hawaiian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'India Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Iran Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Israel Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Jordan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Kaliningrad Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Kamchatka Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Korea Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Libya Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Line Islands Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Lord Howe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Magadan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Magallanes Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Marquesas Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mauritius Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mid-Atlantic Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Middle East Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Montevideo Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Morocco Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mountain Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mountain Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Myanmar Standard Time'
+        {
+        $tzdata = ''
+        }
+        'N. Central Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Namibia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Nepal Standard Time'
+        {
+        $tzdata = ''
+        }
+        'New Zealand Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Newfoundland Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Norfolk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Asia East Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Korea Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Omsk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific SA Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Pakistan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Paraguay Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Romance Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 10'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 11'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 3'
+        {
+        $tzdata = ''
+        }
+        'Russian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Western Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Saint Pierre Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Sakhalin Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Samoa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Saratov Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SE Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Singapore Standard Time'
+        {
+        $tzdata = ''
+        }
+        'South Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Sri Lanka Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Syria Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Taipei Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tasmania Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tocantins Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tokyo Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tomsk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tonga Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Transbaikal Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Turkey Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Turks And Caicos Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Ulaanbaatar Standard Time'
+        {
+        $tzdata = ''
+        }
+        'US Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'US Mountain Standard Time'
+        {
+        $tzdata = ''
+        }
+        'UTC'
+        {
+        $tzdata = ''
+        }
+        'UTC+12'
+        {
+        $tzdata = ''
+        }
+        'UTC+13'
+        {
+        $tzdata = ''
+        }
+        'UTC-02'
+        {
+        $tzdata = ''
+        }
+        'UTC-08'
+        {
+        $tzdata = ''
+        }
+        'UTC-09'
+        {
+        $tzdata = ''
+        }
+        'UTC-11'
+        {
+        $tzdata = ''
+        }
+        'Venezuela Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Vladivostok Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Australia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Central Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Europe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Mongolia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Bank Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Yakutsk Standard Time'
+        {
+        $tzdata = ''
+        }
+    }    
     $Global:labdefaults.TimeZone= $TimeZone
     Write-Host -ForegroundColor Gray " ==>setting $Timezone"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
