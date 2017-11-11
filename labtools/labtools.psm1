@@ -4977,7 +4977,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1705','2016core_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -4990,7 +4990,7 @@ param(
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016_1705','2016','2016core',#
+    '2016_1705','2016core_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -5396,7 +5396,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1705','2016core_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
@@ -5404,7 +5404,7 @@ param(
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016_1705','2016','2016core',#
+    '2016_1705','2016core_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'   
     )]
@@ -6151,7 +6151,7 @@ param(
     $Masterpath="./",
 	<#
 	Possible Master for labbuildr:
-	'2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
+	'2016TP5','2016TP5_GER','2016_1705','2016core_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -6164,7 +6164,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016_1705','2016','2016core',#
+    '2016_1705','2016core_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -6391,7 +6391,7 @@ param
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
-    '2016_1705','2016','2016core',#
+    '2016_1705','2016core_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
     )]
