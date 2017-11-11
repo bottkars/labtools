@@ -4977,7 +4977,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -4990,7 +4990,7 @@ param(
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -5315,7 +5315,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
+    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
     )]
     [string]$KB = 'KB4041688'
 )
@@ -5353,7 +5353,11 @@ Switch ($KB)
     'KB4041688'
         {
         $Url = 'http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/10/windows10.0-kb4041688-x64_a098c258a1d8f6b4bbfff87ee5ab687d629d3bd9.msu'
-        }   
+        }
+    'KB4052231'
+        {
+        $url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/11/windows10.0-kb4052231-x64_463cd0a310785400394ca5648f6634f1244263ff.msu'
+        }      
     }
     if (Test-Path -Path "$Destination")
         {
@@ -5392,7 +5396,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
@@ -5400,7 +5404,7 @@ param(
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'   
     )]
@@ -5426,7 +5430,7 @@ function Set-LABWindows2016KB
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
+    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
     )]$Server2016KB 
 
     )
@@ -6147,7 +6151,7 @@ param(
     $Masterpath="./",
 	<#
 	Possible Master for labbuildr:
-	'2016TP5','2016TP5_GER','2016','2016core',#
+	'2016TP5','2016TP5_GER','2016_1705','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -6160,7 +6164,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -6387,7 +6391,7 @@ param
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
-    '2016','2016core',#
+    '2016_1705','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
     )]
