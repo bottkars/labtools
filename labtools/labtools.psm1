@@ -3446,12 +3446,13 @@ if ($Component -match 'SCVMM')
             }
         }
     }
-Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
+ 
 
 switch ($SC_Version)
     {
         "SC2012_R2"
             {
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452  
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
@@ -3463,6 +3464,7 @@ switch ($SC_Version)
 			}
         "SC2016"
             {
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 462  
             $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
             $URL = "http://care.dlservice.microsoft.com/dl/download/2/B/8/2B8C6E4F-7918-40A6-9785-986D4D1175A5/SC2016_SCVMM.EXE"
             $WAIK_VER = "WAIK_10_1607"
@@ -3476,6 +3478,11 @@ switch ($SC_Version)
             $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041075_adminconsole_amd64_fa30a090c7b782ece4d4a96d478b45a5e50856aa.cab'
             $UR = $true
             }
+        'SC1709'
+            {
+            $adkurl = 'http://download.microsoft.com/download/3/1/E/31EC1AAF-3501-4BB4-B61C-8BD8A07B4E8A/adk/adksetup.exe'
+            $WAIK_VER = "WAIK_10_1709"
+            }    
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
     $WAIK_DIR = Join-Path $Destination $WAIK_VER
@@ -5177,7 +5184,8 @@ function Receive-LABSQL
     [ValidateSet(#'SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016',
 	'SQL2012_ISO',
 	'SQL2014SP2_ISO',
-	'SQL2016_ISO')]$SQLVER,
+    'SQL2016_ISO',
+    'SQL2017_ISO')]$SQLVER,
     [String]$Destination,
     [String]$Product_Dir= "SQL",
     [String]$Prereq = "prereq",
@@ -5197,6 +5205,7 @@ function Receive-LABSQL
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
     $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
+    $SQL2017_ISO = 'https://download.microsoft.com/download/E/F/2/EF23C21D-7860-4F05-88CE-39AA114B014B/SQLServer2017-x64-ENU.iso'
     $SQL2014SP2_ISO = "http://care.dlservice.microsoft.com/dl/download/6/D/9/6D90C751-6FA3-4A78-A78E-D11E1C254700/SQLServer2014SP2-FullSlipstream-x64-ENU.iso"
 	$SQL2012_ISO = "https://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/SQLFULL_ENU.iso"
 	$SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
@@ -5206,8 +5215,9 @@ function Receive-LABSQL
 	#$SQL2016_SSMS = "https://download.microsoft.com/download/C/B/C/CBCFAAD1-2348-4119-B093-199EE7AADCBC/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS = "https://download.microsoft.com/download/9/3/3/933EA6DD-58C5-4B78-8BEC-2DF389C72BE0/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS ="https://download.microsoft.com/download/5/0/B/50B02ECB-CB5C-4C23-A1D3-DAB4467604DA/SSMS-Setup-ENU.exe"
-    $sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
-	$SSMS_LATEST = '17.2'
+    #$sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
+    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-DEU.exe'
+    $SSMS_LATEST = '17.3'
 	#$SSMS_LATEST = '16.5.3'
 	$Product_Dir = Join-Path $Destination $Product_Dir
 
@@ -5474,33 +5484,30 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451','452','46','461','462'
+    '451','452','46','461','462','47'
     )]
     [string]$Net_Ver="452"
 )
 
-Switch ($Net_Ver)
-    {
-    '451'
-        {
-        $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
+    Switch ($Net_Ver) {
+        '451' {
+            $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
         }
-    '452'
-        {
-        $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+        '452' {
+            $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
         }
-    '46'
-        {
-        $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
+        '46' {
+            $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
         }
-    '461'
-        {
-        $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
+        '461' {
+            $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
         }
-	'462'
-		{
-		$Url = "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-		}
+        '462' {
+            $Url = "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+        }
+        '47' {
+            $Url = 'https://download.microsoft.com/download/D/D/3/DD35CC25-6E9C-484B-A746-C5BE0C923290/NDP47-KB3186497-x86-x64-AllOS-ENU.exe'
+        }
     }
     if (Test-Path -Path "$Destination")
         {
