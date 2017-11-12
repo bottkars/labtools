@@ -3364,7 +3364,7 @@ function Receive-LABSysCtrInstallers
 	[OutputType([psobject])]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('SC2012_R2','SC2016')]
+    [ValidateSet('SC2012_R2','SC2016','SC1711')]
     $SC_VERSION = "SC2012_R2",
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
@@ -3478,10 +3478,12 @@ switch ($SC_Version)
             $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041075_adminconsole_amd64_fa30a090c7b782ece4d4a96d478b45a5e50856aa.cab'
             $UR = $true
             }
-        'SC1709'
+        'SC1711'
             {
-            $adkurl = 'http://download.microsoft.com/download/3/1/E/31EC1AAF-3501-4BB4-B61C-8BD8A07B4E8A/adk/adksetup.exe'
-            $WAIK_VER = "WAIK_10_1709"
+                Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 47  
+                $adkurl = 'http://download.microsoft.com/download/3/1/E/31EC1AAF-3501-4BB4-B61C-8BD8A07B4E8A/adk/adksetup.exe'
+                $WAIK_VER = "WAIK_10_1709"
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/D/3/A/D3AA698D-61BB-4263-8B80-F85A35523504/SCVMM_Preview_1711.exe'
             }    
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
@@ -3511,6 +3513,16 @@ if ($Component -match 'SCOM')
 		        
 			Switch ($SC_VERSION)
 				{
+                'SC1711'
+                    {
+                        $DownloadUrls= (
+                            'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi',
+                            #'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi',
+                            #'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+                            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+                
+                        )
+                    }    
 				'SC2016'
 					{
 					$DownloadUrls= (
@@ -3570,7 +3582,11 @@ if ($Component -match 'SCOM')
             $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-enu-console_d8b4b748c7b47d3122f8386a5488b2f00394cbbb.cab'
             $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-server_aa3a0e186f4472c985f28bbcd720ca4811e81c0a.cab'
 			$UR = $true
-			}
+            }
+        'SC1711'
+            {
+                $url = "http://care.dlservice.microsoft.com/dl/download/C/F/A/CFA08B3B-0C19-448B-BD98-3027CC8537BF/SCOM_Preview_1711_EN.exe"
+            }    
         }    
 }#end scom
 if ($Component -match 'SCDPM')
@@ -3592,6 +3608,10 @@ if ($Component -match 'SCDPM')
             $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dataprotectionmanager2016-kb4043316_05b386d8edc88537dc9592cc3644eddbb313546b.exe'
             $UR = $true
             }
+        'SC1711'
+            {
+            $URL = 'http://care.dlservice.microsoft.com/dl/download/A/3/D/A3DAFB43-D5B0-42F7-9109-B060B2D43C31/SCDPM_Preview_1711.exe'    
+            }    
         }    
 }#end scdpm
 
