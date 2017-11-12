@@ -3470,9 +3470,11 @@ switch ($SC_Version)
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
 			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
-            $Latest_UR_SERVER ="http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/02/kb4011491_vmmserver_amd64_dd697546265af71d9edc388fe23803dad3146271.cab"
-            $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/02/kb4011492_adminconsole_amd64_2e008dcc1aa7f36bb3f449be93debca9314ffc78.cab"
-			$UR = $true
+            #ur3 $Latest_UR_SERVER ="http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/02/kb4011491_vmmserver_amd64_dd697546265af71d9edc388fe23803dad3146271.cab"
+            #ur3 $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/02/kb4011492_adminconsole_amd64_2e008dcc1aa7f36bb3f449be93debca9314ffc78.cab"
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041074_vmmserver_amd64_489efcd1e1a7ca899ee124429ac14b62dbcc5523.cab'
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041075_adminconsole_amd64_fa30a090c7b782ece4d4a96d478b45a5e50856aa.cab'
+            $UR = $true
             }
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
@@ -3556,9 +3558,10 @@ if ($Component -match 'SCOM')
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-server_98ce5e30a75646f68eb65351b10e2fea1384b83b.cab"
 			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-enu-console_dc7df4d8fc15f24ee7331c423b98c22cf6c9c6ab.cab"
 			#ur2
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
-
+			# $Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
+			# $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-enu-console_d8b4b748c7b47d3122f8386a5488b2f00394cbbb.cab'
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-server_aa3a0e186f4472c985f28bbcd720ca4811e81c0a.cab'
 			$UR = $true
 			}
         }    
@@ -3576,6 +3579,11 @@ if ($Component -match 'SCDPM')
         "SC2016"
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/1/6/6/166A63BF-E3CE-49EF-8E8D-D599995C6E75/SC2016_SCDPM.EXE"
+            #ur4
+            $Latest_UR_ADMINCONSOLE 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmcentralconsoleserver-kb4043316_a43818cd18cea10a395fdf4928abfcdea332a5a0.exe'
+            $Latest_UR_SHELL = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmmanagementshell2016-kb4043316_9c21c53b5baff3e52d72a983d182806f25f99bf7.exe'
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dataprotectionmanager2016-kb4043316_05b386d8edc88537dc9592cc3644eddbb313546b.exe'
+            $UR = $true
             }
         }    
 }#end scdpm
@@ -3610,37 +3618,40 @@ if ($Component -match 'SCDPM')
 	if ($UR)
 	{
 		Write-Host "Downloading URs"
-		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER))
+		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER,$Latest_UR_SHELL))
 		{
-			$Component_Dir = Join-Path $Product_Dir $Component
-            if (!(test-path $Component_Dir))
+            if ($URL)
                 {
-                    New-Item -ItemType Directory $Component_Dir
-                }
-			$Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
-            if (!(test-path $Update_Dir))
-                {
-                    New-Item -ItemType Directory $Update_Dir
-                }
-			$FileName = Split-Path -Leaf -Path $Url
-			$Update_File = Join-Path $Update_Dir $FileName
-			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
-			if (!(test-path  "$Update_File") -or $force.IsPresent) 
-				{
-				Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
+                $Component_Dir = Join-Path $Product_Dir $Component
+                if (!(test-path $Component_Dir))
+                    {
+                        New-Item -ItemType Directory $Component_Dir
+                    }
+                $Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
+                if (!(test-path $Update_Dir))
+                    {
+                        New-Item -ItemType Directory $Update_Dir
+                    }
+                $FileName = Split-Path -Leaf -Path $Url
+                $Update_File = Join-Path $Update_Dir $FileName
+                Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
+                if (!(test-path  "$Update_File") -or $force.IsPresent) 
+                    {
+                    Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
 
-				if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Update_File"))
-					{ 
-					write-warning "Error Downloading file $Url, Please check connectivity"
-					}
-				}
-			if ($unzip.IsPresent -and $Update_File -match ".cab") 
-				{
-					Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
-					#Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-					#Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
-					#$return = $true
-				}
+                    if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Update_File"))
+                        { 
+                        write-warning "Error Downloading file $Url, Please check connectivity"
+                        }
+                    }
+                if ($unzip.IsPresent -and $Update_File -match ".cab") 
+                    {
+                        Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
+                        #Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
+                        #Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+                        #$return = $true
+                    }
+                }
 			}	
 		}
 return $returnvalue
