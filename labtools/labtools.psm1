@@ -3580,7 +3580,7 @@ if ($Component -match 'SCDPM')
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/1/6/6/166A63BF-E3CE-49EF-8E8D-D599995C6E75/SC2016_SCDPM.EXE"
             #ur4
-            $Latest_UR_ADMINCONSOLE 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmcentralconsoleserver-kb4043316_a43818cd18cea10a395fdf4928abfcdea332a5a0.exe'
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmcentralconsoleserver-kb4043316_a43818cd18cea10a395fdf4928abfcdea332a5a0.exe'
             $Latest_UR_SHELL = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmmanagementshell2016-kb4043316_9c21c53b5baff3e52d72a983d182806f25f99bf7.exe'
             $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dataprotectionmanager2016-kb4043316_05b386d8edc88537dc9592cc3644eddbb313546b.exe'
             $UR = $true
