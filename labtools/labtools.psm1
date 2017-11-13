@@ -5425,6 +5425,55 @@ param(
 	Write-Output $ISO
 }
 
+
+function Receive-LABHonolulu
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination=$Labdefaults.Sourcedir
+	<#
+	Versions: VMware-VMvisor-Installer-6.0.0.update01-labbuildr-ks.x86_64
+	'6.0.0.update01','6.0.0.update02'
+    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [ValidateSet(
+    '6.0.0.update01','6.0.0.update02'
+        )]
+    [string]$labbuildresxi_ver#>
+)
+	$URL = "http://download.microsoft.com/download/E/8/A/E8A26016-25A4-49EE-8200-E4BCBF292C4A/HonoluluTechnicalPreview1709-20016.msi"
+    if (Test-Path -Path "$Destination")
+        {
+        Write-Host -ForegroundColor Gray " ==>$Destination found"
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for ISO Files"
+        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+    $FileName = Split-Path -Leaf -Path $URL
+    if (!(test-path  "$Destination\$FileName"))
+        {
+        Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+            { 
+            write-warning "Error Downloading file $Url, Please check connectivity"
+            break
+            }
+        }
+    else
+        {
+        Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
+        }
+	$msi = Join-Path $Destination $FileName
+	Write-Output $msi
+}
+
+
+
 <#
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
