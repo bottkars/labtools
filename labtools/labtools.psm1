@@ -339,7 +339,7 @@ function Set-LABNWver
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nw9201','nw9203','nw9204','nw9205',#-#           
-    'nw9111','nw9112','nw9113',#-#    
+    'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
@@ -381,7 +381,7 @@ function Set-LABnmmver
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nmm9201','nmm9203',#-#         
-    'nmm9111','nmm9112','nmm9113',#-#
+    'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#
     'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016',
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
@@ -472,7 +472,7 @@ function Set-LABNWver
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
     'nw9201','nw9203','nw9204','nw9205',#-#           
-    'nw9111','nw9112','nw9113',#-#    
+    'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
@@ -558,51 +558,141 @@ function Set-LABTimeZone
 	param (
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $false,Position = 1)][ValidateSet(
-    'W. Europe Standard Time',
-    'W. Central Africa Standard Time',
-    'E. Europe Standard Time',
-    'Egypt Standard Time',
-    'FLE Standard Time',
-    'GTB Standard Time',
-    'Israel Standard Time',
-    'South Africa Standard Time',
-    'Russian Standard Time',
-    'Arab Standard Time',
-    'E. Africa Standard Time',
-    'Arabic Standard Time',
-    'Iran Standard Time',
-    'Arabian Standard Time',
-    'Caucasus Standard Time',
-    'Transitional Islamic State of Afghanistan Standard Time',
-    'Ekaterinburg Standard Time',
-    'West Asia Standard Time',
-    'India Standard Time',
-    'Nepal Standard Time',
-    'Central Asia Standard Time',
-    'Sri Lanka Standard Time',
-    'N. Central Asia Standard Time',
-    'Myanmar Standard Time',
-    'SE Asia Standard Time',
-    'North Asia Standard Time',
-    'China Standard Time',
-    'Singapore Standard Time',
-    'Taipei Standard Time',
-    'W. Australia Standard Time',
-    'North Asia East Standard Time',
-    'Korea Standard Time',
-    'Tokyo Standard Time',
-    'Yakutsk Standard Time',
-    'AUS Central Standard Time',
-    'Cen. Australia Standard Time',
-    'AUS Eastern Standard Time',
-    'E. Australia Standard Time',
-    'Tasmania Standard Time',
-    'Vladivostok Standard Time',
-    'West Pacific Standard Time',
-    'Central Pacific Standard Time',
-    'Fiji Islands Standard Time',
-    'New Zealand Standard Time',
-    'Tonga Standard Time'
+        'Afghanistan Standard Time',
+        'Alaskan Standard Time',
+        'Aleutian Standard Time',
+        'Altai Standard Time',
+        'Arab Standard Time',
+        'Arabian Standard Time',
+        'Arabic Standard Time',
+        'Argentina Standard Time',
+        'Astrakhan Standard Time',
+        'Atlantic Standard Time',
+        'AUS Central Standard Time',
+        'Aus Central W. Standard Time',
+        'AUS Eastern Standard Time',
+        'Azerbaijan Standard Time',
+        'Azores Standard Time',
+        'Bahia Standard Time',
+        'Bangladesh Standard Time',
+        'Belarus Standard Time',
+        'Bougainville Standard Time',
+        'Canada Central Standard Time',
+        'Cape Verde Standard Time',
+        'Caucasus Standard Time',
+        'Cen. Australia Standard Time',
+        'Central America Standard Time',
+        'Central Asia Standard Time',
+        'Central Brazilian Standard Time',
+        'Central Europe Standard Time',
+        'Central European Standard Time',
+        'Central Pacific Standard Time',
+        'Central Standard Time',
+        'Central Standard Time (Mexico)',
+        'Chatham Islands Standard Time',
+        'China Standard Time',
+        'Cuba Standard Time',
+        'Dateline Standard Time',
+        'E. Africa Standard Time',
+        'E. Australia Standard Time',
+        'E. Europe Standard Time',
+        'E. South America Standard Time',
+        'Easter Island Standard Time',
+        'Eastern Standard Time',
+        'Eastern Standard Time (Mexico)',
+        'Egypt Standard Time',
+        'Ekaterinburg Standard Time',
+        'Fiji Standard Time',
+        'FLE Standard Time',
+        'Georgian Standard Time',
+        'GMT Standard Time',
+        'Greenland Standard Time',
+        'Greenwich Standard Time',
+        'GTB Standard Time',
+        'Haiti Standard Time',
+        'Hawaiian Standard Time',
+        'India Standard Time',
+        'Iran Standard Time',
+        'Israel Standard Time',
+        'Jordan Standard Time',
+        'Kaliningrad Standard Time',
+        'Kamchatka Standard Time',
+        'Korea Standard Time',
+        'Libya Standard Time',
+        'Line Islands Standard Time',
+        'Lord Howe Standard Time',
+        'Magadan Standard Time',
+        'Magallanes Standard Time',
+        'Marquesas Standard Time',
+        'Mauritius Standard Time',
+        'Mid-Atlantic Standard Time',
+        'Middle East Standard Time',
+        'Montevideo Standard Time',
+        'Morocco Standard Time',
+        'Mountain Standard Time',
+        'Mountain Standard Time (Mexico)',
+        'Myanmar Standard Time',
+        'N. Central Asia Standard Time',
+        'Namibia Standard Time',
+        'Nepal Standard Time',
+        'New Zealand Standard Time',
+        'Newfoundland Standard Time',
+        'Norfolk Standard Time',
+        'North Asia East Standard Time',
+        'North Asia Standard Time',
+        'North Korea Standard Time',
+        'Omsk Standard Time',
+        'Pacific SA Standard Time',
+        'Pacific Standard Time',
+        'Pacific Standard Time (Mexico)',
+        'Pakistan Standard Time',
+        'Paraguay Standard Time',
+        'Romance Standard Time',
+        'Russia Time Zone 10',
+        'Russia Time Zone 11',
+        'Russia Time Zone 3',
+        'Russian Standard Time',
+        'SA Eastern Standard Time',
+        'SA Pacific Standard Time',
+        'SA Western Standard Time',
+        'Saint Pierre Standard Time',
+        'Sakhalin Standard Time',
+        'Samoa Standard Time',
+        'Saratov Standard Time',
+        'SE Asia Standard Time',
+        'Singapore Standard Time',
+        'South Africa Standard Time',
+        'Sri Lanka Standard Time',
+        'Syria Standard Time',
+        'Taipei Standard Time',
+        'Tasmania Standard Time',
+        'Tocantins Standard Time',
+        'Tokyo Standard Time',
+        'Tomsk Standard Time',
+        'Tonga Standard Time',
+        'Transbaikal Standard Time',
+        'Turkey Standard Time',
+        'Turks And Caicos Standard Time',
+        'Ulaanbaatar Standard Time',
+        'US Eastern Standard Time',
+        'US Mountain Standard Time',
+        'UTC',
+        'UTC+12',
+        'UTC+13',
+        'UTC-02',
+        'UTC-08',
+        'UTC-09',
+        'UTC-11',
+        'Venezuela Standard Time',
+        'Vladivostok Standard Time',
+        'W. Australia Standard Time',
+        'W. Central Africa Standard Time',
+        'W. Europe Standard Time',
+        'W. Mongolia Standard Time',
+        'West Asia Standard Time',
+        'West Bank Standard Time',
+        'West Pacific Standard Time',
+        'Yakutsk Standard Time'
     )]$TimeZone = 'W. Europe Standard Time'
     )
 if (!(Test-Path $Defaultsfile))
@@ -610,6 +700,549 @@ if (!(Test-Path $Defaultsfile))
     Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
     New-LABdefaults -Defaultsfile $Defaultsfile
     }
+Switch ($TimeZone)
+    {
+        'Afghanistan Standard Time'
+        {
+        $tzdata = 'Asia/Kabul'
+        }
+        'Alaskan Standard Time'
+        {
+        $tzdata = 'America/Anchorage'
+        }
+        'Aleutian Standard Time'
+        {
+        $tzdata = 'America/Adak'
+        }
+        'Altai Standard Time'
+        {
+        $tzdata = 'Asia/Barnaul'
+        }
+        'Arab Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Arabian Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Arabic Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Argentina Standard Time'
+        {
+        $tzdata = 'Asia/Bahrain'
+        }
+        'Astrakhan Standard Time'
+        {
+        $tzdata = 'Europe/Astrakhan'
+        }
+        'Atlantic Standard Time'
+        {
+        $tzdata = 'America/Moncton'
+        }
+        'AUS Central Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Aus Central W. Standard Time'
+        {
+        $tzdata = 'Australia/ACT'
+        }
+        'AUS Eastern Standard Time'
+        {
+        $tzdata = 'Australia/Currie'
+        }
+        'Azerbaijan Standard Time'
+        {
+        $tzdata = 'Asia/Baku'
+        }
+        'Azores Standard Time'
+        {
+        $tzdata = 'Atlantic/Azores'
+        }
+        'Bahia Standard Time'
+        {
+        $tzdata = 'America/Bahia'
+        }
+        'Bangladesh Standard Time'
+        {
+        $tzdata = 'Asia/Kashgar'
+        }
+        'Belarus Standard Time'
+        {
+        $tzdata = 'Europe/Minsk'
+        }
+        'Bougainville Standard Time'
+        {
+        $tzdata = 'Pacific/Port_Moresby'
+        }
+        'Canada Central Standard Time'
+        {
+        $tzdata = 'America/Winnipeg'
+        }
+        'Cape Verde Standard Time'
+        {
+        $tzdata = 'Atlantic/Cape_Verde'
+        }
+        'Caucasus Standard Time'
+        {
+        $tzdata = 'Asia/Baku'
+        }
+        'Cen. Australia Standard Time'
+        {
+        $tzdata = 'Australia/Adelaide'
+        }
+        'Central America Standard Time'
+        {
+        $tzdata = 'America/Matamoros'
+        }
+        'Central Asia Standard Time'
+        {
+        $tzdata = 'Asia/Dhaka'
+        }
+        'Central Brazilian Standard Time'
+        {
+        $tzdata = 'America/Sao_Paulo'
+        }
+        'Central Europe Standard Time'
+        {
+        $tzdata = 'Europe/Berlin'
+        }
+        'Central European Standard Time'
+        {
+        $tzdata = 'Europe/Berlin'
+        }
+        'Central Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Central Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Central Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Chatham Islands Standard Time'
+        {
+        $tzdata = ''
+        }
+        'China Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Cuba Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Dateline Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Australia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. Europe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'E. South America Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Easter Island Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Eastern Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Egypt Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Ekaterinburg Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Fiji Standard Time'
+        {
+        $tzdata = ''
+        }
+        'FLE Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Georgian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'GMT Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Greenland Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Greenwich Standard Time'
+        {
+        $tzdata = ''
+        }
+        'GTB Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Haiti Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Hawaiian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'India Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Iran Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Israel Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Jordan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Kaliningrad Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Kamchatka Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Korea Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Libya Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Line Islands Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Lord Howe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Magadan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Magallanes Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Marquesas Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mauritius Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mid-Atlantic Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Middle East Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Montevideo Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Morocco Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mountain Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Mountain Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Myanmar Standard Time'
+        {
+        $tzdata = ''
+        }
+        'N. Central Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Namibia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Nepal Standard Time'
+        {
+        $tzdata = ''
+        }
+        'New Zealand Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Newfoundland Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Norfolk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Asia East Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'North Korea Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Omsk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific SA Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Pacific Standard Time (Mexico)'
+        {
+        $tzdata = ''
+        }
+        'Pakistan Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Paraguay Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Romance Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 10'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 11'
+        {
+        $tzdata = ''
+        }
+        'Russia Time Zone 3'
+        {
+        $tzdata = ''
+        }
+        'Russian Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SA Western Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Saint Pierre Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Sakhalin Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Samoa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Saratov Standard Time'
+        {
+        $tzdata = ''
+        }
+        'SE Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Singapore Standard Time'
+        {
+        $tzdata = ''
+        }
+        'South Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Sri Lanka Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Syria Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Taipei Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tasmania Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tocantins Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tokyo Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tomsk Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Tonga Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Transbaikal Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Turkey Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Turks And Caicos Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Ulaanbaatar Standard Time'
+        {
+        $tzdata = ''
+        }
+        'US Eastern Standard Time'
+        {
+        $tzdata = ''
+        }
+        'US Mountain Standard Time'
+        {
+        $tzdata = ''
+        }
+        'UTC'
+        {
+        $tzdata = ''
+        }
+        'UTC+12'
+        {
+        $tzdata = ''
+        }
+        'UTC+13'
+        {
+        $tzdata = ''
+        }
+        'UTC-02'
+        {
+        $tzdata = ''
+        }
+        'UTC-08'
+        {
+        $tzdata = ''
+        }
+        'UTC-09'
+        {
+        $tzdata = ''
+        }
+        'UTC-11'
+        {
+        $tzdata = ''
+        }
+        'Venezuela Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Vladivostok Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Australia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Central Africa Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Europe Standard Time'
+        {
+        $tzdata = ''
+        }
+        'W. Mongolia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Asia Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Bank Standard Time'
+        {
+        $tzdata = ''
+        }
+        'West Pacific Standard Time'
+        {
+        $tzdata = ''
+        }
+        'Yakutsk Standard Time'
+        {
+        $tzdata = ''
+        }
+    }    
     $Global:labdefaults.TimeZone= $TimeZone
     Write-Host -ForegroundColor Gray " ==>setting $Timezone"
     Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
@@ -1973,7 +2606,7 @@ param
 	<#
     Version Of Networker Server / Client to be installed
     'nw9201','nw9203','nw9204','nw9205',#-#       
-    'nw9111','nw9112','nw9113',#-#
+    'nw9111','nw9112','nw9113','nw9114','nw9115',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
@@ -1997,7 +2630,7 @@ param
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
     'nw9201','nw9203','nw9204','nw9205',#-#           
-    'nw9111','nw9112','nw9113',#-#    
+    'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
     'nw9010','nw9011','nw9012','nw9013','nw9014','nw9015','nw9016','nw9017','nw9018','nw9019',#
     'nw90.DA','nw9001','nw9002','nw9003','nw9004','nw9005','nw9006','nw9007','nw9008',
@@ -2501,7 +3134,7 @@ param
     (
     <#
     'nmm9201','nmm9203',#-# 
-    'nmm9111','nmm9112','nmm9113',#-#   
+    'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
@@ -2512,7 +3145,7 @@ param
 	#>
     [ValidateSet(
     'nmm9201','nmm9203',#-#         
-    'nmm9111','nmm9112','nmm9113',#-#   
+    'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
     'nmm9010','nmm9011','nmm9012','nmm9013','nmm9014','nmm9015','nmm9016','nmm9017','nmm9018','nmm9019',#
     'nmm90.DA','nmm9001','nmm9002','nmm9003','nmm9004','nmm9005','nmm9006','nmm9007','nmm9008',
@@ -2731,7 +3364,7 @@ function Receive-LABSysCtrInstallers
 	[OutputType([psobject])]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('SC2012_R2','SC2016')]
+    [ValidateSet('SC2012_R2','SC2016','SC1711')]
     $SC_VERSION = "SC2012_R2",
     [Parameter(Mandatory = $true)][ValidateSet('SCOM','SCVMM','SCO','SCDPM','ConfigMGR','SCAC')]$Component,
     [Parameter(Mandatory = $true)][String]$Destination,
@@ -2813,12 +3446,13 @@ if ($Component -match 'SCVMM')
             }
         }
     }
-Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452   
+ 
 
 switch ($SC_Version)
     {
         "SC2012_R2"
             {
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 452  
             $adkurl = "http://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe" # ADKSETUP 8.1
             $URL = "http://care.dlservice.microsoft.com/dl/download/evalx/sc2012r2/SC2012_R2_SCVMM.exe"
             $WAIK_VER = "WAIK_8.1"
@@ -2830,6 +3464,7 @@ switch ($SC_Version)
 			}
         "SC2016"
             {
+            Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 462  
             $adkurl = "http://download.microsoft.com/download/9/A/E/9AE69DD5-BA93-44E0-864E-180F5E700AB4/adk/adksetup.exe" #ADKsetup 10_1607
             $URL = "http://care.dlservice.microsoft.com/dl/download/2/B/8/2B8C6E4F-7918-40A6-9785-986D4D1175A5/SC2016_SCVMM.EXE"
             $WAIK_VER = "WAIK_10_1607"
@@ -2837,10 +3472,19 @@ switch ($SC_Version)
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2016/10/kb3190597_vmmserver_amd64_e9309c8483010256b1b7fb4983572f2dcb04c80c.cab"
 			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/01/kb3209586_vmmserver_amd64_2d0a8b66564aaac2459959d2b7c142e07e0d939c.cab"
-            $Latest_UR_SERVER ="http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/02/kb4011491_vmmserver_amd64_dd697546265af71d9edc388fe23803dad3146271.cab"
-            $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/02/kb4011492_adminconsole_amd64_2e008dcc1aa7f36bb3f449be93debca9314ffc78.cab"
-			$UR = $true
+            #ur3 $Latest_UR_SERVER ="http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/02/kb4011491_vmmserver_amd64_dd697546265af71d9edc388fe23803dad3146271.cab"
+            #ur3 $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/02/kb4011492_adminconsole_amd64_2e008dcc1aa7f36bb3f449be93debca9314ffc78.cab"
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041074_vmmserver_amd64_489efcd1e1a7ca899ee124429ac14b62dbcc5523.cab'
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/kb4041075_adminconsole_amd64_fa30a090c7b782ece4d4a96d478b45a5e50856aa.cab'
+            $UR = $true
             }
+        'SC1711'
+            {
+                Receive-LABNetFramework -Destination $Prereq_Dir -Net_Ver 47  
+                $adkurl = 'http://download.microsoft.com/download/3/1/E/31EC1AAF-3501-4BB4-B61C-8BD8A07B4E8A/adk/adksetup.exe'
+                $WAIK_VER = "WAIK_10_1709"
+                $URL = 'http://care.dlservice.microsoft.com/dl/download/D/3/A/D3AA698D-61BB-4263-8B80-F85A35523504/SCVMM_Preview_1711.exe'
+            }    
     }# end switch
     Write-Host -ForegroundColor Gray " ==>Testing $WAIK_VER in $Destination"
     $WAIK_DIR = Join-Path $Destination $WAIK_VER
@@ -2869,6 +3513,16 @@ if ($Component -match 'SCOM')
 		        
 			Switch ($SC_VERSION)
 				{
+                'SC1711'
+                    {
+                        $DownloadUrls= (
+                            'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi',
+                            #'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi',
+                            #'http://download.microsoft.com/download/F/B/7/FB728406-A1EE-4AB5-9C56-74EB8BDDF2FF/ReportViewer.msi',
+                            'http://download.microsoft.com/download/F/E/D/FEDB200F-DE2A-46D8-B661-D019DFE9D470/ENU/x64/SQLSysClrTypes.msi'
+                
+                        )
+                    }    
 				'SC2016'
 					{
 					$DownloadUrls= (
@@ -2923,11 +3577,16 @@ if ($Component -match 'SCOM')
 			#$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-server_98ce5e30a75646f68eb65351b10e2fea1384b83b.cab"
 			#$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/10/kb3190029-amd64-enu-console_dc7df4d8fc15f24ee7331c423b98c22cf6c9c6ab.cab"
 			#ur2
-			$Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
-			$Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
-
+			# $Latest_UR_SERVER = "http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/02/kb3209591-amd64-server_003575ae652462b88e8593f893e7fc9b73144636.cab"
+			# $Latest_UR_ADMINCONSOLE = "http://download.windowsupdate.com/c/msdownload/update/software/uprl/2017/02/kb3209591-amd64-enu-console_a1956c8cc78ba17719bf451d08629d6e04aba7ad.cab"
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-enu-console_d8b4b748c7b47d3122f8386a5488b2f00394cbbb.cab'
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/uprl/2017/10/kb4024941-amd64-server_aa3a0e186f4472c985f28bbcd720ca4811e81c0a.cab'
 			$UR = $true
-			}
+            }
+        'SC1711'
+            {
+                $url = "http://care.dlservice.microsoft.com/dl/download/C/F/A/CFA08B3B-0C19-448B-BD98-3027CC8537BF/SCOM_Preview_1711_EN.exe"
+            }    
         }    
 }#end scom
 if ($Component -match 'SCDPM')
@@ -2943,7 +3602,16 @@ if ($Component -match 'SCDPM')
         "SC2016"
             {
             $URL = "http://care.dlservice.microsoft.com/dl/download/1/6/6/166A63BF-E3CE-49EF-8E8D-D599995C6E75/SC2016_SCDPM.EXE"
+            #ur4
+            $Latest_UR_ADMINCONSOLE = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmcentralconsoleserver-kb4043316_a43818cd18cea10a395fdf4928abfcdea332a5a0.exe'
+            $Latest_UR_SHELL = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dpmmanagementshell2016-kb4043316_9c21c53b5baff3e52d72a983d182806f25f99bf7.exe'
+            $Latest_UR_SERVER = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/10/dataprotectionmanager2016-kb4043316_05b386d8edc88537dc9592cc3644eddbb313546b.exe'
+            $UR = $true
             }
+        'SC1711'
+            {
+            $URL = 'http://care.dlservice.microsoft.com/dl/download/A/3/D/A3DAFB43-D5B0-42F7-9109-B060B2D43C31/SCDPM_Preview_1711.exe'    
+            }    
         }    
 }#end scdpm
 
@@ -2977,37 +3645,40 @@ if ($Component -match 'SCDPM')
 	if ($UR)
 	{
 		Write-Host "Downloading URs"
-		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER))
+		foreach ($URL in ($Latest_UR_ADMINCONSOLE,$Latest_UR_SERVER,$Latest_UR_SHELL))
 		{
-			$Component_Dir = Join-Path $Product_Dir $Component
-            if (!(test-path $Component_Dir))
+            if ($URL)
                 {
-                    New-Item -ItemType Directory $Component_Dir
-                }
-			$Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
-            if (!(test-path $Update_Dir))
-                {
-                    New-Item -ItemType Directory $Update_Dir
-                }
-			$FileName = Split-Path -Leaf -Path $Url
-			$Update_File = Join-Path $Update_Dir $FileName
-			Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
-			if (!(test-path  "$Update_File") -or $force.IsPresent) 
-				{
-				Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
+                $Component_Dir = Join-Path $Product_Dir $Component
+                if (!(test-path $Component_Dir))
+                    {
+                        New-Item -ItemType Directory $Component_Dir
+                    }
+                $Update_Dir = Join-Path $Component_Dir "$($Component)Updates"
+                if (!(test-path $Update_Dir))
+                    {
+                        New-Item -ItemType Directory $Update_Dir
+                    }
+                $FileName = Split-Path -Leaf -Path $Url
+                $Update_File = Join-Path $Update_Dir $FileName
+                Write-Host -ForegroundColor Gray " ==>Testing $SC_Version Updates"
+                if (!(test-path  "$Update_File") -or $force.IsPresent) 
+                    {
+                    Write-Host -ForegroundColor Gray " ==>Getting $Update_File, Could take a While"
 
-				if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Update_File"))
-					{ 
-					write-warning "Error Downloading file $Url, Please check connectivity"
-					}
-				}
-			if ($unzip.IsPresent -and $Update_File -match ".cab") 
-				{
-					Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
-					#Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-					#Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
-					#$return = $true
-				}
+                    if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Update_File"))
+                        { 
+                        write-warning "Error Downloading file $Url, Please check connectivity"
+                        }
+                    }
+                if ($unzip.IsPresent -and $Update_File -match ".cab") 
+                    {
+                        Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
+                        #Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
+                        #Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+                        #$return = $true
+                    }
+                }
 			}	
 		}
 return $returnvalue
@@ -4344,7 +5015,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -4357,7 +5028,7 @@ param(
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -4533,7 +5204,8 @@ function Receive-LABSQL
     [ValidateSet(#'SQL2014SP1slip','SQL2012','SQL2012SP1','SQL2012SP2','SQL2012SP1SLIP','SQL2014','SQL2016',
 	'SQL2012_ISO',
 	'SQL2014SP2_ISO',
-	'SQL2016_ISO')]$SQLVER,
+    'SQL2016_ISO',
+    'SQL2017_ISO')]$SQLVER,
     [String]$Destination,
     [String]$Product_Dir= "SQL",
     [String]$Prereq = "prereq",
@@ -4553,6 +5225,7 @@ function Receive-LABSQL
     $SQL2014SP1SLIP_INST = "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.exe"
     $SQL2014SP1SLIP_box= "http://care.dlservice.microsoft.com/dl/download/2/F/8/2F8F7165-BB21-4D1E-B5D8-3BD3CE73C77D/SQLServer2014SP1-FullSlipstream-x64-ENU.box"
     $SQL2016_ISO = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.iso"
+    $SQL2017_ISO = 'https://download.microsoft.com/download/E/F/2/EF23C21D-7860-4F05-88CE-39AA114B014B/SQLServer2017-x64-ENU.iso'
     $SQL2014SP2_ISO = "http://care.dlservice.microsoft.com/dl/download/6/D/9/6D90C751-6FA3-4A78-A78E-D11E1C254700/SQLServer2014SP2-FullSlipstream-x64-ENU.iso"
 	$SQL2012_ISO = "https://download.microsoft.com/download/4/C/7/4C7D40B9-BCF8-4F8A-9E76-06E9B92FE5AE/ENU/SQLFULL_ENU.iso"
 	$SQL2016_box = "http://care.dlservice.microsoft.com/dl/download/F/E/9/FE9397FA-BFAB-4ADD-8B97-91234BC774B2/SQLServer2016-x64-ENU.box"
@@ -4562,8 +5235,9 @@ function Receive-LABSQL
 	#$SQL2016_SSMS = "https://download.microsoft.com/download/C/B/C/CBCFAAD1-2348-4119-B093-199EE7AADCBC/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS = "https://download.microsoft.com/download/9/3/3/933EA6DD-58C5-4B78-8BEC-2DF389C72BE0/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS ="https://download.microsoft.com/download/5/0/B/50B02ECB-CB5C-4C23-A1D3-DAB4467604DA/SSMS-Setup-ENU.exe"
-    $sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
-	$SSMS_LATEST = '17.2'
+    #$sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
+    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-DEU.exe'
+    $SSMS_LATEST = '17.3'
 	#$SSMS_LATEST = '16.5.3'
 	$Product_Dir = Join-Path $Destination $Product_Dir
 
@@ -4682,7 +5356,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
+    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
     )]
     [string]$KB = 'KB4041688'
 )
@@ -4720,7 +5394,11 @@ Switch ($KB)
     'KB4041688'
         {
         $Url = 'http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/10/windows10.0-kb4041688-x64_a098c258a1d8f6b4bbfff87ee5ab687d629d3bd9.msu'
-        }   
+        }
+    'KB4052231'
+        {
+        $url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/11/windows10.0-kb4052231-x64_463cd0a310785400394ca5648f6634f1244263ff.msu'
+        }      
     }
     if (Test-Path -Path "$Destination")
         {
@@ -4759,7 +5437,7 @@ param(
     <#
 	Available Masters:
 	==================
-    '2016TP5','2016TP5_GER','2016','2016core',#
+    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
@@ -4767,7 +5445,7 @@ param(
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'   
     )]
@@ -4793,7 +5471,7 @@ function Set-LABWindows2016KB
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
 	[ValidateSet(
-    'KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
+    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
     )]$Server2016KB 
 
     )
@@ -4826,33 +5504,30 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451','452','46','461','462'
+    '451','452','46','461','462','47'
     )]
     [string]$Net_Ver="452"
 )
 
-Switch ($Net_Ver)
-    {
-    '451'
-        {
-        $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
+    Switch ($Net_Ver) {
+        '451' {
+            $Url = "https://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
         }
-    '452'
-        {
-        $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+        '452' {
+            $Url = "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
         }
-    '46'
-        {
-        $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
+        '46' {
+            $Url = "https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe"
         }
-    '461'
-        {
-        $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
+        '461' {
+            $Url = "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe"
         }
-	'462'
-		{
-		$Url = "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-		}
+        '462' {
+            $Url = "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+        }
+        '47' {
+            $Url = 'https://download.microsoft.com/download/D/D/3/DD35CC25-6E9C-484B-A746-C5BE0C923290/NDP47-KB3186497-x86-x64-AllOS-ENU.exe'
+        }
     }
     if (Test-Path -Path "$Destination")
         {
@@ -5563,7 +6238,7 @@ param(
     $Masterpath="./",
 	<#
 	Possible Master for labbuildr:
-	'2016TP5','2016TP5_GER','2016','2016core',#
+	'2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -5576,7 +6251,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
-    '2016','2016core',#
+    '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -5803,7 +6478,7 @@ param
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
-    '2016','2016core',#
+    '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
     )]
