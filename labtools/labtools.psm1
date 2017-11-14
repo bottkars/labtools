@@ -6302,6 +6302,7 @@ switch ($mastertype)
             else
                 {
                 Write-Warning "No valid master found /downloaded"
+                Write-Host "For Windows Server RSx Masters (1709, insider), see http://labbuildr.readthedocs.io/en/master/appendix/Creating_a_Windows_Master/#creating-a-preview-master"
                 break
                 }
             $MasterVMX = Get-vmx -path (join-path $Masterpath $Master) -WarningAction SilentlyContinue
