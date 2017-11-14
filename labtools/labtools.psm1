@@ -5014,7 +5014,8 @@ param(
     $Destination="./",
     <#
 	Available Masters:
-	==================
+    ==================
+    'WS_1709','WS_Preview_RS4',#
     '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
@@ -5027,7 +5028,8 @@ param(
     'photon-1.0-rev2'
 	#>
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
-    [ValidateSet(
+    [ValidateSet(    
+    'WS_1709','WS_Preview_RS4',#
     '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -5437,6 +5439,7 @@ param(
     <#
 	Available Masters:
 	==================
+    'WS_1709','WS_Preview_RS4',#
     '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
@@ -5445,6 +5448,7 @@ param(
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
+    'WS_1709','WS_Preview_RS4',#
     '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'   
@@ -6238,7 +6242,8 @@ param(
     $Masterpath="./",
 	<#
 	Possible Master for labbuildr:
-	'2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
+    'WS_1709','WS_Preview_RS4',#
+    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
     '2016TP4',
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -6251,6 +6256,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
+    'WS_1709','WS_Preview_RS4',#
     '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
@@ -6478,6 +6484,7 @@ param
 	$CentOS_ver = 'Centos7_3_1611',
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
+    'WS_1709','WS_Preview_RS4',#
     '2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
