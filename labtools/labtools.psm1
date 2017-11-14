@@ -5126,7 +5126,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
     {
     if ($FileName -match "WS")
         {
-            Write-Warning "WS Masters are Insider or VL/MSDN only ... Plese create your own private Master following
+            Write-Warning "WS Masters are Insider or VL/MSDN restricted only ... Please create your own private Master following
             http://labbuildr.readthedocs.io/en/master/appendix/Creating_a_Windows_Master/#creating-a-preview-master"
             exit
         }
