@@ -5128,7 +5128,7 @@ if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
         {
             Write-Warning "WS Masters are Insider or VL/MSDN only ... Plese create your own private Master following
             http://labbuildr.readthedocs.io/en/master/appendix/Creating_a_Windows_Master/#creating-a-preview-master"
-            break
+            exit
         }
     Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
     Write-Verbose $ConfirmPreference
