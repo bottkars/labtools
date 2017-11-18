@@ -2503,7 +2503,7 @@ param (
                 Write-Host -ForegroundColor Gray " ==>we have $repo version $latest_local_Git, $latest_OnGit is online !"
                 if ($latest_local_Git -lt $latest_OnGit -or $force.IsPresent )
                     {
-                    $Updatepath = "$Builddir\Update"
+                    $Updatepath = "$Builddir/Update"
 					if (!(Get-Item -Path $Updatepath -ErrorAction SilentlyContinue))
 					        {
 						    $newDir = New-Item -ItemType Directory -Path "$Updatepath" | out-null
@@ -2514,10 +2514,10 @@ param (
                         Write-Host -ForegroundColor Gray " ==>Cleaning $Destination"
                         Remove-Item -Path $Destination -Recurse -ErrorAction SilentlyContinue
                         }
-                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir\update\$repo-$branch.zip" -ignoresize
-                    Expand-LABZip -zipfilename "$Builddir\update\$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
+                    Get-LABHttpFile -SourceURL $Zip -TarGetFile "$Builddir/update/$repo-$branch.zip" -ignoresize
+                    Expand-LABZip -zipfilename "$Builddir/update/$repo-$branch.zip" -destination $Destination -Folder $repo-$branch
                     $Isnew = $true
-                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"\$repo-$branch.gitver") 
+                    $request.Headers.'Last-Modified' | Set-Content ($Builddir+"/$repo-$branch.gitver") 
                     }
                 else 
                     {
@@ -3495,9 +3495,9 @@ switch ($SC_Version)
     $FileName = Split-Path -Leaf -Path $adkurl
     if (!(test-path  (join-path $WAIK_DIR 'Installers')))
         {
-        # New-Item -ItemType Directory -Path "$Destination\$Prereqdir\WAIK" -Force | Out-Null
+        # New-Item -ItemType Directory -Path "$Destination/$Prereqdir/WAIK" -Force | Out-Null
         Write-Host -ForegroundColor Gray " ==>Trying Download of $WAIK_VER"
-        if (!(Receive-LABBitsFile -DownLoadUrl $adkurl -destination "$WAIK_DIR\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $adkurl -destination "$WAIK_DIR/$FileName"))
             { 
             write-warning "Error Downloading file $adkurl, Please check connectivity"
             exit
@@ -3638,7 +3638,7 @@ if ($Component -match 'SCDPM')
         else
             {
             Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-            Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+            Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/SP- /dir=$Product_Dir/$Component /SILENT" -Wait
             $returnvalue = $true
             }
         }
@@ -3675,7 +3675,7 @@ if ($Component -match 'SCDPM')
                     {
                         Expand-LABpackage -Archive $Update_File -destination $Update_Dir -force
                         #Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-                        #Start-Process "$Product_Dir\$FileName" -ArgumentList "/SP- /dir=$Product_Dir\$Component /SILENT" -Wait
+                        #Start-Process "$Product_Dir/$FileName" -ArgumentList "/SP- /dir=$Product_Dir/$Component /SILENT" -Wait
                         #$return = $true
                     }
                 }
@@ -3880,7 +3880,7 @@ if ($unzip.IsPresent -and $Filename.Contains(".exe"))
     else
         {
         Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-        Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir\$SP_version$sp_cu /passive" -Wait
+        Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir/$SP_version$sp_cu /passive" -Wait
         $return = $true
         }
     }
@@ -4207,7 +4207,7 @@ If ($Exchange2010)
         if (!(test-path  (join-path $LANG_Prereq_Dir $FileName)))
             {
             Write-Host -ForegroundColor Gray " ==>$FileName not found, trying Download"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$LANG_Prereq_Dir\$FileName"))
+            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$LANG_Prereq_Dir/$FileName"))
                 { 
                 write-warning "Error Downloading file $Url, Please check connectivity"
                 exit
@@ -4218,12 +4218,12 @@ If ($Exchange2010)
             Write-Host -ForegroundColor Gray  " ==>found $Filename in $LANG_Prereq_Dir"
             }
         }
-    Write-Host -ForegroundColor Gray " ==>Testing $LANG_Prereq_Dir\ExchangeMapiCdo\ExchangeMapiCdo.msi"      
+    Write-Host -ForegroundColor Gray " ==>Testing $LANG_Prereq_Dir/ExchangeMapiCdo/ExchangeMapiCdo.msi"      
     if (!(test-path  "$LANG_Prereq_Dir/ExchangeMapiCdo/ExchangeMapiCdo.msi"))
         {
         Write-Host -ForegroundColor Gray " ==>Extracting MAPICDO"
         Expand-LABpackage -Archive (Join-Path $LANG_Prereq_Dir 'ExchangeMapiCdo.EXE')-destination $LANG_Prereq_Dir
-		#Start-Process -FilePath "$LANG_Prereq_Dir\ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
+		#Start-Process -FilePath "$LANG_Prereq_Dir/ExchangeMapiCdo.EXE" -ArgumentList "/x:$LANG_Prereq_Dir /q" -Wait
         }
 
 #"https://download.microsoft.com/download/D/E/9/DE977823-1438-46F2-BFD4-14B3B630D165/Exchange2010-KB3141339-x64-de.msp"
@@ -4338,7 +4338,7 @@ If ($Exchange2010)
             $Downloadfile = Join-Path $UR_Download_Path $FileName
             if (!(test-path  $Downloadfile))
                 {
-                Write-Host -ForegroundColor Gray " ==>we are now downloading $Product_Dir\$FileName from $url, this may take a while"
+                Write-Host -ForegroundColor Gray " ==>we are now downloading $Product_Dir/$FileName from $url, this may take a while"
                 if ($PSCmdlet.MyInvocation.BoundParameters["verbose"].IsPresent)
                     {
                     Write-Host -ForegroundColor Gray " ==>Press any Key to continue"
@@ -4390,7 +4390,7 @@ If ($Exchange2010)
             else
                 {
                 Write-Host -ForegroundColor Gray " ==>we are going to extract $FileName, this may take a while"
-                Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir\$ex_version$ex_cu /passive" -Wait
+                Start-Process (join-path $Product_Dir $FileName) -ArgumentList "/extract:$Product_Dir/$ex_version$ex_cu /passive" -Wait
                 $return = $true
                 }
             }
@@ -4906,7 +4906,7 @@ if ($install.IsPresent)
 	foreach ($file in $files)
 		{
 		Write-Host " ==>Copying $File to $target_dir"
-		Get-ChildItem -Path "$target_dir\PFiles" -Recurse -Filter $file | Copy-Item -Destination $target_dir -Force -PassThru} 
+		Get-ChildItem -Path "$target_dir/PFiles" -Recurse -Filter $file | Copy-Item -Destination $target_dir -Force -PassThru} 
 		Write-Host " ==>getting DockerMachineDriver for VMware"
 		$Download_URL = "https://github.com/pecigonzalo/docker-machine-vmwareworkstation/releases/download/v1.0.10/docker-machine-driver-vmwareworkstation.exe"
 		$Destination_File = Join-Path $target_dir ( Split-Path -Leaf $Download_URL) 
@@ -5336,7 +5336,7 @@ function Receive-LABSQL
             write-warning "Error Downloading file $Url, Please check connectivity"
             exit 
             }
-        #Unblock-File "$SQL_BASEDir\$FileName"
+        #Unblock-File "$SQL_BASEDir/$FileName"
         }
     Write-Host -ForegroundColor Gray " ==>$SQLVER is now available in $SQL_BASEDir"
     return $True
@@ -5631,10 +5631,10 @@ $link = $File.Split('"') | where {$_ -Match "/download"}
 $URL = "https://slproweb.com" + $($link)
 Write-Verbose " ==>got $URL"
     $FileName = Split-Path -Leaf -Path $Url
-    if (!(test-path  "$Destination\$FileName"))
+    if (!(test-path  "$Destination/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination/$FileName"))
             { write-warning "Error Downloading file $Url, Please check connectivity"
             exit
             }
@@ -5715,10 +5715,10 @@ catch
 $URL = $Parse.href
 Write-Verbose " ==>got $URL"
     $FileName = Split-Path -Leaf -Path $Url
-    if (!(test-path  "$Destination\$FileName"))
+    if (!(test-path  "$Destination/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination/$FileName"))
             { write-warning "Error Downloading file $Url, Please check connectivity"
             exit
             }
@@ -5823,10 +5823,10 @@ $URL= ($Parse | Select-Object -First 1).href
 $FileName = Split-Path -Leaf $URL
 Write-Verbose " ==>got $URL"
     $FileName = Split-Path -Leaf -Path $Url
-    if (!(test-path  "$Product_Dir\$FileName"))
+    if (!(test-path  "$Product_Dir/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
-        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Product_Dir\$FileName"))
+        if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination "$Product_Dir/$FileName"))
             { write-warning "Error Downloading file $Url, Please check connectivity"
             exit
             }
@@ -6093,10 +6093,10 @@ param(
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
     $FileName = Split-Path -Leaf -Path $URL
-    if (!(test-path  "$Destination\$FileName"))
+    if (!(test-path  "$Destination/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination/$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             break
@@ -6140,10 +6140,10 @@ param(
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
     $FileName = Split-Path -Leaf -Path $URL
-    if (!(test-path  "$Destination\$FileName"))
+    if (!(test-path  "$Destination/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination/$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             break
@@ -6211,10 +6211,10 @@ if (Test-Path -Path "$Destination")
         New-Item -ItemType Directory -Path $Destination -Force | Out-Null
         }
     $FileName = Split-Path -Leaf -Path $URL
-    if (!(test-path  "$Destination\$FileName"))
+    if (!(test-path  "$Destination/$FileName"))
         {
         Write-Host -ForegroundColor Gray " ==>$FileName not found, Trying to Download"
-        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination\$FileName"))
+        if (!($recvOK = Receive-LABBitsFile -DownLoadUrl $URL -destination "$Destination/$FileName"))
             { 
             write-warning "Error Downloading file $Url, Please check connectivity"
             break
@@ -6321,7 +6321,7 @@ switch ($mastertype)
         }
     "hyperv"
         {
-        Write-Host -ForegroundColor Magenta " ==>Testing for Hyper-V Master $Masterpath\$Master.vhdx"
+        Write-Host -ForegroundColor Magenta " ==>Testing for Hyper-V Master $Masterpath/$Master.vhdx"
         if (!($MasterVMX = (Get-ChildItem -Path $Masterpath -Filter "$Master.vhdx" -Recurse).FullName))
             {
             Write-Host -ForegroundColor Yellow " ==>Could not find "(join-path $Masterpath "$Master.vhdx")
@@ -6395,13 +6395,13 @@ $readerfiles =
 foreach ($url in $readerfiles)
     {
     $File = Split-Path -Leaf $url
-    if (!(Test-Path "$Product_Dir\$File") -or $force.IsPresent)
+    if (!(Test-Path "$Product_Dir/$File") -or $force.IsPresent)
 	    {
-        Get-LABFTPFile -Source $url -TarGet  "$Product_Dir\$File" -Verbose
+        Get-LABFTPFile -Source $url -TarGet  "$Product_Dir/$File" -Verbose
         }
     else
         {
-        Write-Host -ForegroundColor Gray " ==>File $Product_Dir\$File already exists, use -Force to overwrite"
+        Write-Host -ForegroundColor Gray " ==>File $Product_Dir/$File already exists, use -Force to overwrite"
         }
     }
 }
@@ -6425,7 +6425,7 @@ if ($dcvmx = get-vmx $DCNODE -WarningAction SilentlyContinue)
 	    $dcvmx | Wait-VMXuserloggedIn -username  Administrator
 	    write-verbose "Verifiying Domainsetup"
         $EnableFolders = get-vmx -path $DCNODE | Set-VMXSharedFolderState -enabled
-	    $Checkdom = $dcvmx | Invoke-VMXPowershell -Guestuser $Adminuser -Guestpassword $Adminpassword -ScriptPath "$IN_Guest_UNC_Scriptroot\$DCNODE" -Script checkdom.ps1 # $CommonParameter
+	    $Checkdom = $dcvmx | Invoke-VMXPowershell -Guestuser $Adminuser -Guestpassword $Adminpassword -ScriptPath "$IN_Guest_UNC_Scriptroot/$DCNODE" -Script checkdom.ps1 # $CommonParameter
 	    $BuildDomain, $RunningIP, $VMnet, $MyGateway = test-domainsetup
 	    $IPv4Subnet = convert-iptosubnet $RunningIP
 	    $Work_Items +=  " ==>will Use Domain $BuildDomain and Subnet $IPv4Subnet.0 for on $VMnet the Running Workorder"
@@ -7074,7 +7074,7 @@ if [ "$(systemctl is-active firewalld)" == "active" ]; then echo $(systemctl sto
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword # -logfile $Logfile
     if ($EMC_ca.IsPresent)
         {
-        $files = Get-ChildItem -Path "$Sourcedir\EMC_ca"
+        $files = Get-ChildItem -Path "$Sourcedir/EMC_ca"
         foreach ($File in $files)
             {
             $NodeClone | copy-VMXfile2guest -Sourcefile $File.FullName -targetfile "/etc/pki/ca-trust/source/anchors/$($File.Name)" -Guestuser $Rootuser -Guestpassword $Guestpassword
