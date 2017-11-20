@@ -4599,7 +4599,7 @@ function Receive-LABISISDEdge
 	[OutputType([psobject])]
 param(
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
-    $Destination,
+    $Destination = $labdefaults.Sourcedir,
     [switch]$unzip,
     [switch]$force
 
