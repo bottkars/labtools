@@ -4598,7 +4598,7 @@ function Receive-LABISISDEdge
     ConfirmImpact="Medium")]
 	[OutputType([psobject])]
 param(
-    [Parameter(ParameterSetName = "1", Mandatory = $true)]
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
     $Destination = $labdefaults.Sourcedir,
     [switch]$unzip,
     [switch]$force
