@@ -4582,9 +4582,107 @@ if (!(Test-Path $Destination_path))
         }
 } #end ScaleIO
 
+
 <#
 .DESCRIPTION
    receives latest free and frictionless scaleio version from emc.com by query webbage
+.LINK
+   https://github.com/bottkars/labtools/wiki/Receive-LABIsilon
+.EXAMPLE
+#>
+#requires -version 3
+function Receive-LABISISDEdge
+{
+[CmdletBinding(DefaultParametersetName = "1",
+    SupportsShouldProcess=$true,
+    ConfirmImpact="Medium")]
+	[OutputType([psobject])]
+param(
+    [Parameter(ParameterSetName = "1", Mandatory = $false)]
+    $Destination = $labdefaults.Sourcedir,
+    [switch]$unzip,
+    [switch]$force
+
+)
+$Product = 'IsilonSDEdge'
+$Destination_path = Join-Path $Destination "$Product"
+if (!(Test-Path $Destination_path))
+    {
+    Try
+        {
+        $NewDirectory = New-Item -ItemType Directory $Destination_path -ErrorAction Stop -Force
+        }
+    catch
+        {
+        Write-Warning "Could not create Destination Directory"
+        break
+        }
+    }
+write-host -ForegroundColor Magenta  "we will check for the latest $Product version from EMC.com"
+$Uri = "https://www.emc.com/products-solutions/trial-software-download/isilonsd-edge.htm"
+$request = Invoke-WebRequest -Uri $Uri -UseBasicParsing
+$Link = $request.Links | where OuterHTML -Match EDGE.zip | Select-Object -First 1
+$Url = $link.href
+Write-Verbose $Url
+try
+    {
+    $FileName = Split-Path -Leaf -Path $Url
+    }
+catch
+    {
+    Write-Warning "could not extraxt filename from downlod page.
+    Maybe links changed, please report on https://github.com/bottkars/labtools/issues for $($MyInvocation.MyCommand)
+    including the text below:
+    $($_.Exception.Message) "
+        Break
+    }
+Write-Host -ForegroundColor Gray  " ==>found $FileName for $Product at EMC Website"
+$Destination_File = Join-Path $Destination_path $FileName
+if (!(test-path -Path $Destination_File) -or ($force.IsPresent))
+    {
+    if (!$force.IsPresent)
+        {
+        $ok = Get-LAByesnoabort -title "Start Download" -message " ==>should we download $FileName from www.emc.com ?"
+        }
+    else
+        {
+        $ok = "0"
+        }
+    switch ($ok)
+        {
+        "0"
+            {
+            Write-Host -ForegroundColor Gray " ==>trying to download $Filename"
+            Receive-LABBitsFile -DownLoadUrl  $URL -destination "$Destination_File"
+            $Downloadok = $true
+            }
+        "1"
+            {
+            break
+            }   
+        "2"
+            {
+            Write-Host -ForegroundColor Gray " ==>User requested Abort"
+            exit
+            }
+        }
+    }
+Else
+    {
+    Write-Host -ForegroundColor Gray  " ==>found $Destination_File, using this one unless -force is specified ! "
+    }
+
+if ((Test-Path "$Destination_File") -and $unzip.IsPresent)
+    {
+    Expand-LABpackage -Archive "$Destination_File" -destination "$Destination_path"
+    }
+} #end ISI
+
+
+
+<#
+.DESCRIPTION
+   receives latest free and frictionless Isilon version from emc.com by query webbage
 .LINK
    https://github.com/bottkars/labtools/wiki/Receive-LABIsilon
 .EXAMPLE
