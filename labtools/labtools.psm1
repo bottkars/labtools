@@ -6796,7 +6796,7 @@ param
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
 	[switch]$use_aptcache = $true,
     [string[]]$additional_packages,
-	[switch]$use_aptcache = $forceupdate,
+	[switch]$forceupdate,
     $net_dev = 'eth0', #future use
     $Logfile = "/tmp/labbuildr.log"   
 	)
