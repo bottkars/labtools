@@ -6697,7 +6697,8 @@ param
 	[Parameter(Mandatory=$false)]
 	$DNS_DOMAIN_NAME = "$($Global:labdefaults.BuildDomain).$($Global:labdefaults.Custom_DomainSuffix)",
 	[switch]$use_aptcache = $true,
-	[string[]]$additional_packages,
+    [string[]]$additional_packages,
+	[switch]$use_aptcache = $forceupdate,
     $net_dev = 'eth0', #future use
     $Logfile = "/tmp/labbuildr.log"   
 	)
@@ -6903,7 +6904,19 @@ network:
     Set-LABUi -short -title $Scriptblock
     $Bashresult = $NodeClone | Invoke-VMXBash -Scriptblock $Scriptblock -Guestuser $Rootuser -Guestpassword $Guestpassword -logfile $Logfile
 
-
+    if ($forceupdate.ispresent)
+        {
+			$Scriptblock = "apt-get update;DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=`"--force-confdef`" -o Dpkg::Options::=`"--force-confold`" dist-upgrade"
+			$nodeclone | Invoke-VMXBash -Scriptblock $scriptblock -Guestuser $rootuser -Guestpassword $Guestpassword -logfile $logfile | Out-Null
+            $nodeclone | Stop-VMX
+            $nodeclone | Start-VMX | Out-Null
+            do {
+                $ToolState = Get-VMXToolsState -config $NodeClone.config
+                Set-LABUi -short -title "VMware tools are in $($ToolState.State) state"
+                sleep 5
+            }
+            until ($ToolState.state -match "running")
+        }
 	}
 }
 end
