@@ -7014,6 +7014,7 @@ network:
                 sleep 5
             }
             until ($ToolState.state -match "running")
+            $nodeclone | Set-VMXSharedFolderState -enabled
         }
 	}
 }
