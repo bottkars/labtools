@@ -5348,7 +5348,7 @@ function Receive-LABSQL
     #$SQL2016_SSMS = "https://download.microsoft.com/download/9/3/3/933EA6DD-58C5-4B78-8BEC-2DF389C72BE0/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS ="https://download.microsoft.com/download/5/0/B/50B02ECB-CB5C-4C23-A1D3-DAB4467604DA/SSMS-Setup-ENU.exe"
     #$sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
-    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-DEU.exe'
+    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe'
     $SSMS_LATEST = '17.3'
 	#$SSMS_LATEST = '16.5.3'
 	$Product_Dir = Join-Path $Destination $Product_Dir
