@@ -6287,7 +6287,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    'Nested_ESXi6.0','Nested_ESXi6.5'
+    'Nested_ESXi6.0','Nested_ESXi6.5d','Nested_ESXi6.5U1'
         )]
     [string]$nestedesx_ver
 )
@@ -6300,7 +6300,7 @@ switch ($nestedesx_ver)
 #		}
 	default
 		{
-		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html'
+		$ESXI_BASEURL = 'https://www.virtuallyghetto.com/2017/05/updated-nested-esxi-6-0u3-6-5d-virtual-appliances.html'
 		}
 	}
 $HREF =	(Invoke-WebRequest $ESXI_BASEURL -UseBasicParsing).links | where href -match $nestedesx_ver
