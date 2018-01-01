@@ -5631,7 +5631,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451','452','46','461','462','47'
+    '451','452','46','461','462','47','471'
     )]
     [string]$Net_Ver="452"
 )
@@ -5655,6 +5655,10 @@ param(
         '47' {
             $Url = 'https://download.microsoft.com/download/D/D/3/DD35CC25-6E9C-484B-A746-C5BE0C923290/NDP47-KB3186497-x86-x64-AllOS-ENU.exe'
         }
+        '471'
+            {
+                $Url 'https://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe'
+            }
     }
     if (Test-Path -Path "$Destination")
         {
