@@ -3974,14 +3974,20 @@ if ($Exchange2016)
     {    
     $ex_cu = $e16_cu
     $ex_version = "E2016"
-	if ($ex_cu -lt "cu3")
-		{
-		$NET_VER = "452"
-		}
-	else
-		{
-		$NET_VER = "462"
-		}
+    switch ($ex_cu) {
+        {$_ -le 'cu3'}
+            {
+            $NET_VER = "452"
+            }
+        {($_ -gt 'cu3') -and ($_ -le 'cu7')}
+            { 
+            $NET_VER  = "462"
+            }
+        {$_ -ge 'cu8'}
+            {
+            $NET_VER  = "471"
+            }    
+        }   
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
@@ -4049,15 +4055,20 @@ if ($Exchange2016)
 if ($Exchange2013)
     {
     $ex_cu = $e15_cu
-	if ($ex_cu -lt "cu16")
-		{
-		$NET_VER = "452"
-		}
-	else
-		{
-		$NET_VER = "462"
-		}
-
+    switch ($ex_cu) {
+        {$_ -le 'cu3'}
+            {
+            $NET_VER = "452"
+            }
+        {($_ -gt 'cu3') -and ($_ -le 'cu18')}
+            { 
+            $NET_VER  = "462"
+            }
+        {$_ -ge 'cu19'}
+            {
+            $NET_VER  = "471"
+            }    
+        }
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
