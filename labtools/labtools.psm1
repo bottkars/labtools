@@ -421,13 +421,13 @@ function Set-LABExchangeCU
 	param (
 	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "E16", Mandatory = $true)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7','cu8')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18','cu19')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14", Mandatory = $true)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18','ur19')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -3920,15 +3920,15 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7','cu8')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18','cu19')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18','ur19')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -4039,7 +4039,11 @@ if ($Exchange2016)
         'CU7'
 			{
 			$URL = 'https://download.microsoft.com/download/0/7/4/074FADBD-4422-4BBC-8C04-B56428667E36/ExchangeServer2016-x64-cu7.iso'
-			}
+            }
+        'CU8'
+            {
+            $URL = 'https://download.microsoft.com/download/1/F/7/1F777B44-32CB-4F3D-B486-3D0F566D79A9/ExchangeServer2016-x64-cu8.iso'    
+            }    
         }
     }
 if ($Exchange2013)
@@ -4164,7 +4168,11 @@ if ($Exchange2013)
         'cu18'
 			{
             $URL = 'https://download.microsoft.com/download/5/9/8/598B1735-BC2E-43FC-88DD-0CDFF838EE09/Exchange2013-x64-cu18.exe'
-            } 
+            }
+        'cu19'
+            {
+            $URL = 'https://download.microsoft.com/download/3/A/4/3A4E9E23-E698-477D-B1E3-CA235CE3DB7C/Exchange2013-x64-cu19.exe'    
+            }     
         }
     } 
 If ($Exchange2010)
@@ -4324,6 +4332,11 @@ If ($Exchange2010)
 			{
             $de_DE_URL = 'https://download.microsoft.com/download/8/4/4/8448AD24-C5DE-4A57-904F-CDE3FFC17C82/Exchange2010-KB4018588-x64-de.msp'
             $en_US_URL = 'https://download.microsoft.com/download/6/2/C/62CC17A0-AAD5-4819-8E89-A7D368697513/Exchange2010-KB4018588-x64-en.msp'
+        'ur18'
+            {
+                $de_DE_URL = 'https://download.microsoft.com/download/4/C/8/4C87F1E3-E8BA-406E-8494-FB97AAF6E8E9/Exchange2010-KB4035162-x64-de.msp'
+                $en_US_URL = 'https://download.microsoft.com/download/0/8/D/08DE8247-3338-4037-8582-C29F27F10CAF/Exchange2010-KB4035162-x64-en.msp'
+            }
         }
        }
     Switch ($e14_lang)
