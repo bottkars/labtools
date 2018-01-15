@@ -5557,8 +5557,8 @@ function Receive-LABWindows2016Update {
         }
         Write-Host -ForegroundColor Green "[done]"
 
-        Set-LABWindows2016KB -Server2016KB $KB
-        Write-Output $KB
+        Set-LABWindows2016KB -Server2016KB $update.KB
+        Write-Output $Update.KB
     }
 }
 
