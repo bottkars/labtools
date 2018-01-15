@@ -5441,97 +5441,96 @@ function Receive-LABSQL
     }
 
 
-#http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu
 <#
 .DESCRIPTION
-   receives latest .Net Versions from Microsoft
+   receives latest Windows Update Versions
 .LINK
    https://github.com/bottkars/labtools/wiki/Receive-LABWindows2016Update
 .EXAMPLE
 
 #>
 #requires -version 3
-function Receive-LABWindows2016Update
-{
-[CmdletBinding(DefaultParametersetName = "1",
-    SupportsShouldProcess=$true,
-    ConfirmImpact="Medium")]
-	[OutputType([psobject])]
-param(
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    $Destination="./",
-    [Parameter(ParameterSetName = "1", Mandatory = $false)]
-    [ValidateSet(
-    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
-    )]
-    [string]$KB = 'KB4041688'
-)
-
-Switch ($KB)
-    {
-    'KB3206632'
-        {
-        $Url = "http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3206632-x64_b2e20b7e1aa65288007de21e88cd21c3ffb05110.msu"
-        }
-	'KB3213986'
-		{
-		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2016/12/windows10.0-kb3213986-x64_a1f5adacc28b56d7728c92e318d6596d9072aec4.msu'
-		}
-	'KB4010672'
-		{
-		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/01/windows10.0-kb4010672-x64_e12a6da8744518197757d978764b6275f9508692.msu'
-		}
-	'KB4013429'
-		{
-		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2017/03/windows10.0-kb4013429-x64_ddc8596f88577ab739cade1d365956a74598e710.msu'
-		}
-	'KB4015438'
-		{
-		$url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/03/windows10.0-kb4015438-x64_c0e4b528d1c6b75503efd12d44d71a809c997555.msu'
-		}
-	'KB4016635'
-		{
-		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/03/windows10.0-kb4016635-x64_2b1b48aa6ec51c019187f15059b768b1638a21ab.msu'
-		}		
-	'KB4015217'
-		{
-		$Url = 'http://download.windowsupdate.com/d/msdownload/update/software/secu/2017/04/windows10.0-kb4015217-x64_60bfcc7b365f9ab40608e2fb96bc2be8229bc319.msu'
-        }
-    'KB4041688'
-        {
-        $Url = 'http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/10/windows10.0-kb4041688-x64_a098c258a1d8f6b4bbfff87ee5ab687d629d3bd9.msu'
-        }
-    'KB4052231'
-        {
-        $url = 'http://download.windowsupdate.com/d/msdownload/update/software/updt/2017/11/windows10.0-kb4052231-x64_463cd0a310785400394ca5648f6634f1244263ff.msu'
-        }      
+function Receive-LABWindows2016Update {
+    [CmdletBinding(DefaultParametersetName = "1",
+        SupportsShouldProcess = $true,
+        ConfirmImpact = "Medium")]
+    [OutputType([psobject])]
+    param(
+        [Parameter(ParameterSetName = "1", Mandatory = $false)]
+        $Destination = "./"
+    )
+    DynamicParam {
+        $WindowsUpdateJson = join-path "$($Global:labdefaults.Sourcedir)" "windowsupdate.json"
+        $ValidateSET = (Get-Content $WindowsUpdateJson | ConvertFrom-Json).KB
+        $ValidateSET += 'latest'
+        New-LabDynamicParam -Name KB -ValidateSet $ValidateSET -Mandatory -Position 1 -ParameterSetName "1"
     }
-    if (Test-Path -Path "$Destination")
-        {
-        Write-Host -ForegroundColor Gray " ==>$Destination found"
+    
+    Begin {
+        foreach ($param in $PSBoundParameters.Keys ) {
+            if (-not ( Get-Variable -name $param -scope 0 -ErrorAction SilentlyContinue ) -and "Verbose", "Debug" -notcontains $param ) {
+                New-Variable -Name $Param -Value $PSBoundParameters.$param -Description DynParam
+                Write-Verbose "Adding variable for dynamic parameter '$param' with value '$($PSBoundParameters.$param)'"
+            }
         }
-        else
-        {
-        Write-Host -ForegroundColor Gray " ==>Creating Sourcedir for Server 2016 Updates"
-        New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        Write-Verbose "Using KB $KB"
+        $updatetable = Join-Path "$($Global:labdefaults.Sourcedir)" "windowsupdate.json"
+        Write-Verbose $updatetable
+        if (test-path $updatetable) {
+            $updates = Get-Content $updatetable | ConvertFrom-Json
+            Write-Verbose "Setting $($updates.count) Updates "
         }
-        $FileName = Split-Path -Leaf -Path $Url
-		$Destination_File = Join-Path $Destination $FileName
-        if (!(test-path  $Destination_File))
-            {
-            Write-Host -ForegroundColor Gray " ==>$FileName not found, trying to download $Filename"
-            if (!(Receive-LABBitsFile -DownLoadUrl $URL -destination $Destination_File))
-                { write-warning "Error Downloading file $Url, Please check connectivity"
+        else {
+            Write-Warning "could not find $Updatetable"
+            break
+        }
+        If ($KB -eq "latest") {
+            try {
+                Write-Host -ForegroundColor White -NoNewline "[==>]Checking for latest Windows Update Table"
+                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bottkars/Azurestack-Kickstart/master/admin/windowsupdate.json" `
+                    -OutFile $updatetable
+            }
+            catch {
+                Write-Warning "Error Downloading Windows Update Table"
+                break
+            }
+            Write-Host -ForegroundColor Green "[done]"
+            $updates = Get-Content $updatetable | ConvertFrom-Json
+            $update = $updates | Sort-Object Date -Descending | Select-Object -First 1
+            Write-Host "using $($update.kb) as latest"
+        }
+        else {
+            Write-Verbose "Using KB $KB"    
+            $update = $updates | Where-Object KB -Match $KB
+        }
+        Write-Host -ForegroundColor White "[==>] Checking Destination Path $Destination" -NoNewline 
+        if (Test-Path -Path "$Destination") {
+            Write-Host -ForegroundColor White " found" -NoNewline
+        }
+        else {
+            Write-Host -ForegroundColor Gray " creating $Destination " -NoNewline
+            New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+        }
+        Write-Host -ForegroundColor Green "[done]"
+        Write-Verbose "Using URL $($update.url) for $($update.kb)"
+        $FileName = Split-Path -Leaf -Path $Update.Url
+        $Destination_File = Join-Path $Destination $FileName
+        if (!(test-path  $Destination_File)) {
+            Write-Host -ForegroundColor White "[==>]$FileName not found, trying to download $Filename" -NoNewline
+            if (!(Receive-LABBitsFile -DownLoadUrl $Update.URL -destination $Destination_File)) {
+                write-warning "Error Downloading file $($Update.Url), Please check connectivity"
                 exit
-                }
             }
-        else
-            {
-            Write-Host -ForegroundColor Gray  " ==>found $Filename in $Destination"
-            }
-	Set-LABWindows2016KB -Server2016KB $KB
-	Write-Output $KB
+        }
+        else {
+            Write-Host -ForegroundColor White  " ==>found $Filename in $Destination" -NoNewline
+        }
+        Write-Host -ForegroundColor Green "[done]"
+
+        Set-LABWindows2016KB -Server2016KB $KB
+        Write-Output $KB
     }
+}
 
 function Set-LABMaster
 {
@@ -5574,23 +5573,35 @@ if (!(Test-Path $Defaultsfile))
 
 function Set-LABWindows2016KB
 {
-	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABpuppet")]
+	[CmdletBinding(HelpUri = "https://github.com/bottkars/labtools/wiki/Set-LABWindows2016KBt")]
 	param (
-	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
-    [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
-	[ValidateSet(
-    'KB4052231','KB3206632','KB3213986','KB4010672','KB4013429','KB4015438','KB4016635','KB4015217','KB4041688'
-    )]$Server2016KB 
-
+	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json"
     )
-if (!(Test-Path $Defaultsfile))
+DynamicParam
     {
-    Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
-    New-LABdefaults -Defaultsfile $Defaultsfile
+        $WindowsUpdateJson = join-path "$($Global:labdefaults.Sourcedir)" "windowsupdate.json"
+        $ValidateSET = (Get-Content $WindowsUpdateJson | ConvertFrom-Json).KB
+        New-LabDynamicParam -Name Server2016KB -ValidateSet $ValidateSET -Mandatory
     }
-    $Global:labdefaults.Server2016KB = $Server2016KB
-    Write-Host -ForegroundColor Gray " ==>setting Server2016KB to $Server2016KB"
-    Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
+    
+Begin {
+    foreach($param in $PSBoundParameters.Keys )
+    {
+        if (-not ( Get-Variable -name $param -scope 0 -ErrorAction SilentlyContinue ) -and "Verbose", "Debug" -notcontains $param )
+        {
+            New-Variable -Name $Param -Value $PSBoundParameters.$param -Description DynParam
+            Write-Verbose "Adding variable for dynamic parameter '$param' with value '$($PSBoundParameters.$param)'"
+        }
+    }
+    if (!(Test-Path $Defaultsfile))
+        {
+        Write-Host -ForegroundColor Gray " ==>Creating New defaultsfile"
+        New-LABdefaults -Defaultsfile $Defaultsfile
+        }
+        $Global:labdefaults.Server2016KB = $Server2016KB
+        Write-Host -ForegroundColor Gray " ==>setting Server2016KB to $Server2016KB"
+        Save-LABdefaults -Defaultsfile $Defaultsfile -Defaults $Global:labdefaults
+    }
 }
 <#
 .DESCRIPTION
@@ -7636,4 +7647,86 @@ else
 	{
 	$host.ui.RawUI.WindowTitle = "Domain:$($labdefaults.BuildDomain)|Subnet:$($labdefaults.MySubnet)|GW:$($labdefaults.Defaultgateway)|DNS1: $($labdefaults.DNS1)|DNS2:$($labdefaults.DNS2)|$title"
 	}
+}
+
+function New-LabDynamicParam
+{
+param(
+
+    [string]
+    $Name,
+
+    [string[]]
+    $ValidateSet,
+
+    [switch]
+    $Mandatory,
+
+    [string]
+    $ParameterSetName="__AllParameterSets",
+
+    [int]
+    $Position,
+
+    [switch]
+    $ValueFromPipelineByPropertyName,
+
+    [string]
+    $HelpMessage,
+
+    [validatescript({
+        if(-not ( $_ -is [System.Management.Automation.RuntimeDefinedParameterDictionary] -or -not $_) )
+        {
+            Throw "DPDictionary must be a System.Management.Automation.RuntimeDefinedParameterDictionary object, or not exist"
+        }
+        $True
+    })]
+    $DPDictionary = $false
+
+)
+    #Create attribute object, add attributes, add to collection   
+        $ParamAttr = New-Object System.Management.Automation.ParameterAttribute
+        $ParamAttr.ParameterSetName = $ParameterSetName
+        if($mandatory)
+        {
+            $ParamAttr.Mandatory = $True
+        }
+        if($Position -ne $null)
+        {
+            $ParamAttr.Position=$Position
+        }
+        if($ValueFromPipelineByPropertyName)
+        {
+            $ParamAttr.ValueFromPipelineByPropertyName = $True
+        }
+        if($HelpMessage)
+        {
+            $ParamAttr.HelpMessage = $HelpMessage
+        }
+
+        $AttributeCollection = New-Object 'Collections.ObjectModel.Collection[System.Attribute]'
+        $AttributeCollection.Add($ParamAttr)
+
+    #param validation set if specified
+        if($ValidateSet)
+        {
+            $ParamOptions = New-Object System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSet
+            $AttributeCollection.Add($ParamOptions)
+        }
+
+
+    #Create the dynamic parameter
+        $Parameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter -ArgumentList @($Name, [string], $AttributeCollection)
+
+    #Add the dynamic parameter to an existing dynamic parameter dictionary, or create the dictionary and add it
+        if($DPDictionary)
+        {
+            $DPDictionary.Add($Name, $Parameter)
+        }
+        else
+        {
+            $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            $Dictionary.Add($Name, $Parameter)
+            $Dictionary
+        }
 }
