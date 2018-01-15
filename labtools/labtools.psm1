@@ -380,6 +380,7 @@ function Set-LABnmmver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nmm9210',#-#    
     'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#
     'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
@@ -420,13 +421,13 @@ function Set-LABExchangeCU
 	param (
 	[Parameter(Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "E16", Mandatory = $true)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7','cu8')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18','cu19')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14", Mandatory = $true)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18','ur19')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -471,6 +472,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nw9210',#-#    
     'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -2605,6 +2607,7 @@ param
     (
 	<#
     Version Of Networker Server / Client to be installed
+    'nw9210',#-#       
     'nw9201','nw9203','nw9204','nw9205',#-#       
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -2629,6 +2632,7 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
+    'nw9210',#-#      
     'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -3133,6 +3137,7 @@ function Receive-LABnmm
 param
     (
     <#
+    'nmm9210',#-# 
     'nmm9201','nmm9203',#-# 
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
@@ -3144,6 +3149,7 @@ param
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
+    'nmm9210',#-#         
     'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
@@ -3914,15 +3920,15 @@ param
     (
     [Parameter(ParameterSetName = "E16",Mandatory = $true)][switch][alias('e16')]$Exchange2016,
     [Parameter(ParameterSetName = "E16", Mandatory = $false)]
-    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7')]
+    [ValidateSet('final','cu1','cu2','cu3','cu4','cu5','cu6','cu7','cu8')]
     $e16_cu,
     [Parameter(ParameterSetName = "E15",Mandatory = $true)][switch][alias('e15')]$Exchange2013,
     [Parameter(ParameterSetName = "E15", Mandatory = $false)]
-    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18')]
+    [ValidateSet('cu1','cu2','cu3','sp1','cu5','cu6','cu7','cu8','cu9','cu10','cu11','cu12','cu13','cu14','cu15','cu16','cu17','cu18','cu19')]
     $e15_cu,
     [Parameter(ParameterSetName = "E14",Mandatory = $true)][switch][alias('e14')]$Exchange2010,
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
-    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18')]
+    [ValidateSet('ur1','ur2','ur3','ur4','ur5','ur6','ur7','ur8v2','ur9','ur10','ur11','ur12','ur13','ur14','ur15','ur16','ur17','ur18','ur19')]
     $e14_ur = "ur13",
     [Parameter(ParameterSetName = "E14", Mandatory = $false)]
     [ValidateSet('sp3')]
@@ -3968,14 +3974,20 @@ if ($Exchange2016)
     {    
     $ex_cu = $e16_cu
     $ex_version = "E2016"
-	if ($ex_cu -lt "cu3")
-		{
-		$NET_VER = "452"
-		}
-	else
-		{
-		$NET_VER = "462"
-		}
+    switch ($ex_cu) {
+        {$_ -le 'cu3'}
+            {
+            $NET_VER = "452"
+            }
+        {($_ -gt 'cu3') -and ($_ -le 'cu7')}
+            { 
+            $NET_VER  = "462"
+            }
+        {$_ -ge 'cu8'}
+            {
+            $NET_VER  = "471"
+            }    
+        }   
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
     $DownloadUrls = (
@@ -4033,21 +4045,30 @@ if ($Exchange2016)
         'CU7'
 			{
 			$URL = 'https://download.microsoft.com/download/0/7/4/074FADBD-4422-4BBC-8C04-B56428667E36/ExchangeServer2016-x64-cu7.iso'
-			}
+            }
+        'CU8'
+            {
+            $URL = 'https://download.microsoft.com/download/1/F/7/1F777B44-32CB-4F3D-B486-3D0F566D79A9/ExchangeServer2016-x64-cu8.iso'    
+            }    
         }
     }
 if ($Exchange2013)
     {
     $ex_cu = $e15_cu
-	if ($ex_cu -lt "cu16")
-		{
-		$NET_VER = "452"
-		}
-	else
-		{
-		$NET_VER = "462"
-		}
-
+    switch ($ex_cu) {
+        {$_ -le 'cu3'}
+            {
+            $NET_VER = "452"
+            }
+        {($_ -gt 'cu3') -and ($_ -le 'cu18')}
+            { 
+            $NET_VER  = "462"
+            }
+        {$_ -ge 'cu19'}
+            {
+            $NET_VER  = "471"
+            }    
+        }
     $ex_version = "E2013"
     $Product_Dir = Join-Path $Product_Dir $ex_version
     Write-Host -ForegroundColor Gray " ==>we are now going to test $EX_Version prereqs"
@@ -4158,7 +4179,11 @@ if ($Exchange2013)
         'cu18'
 			{
             $URL = 'https://download.microsoft.com/download/5/9/8/598B1735-BC2E-43FC-88DD-0CDFF838EE09/Exchange2013-x64-cu18.exe'
-            } 
+            }
+        'cu19'
+            {
+            $URL = 'https://download.microsoft.com/download/3/A/4/3A4E9E23-E698-477D-B1E3-CA235CE3DB7C/Exchange2013-x64-cu19.exe'    
+            }     
         }
     } 
 If ($Exchange2010)
@@ -4318,6 +4343,11 @@ If ($Exchange2010)
 			{
             $de_DE_URL = 'https://download.microsoft.com/download/8/4/4/8448AD24-C5DE-4A57-904F-CDE3FFC17C82/Exchange2010-KB4018588-x64-de.msp'
             $en_US_URL = 'https://download.microsoft.com/download/6/2/C/62CC17A0-AAD5-4819-8E89-A7D368697513/Exchange2010-KB4018588-x64-en.msp'
+        'ur18'
+            {
+                $de_DE_URL = 'https://download.microsoft.com/download/4/C/8/4C87F1E3-E8BA-406E-8494-FB97AAF6E8E9/Exchange2010-KB4035162-x64-de.msp'
+                $en_US_URL = 'https://download.microsoft.com/download/0/8/D/08DE8247-3338-4037-8582-C29F27F10CAF/Exchange2010-KB4035162-x64-en.msp'
+            }
         }
        }
     Switch ($e14_lang)
@@ -5342,7 +5372,7 @@ function Receive-LABSQL
     #$SQL2016_SSMS = "https://download.microsoft.com/download/9/3/3/933EA6DD-58C5-4B78-8BEC-2DF389C72BE0/SSMS-Setup-ENU.exe"
     #$SQL2016_SSMS ="https://download.microsoft.com/download/5/0/B/50B02ECB-CB5C-4C23-A1D3-DAB4467604DA/SSMS-Setup-ENU.exe"
     #$sql2016_ssms = "https://download.microsoft.com/download/C/3/D/C3DBFF11-C72E-429A-A861-4C316524368F/SSMS-Setup-ENU.exe"
-    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-DEU.exe'
+    $sql2016_ssms = 'https://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe'
     $SSMS_LATEST = '17.3'
 	#$SSMS_LATEST = '16.5.3'
 	$Product_Dir = Join-Path $Destination $Product_Dir
@@ -5623,7 +5653,7 @@ param(
     $Destination="./",
     [Parameter(ParameterSetName = "1", Mandatory = $false)]
     [ValidateSet(
-    '451','452','46','461','462','47'
+    '451','452','46','461','462','47','471'
     )]
     [string]$Net_Ver="452"
 )
@@ -5647,6 +5677,10 @@ param(
         '47' {
             $Url = 'https://download.microsoft.com/download/D/D/3/DD35CC25-6E9C-484B-A746-C5BE0C923290/NDP47-KB3186497-x86-x64-AllOS-ENU.exe'
         }
+        '471'
+            {
+                $Url  = 'https://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe'
+            }
     }
     if (Test-Path -Path "$Destination")
         {
@@ -6292,7 +6326,7 @@ param(
 	#>
     [Parameter(ParameterSetName = "1", Mandatory = $true)]
     [ValidateSet(
-    'Nested_ESXi6.0','Nested_ESXi6.5'
+    'Nested_ESXi6.0','Nested_ESXi6.5d','Nested_ESXi6.5U1'
         )]
     [string]$nestedesx_ver
 )
@@ -6305,7 +6339,7 @@ switch ($nestedesx_ver)
 #		}
 	default
 		{
-		$ESXI_BASEURL = 'http://www.virtuallyghetto.com/2015/12/deploying-nested-esxi-is-even-easier-now-with-the-esxi-virtual-appliance.html'
+		$ESXI_BASEURL = 'https://www.virtuallyghetto.com/2017/05/updated-nested-esxi-6-0u3-6-5d-virtual-appliances.html'
 		}
 	}
 $HREF =	(Invoke-WebRequest $ESXI_BASEURL -UseBasicParsing).links | where href -match $nestedesx_ver
