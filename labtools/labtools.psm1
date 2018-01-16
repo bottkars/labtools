@@ -5144,8 +5144,8 @@ param(
 	Available Masters:
     ==================
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
-    '2016TP4',
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
+    
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -5158,7 +5158,7 @@ param(
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(    
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016_1711','2016core_1711','2016','2016core',#
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -5573,8 +5573,8 @@ param(
 	Available Masters:
 	==================
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
-    '2016TP4',
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
+    
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
 	#>
@@ -5582,7 +5582,7 @@ param(
 	[Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016_1711','2016core_1711','2016','2016core',#
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'   
     )]
@@ -6392,8 +6392,8 @@ param(
 	<#
 	Possible Master for labbuildr:
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016TP5','2016TP5_GER','2016_1711','2016core_1711','2016','2016core',#
-    '2016TP4',
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
+    
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -6406,7 +6406,7 @@ param(
     [Parameter(ParameterSetName = "vmware", Mandatory = $true)]
     [ValidateSet(
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016_1711','2016core_1711','2016','2016core',#
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012',
     'OpenSUSE','openSUSE42_2',#
@@ -6635,7 +6635,7 @@ param
 	[Parameter(ParameterSetName = "Windows",Mandatory=$false)]
 	[ValidateSet(
     'WS_1709','WS_Preview_RS4','WS_Preview_17035',#
-    '2016_1711','2016core_1711','2016','2016core',#
+    '2016core_1801','2016_1801','2016_1711','2016core_1711','2016','2016core',#
     '2012R2_Ger','2012_R2','2012R2FallUpdate','2012R2Fall_Ger',
     '2012_Ger','2012'
     )]
