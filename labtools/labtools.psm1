@@ -2936,7 +2936,14 @@ switch ($PsCmdlet.ParameterSetName)
                         {
                         $nwzip = "$($nwzip)$($nwversion.Build)"
                         }
-                    }    
+                    }
+                "92"
+					{
+                    if ($nwversion.Build -ne (0))
+                        {
+                        $nwzip = "$($nwzip)$($nwversion.Build)"
+                        }
+                    }         
                 }
             Switch ($arch)
                 {
