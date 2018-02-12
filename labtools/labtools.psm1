@@ -338,6 +338,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
+    'nw9211','nw9210',#-#    
     'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -380,7 +381,7 @@ function Set-LABnmmver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nmm9210',#-#    
+    'nmm9211','nmm9210',#-#    
     'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#
     'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
@@ -472,7 +473,7 @@ function Set-LABNWver
 	[Parameter(ParameterSetName = "1", Mandatory = $false,Position = 2)]$Defaultsfile="./defaults.json",
     [Parameter(ParameterSetName = "1", Mandatory = $true,Position = 1)]
     [ValidateSet(
-    'nw9210',#-#    
+    'nw9211','nw9210',#-#    
     'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -2607,7 +2608,7 @@ param
     (
 	<#
     Version Of Networker Server / Client to be installed
-    'nw9210',#-#       
+    'nw9211','nw9210',#-#       
     'nw9201','nw9203','nw9204','nw9205',#-#       
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -2632,7 +2633,7 @@ param
 
     [Parameter(ParameterSetName = "installer",Mandatory = $true)]
 	[ValidateSet(
-    'nw9210',#-#      
+    'nw9211','nw9210',#-#      
     'nw9201','nw9203','nw9204','nw9205',#-#           
     'nw9111','nw9112','nw9113','nw9114','nw9115',#-#   
 	'nw9100','nw9102','nw9103','nw9104','nw9105','nw9106',#-#
@@ -3137,7 +3138,7 @@ function Receive-LABnmm
 param
     (
     <#
-    'nmm9210',#-# 
+    'nmm9211','nmm9210',#-# 
     'nmm9201','nmm9203',#-# 
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
@@ -3149,7 +3150,7 @@ param
     'nmm8218','nmm8217','nmm8216','nmm8214','nmm8212','nmm8210'
 	#>
     [ValidateSet(
-    'nmm9210',#-#         
+    'nmm9211','nmm9210',#-#         
     'nmm9201','nmm9203',#-#         
     'nmm9111','nmm9112','nmm9113','nmm9114','nmm9115',#-#   
 	'nmm9100','nmm9102','nmm9103','nmm9104','nmm9105','nmm9106',#-#
