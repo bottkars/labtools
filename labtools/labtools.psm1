@@ -2660,10 +2660,11 @@ param
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][switch]$nve,
 	[Parameter(ParameterSetName = "nve_update",Mandatory = $true)]
     [Parameter(ParameterSetName = "nve",Mandatory = $true)][ValidateSet(
-    '9.2.0.3','9.2.0.4','9.2.0.5',#-#
-    '9.0.1-72',#-#
-    '9.1.1.1','9.1.1.2','9.1.1.3',#-#
-	'9.1.0.3','9.1.0.4',#-#
+    '9.2.1.1', #-#    
+    '9.2.0.3','9.2.0.4','9.2.0.5', #-#
+    '9.0.1-72', #-#
+    '9.1.1.1','9.1.1.2','9.1.1.3', #-#
+	'9.1.0.3','9.1.0.4', #-#
 	'9.0.1.1','9.0.1.2','9.0.1.3','9.0.1.4','9.0.1.5','9.0.1.6' #-#
 	)]$nve_ver,
 	<#
@@ -2770,6 +2771,10 @@ switch ($PsCmdlet.ParameterSetName)
                 {
                 $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.2.0/9.2.0.5/ova-9.2-95_9.2.0-182.tar.gz"
                 }
+            '9.2.1.1'
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.2.1/9.2.1.1/ova-9.2.1-194_9.2.1-168.tar.gz"
+                }    
             }
         $FileName = Split-Path -Leaf $url
         $Destination_Filename = Join-Path $Destination $FileName
@@ -2848,7 +2853,11 @@ switch ($PsCmdlet.ParameterSetName)
             '9.2.0.5'
                 {
                 $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.2.0/9.2.0.5/avp-9.2-95_9.2.0-182.tar.gz"    
-                }        
+                }
+            '9.2.1.1'
+                {
+                $url = "ftp://ftp.legato.com/pub/NetWorker/NVE/9.2.1/9.2.1.1/avp-9.2.1-194_9.2.1-168.tar.gz"
+                }
             }
 		if ($url)
 			{
